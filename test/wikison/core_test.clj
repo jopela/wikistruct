@@ -30,7 +30,7 @@
                          effect on Claude Debussy, a contemporary French 
                          composer.",
                  :fullurl "https://en.wikipedia.org/wiki/Whistler%27s_Mother",
-                ` :pageid 225516})
+                 :pageid 225516})
 
 (def whistlers-mother
   {:url         "http://en.wikipedia.org/wiki/Whistler's_Mother"
@@ -45,7 +45,6 @@
               {:name "In popular culture" :text "The painting has been"}
               {:name "In music" :text "Whistler and particularly"}]
    })
-
 
 (deftest article-test
   (testing "json document represents the article"
@@ -68,5 +67,15 @@
     (let [in "http://en.wikipedia.org/wiki/Montreal"
           ex "http://en.wikipedia.org/w/api.php"
           ou (api-url in)]
+      (is (= ex ou)))))
+
+(deftest simple-prop-extract-test
+  (testing "simple property extraction from request result on MediaWiki API"
+    (let [in api-result
+          ex {:url "https://en.wikipedia.org/wiki/Whistler%27s_Mother"
+              :title "Whistler's Mother"
+              :pageid 225516
+              :lang "en"}
+          ou (simple-prop-extract in)]
       (is (= ex ou)))))
 

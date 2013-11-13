@@ -2,7 +2,8 @@
   (:gen-class)
   (:require [clj-http.client :as client]
             [clojure.tools.cli :as c]
-            [clojure.string :as string])
+            [clojure.string :as string]
+            [clojure.set :as cset])
   (:import (java.net URL)))
 
 (defn -main
@@ -67,7 +68,7 @@
   "Extract the simple properties (ones that directly map to a property in a 
   wanted result) from a the raw-article-prop result " 
   [raw]
-  (let [new-raw (rename-keys raw
+  (let [new-raw (cset/rename-keys raw
                              {:fullurl :url
                               :pagelanguage :lang})]
     (select-keys new-raw [:url :title :pageid :lang])))
@@ -82,7 +83,7 @@
   "return a json document built from the given url"
   [url]
   {:url   "http://en.wikipedia.org/wiki/Whistler's_Mother"
-   :title "Whistler's_Mother"})
+   :title "Whistler's Mother"})
 
 (def mother-url "https://en.wikipedia.org/wiki/Whistler's_Mother")
 (def mother (raw-article-prop mother-url))
