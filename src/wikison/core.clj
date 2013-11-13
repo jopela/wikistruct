@@ -42,25 +42,41 @@
                            "action" "query"
                            "ppprop" "disambiguation"} params)
         req-format (-> "format" req-params  keyword )
-        resp-dic   (-> (client/get req-url {:query-params req-params :as req-format})
+        resp-dic   (-> (client/get req-url {:query-params req-params
+                                            :as req-format})
                        :body
                        :query
                        :pages)]
     (-> resp-dic keys first resp-dic)))
 
-(defn article-prop
-  "retrieve article properties that will go into the json article"
+(defn raw-article-prop
+  "retrieve article properties that will go into the json article. This is
+  the raw result from the wiki api"
   [url]
   (let [title  (article-title url)
         params {"titles" title
                 "inprop" "url"
                 "prop"   "info|pageprops|extracts|langlinks|pageimages"
-                "exintro" ""
                 "explaintext" ""
                 "piprop" "thumbnail"
                 "pithumbsize" 9999}]
 
     (mediawiki-req url params)))
+
+(defn simple-prop-extract
+  "Extract the simple properties (ones that directly map to a property in a 
+  wanted result) from a the raw-article-prop result " 
+  [raw]
+  (let [new-raw (rename-keys raw
+                             {:fullurl :url
+                              :pagelanguage :lang})]
+    (select-keys new-raw [:url :title :pageid :lang])))
+
+(defn languages-extract
+  "extract the languages from the raw-article-prop result "
+  [raw]
+  (let [raw-languages (raw :langlinks)]
+    (map :lang raw-languages)))
 
 (defn article 
   "return a json document built from the given url"
@@ -69,5 +85,5 @@
    :title "Whistler's_Mother"})
 
 (def mother-url "https://en.wikipedia.org/wiki/Whistler's_Mother")
-(def mother (article-prop mother-url))
+(def mother (raw-article-prop mother-url))
 

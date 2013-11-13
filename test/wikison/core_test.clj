@@ -4,7 +4,7 @@
 
 (def whistlers-mother
   {:url         "http://en.wikipedia.org/wiki/Whistler's_Mother"
-   :title       "Whistler's_Mother"
+   :title       "Whistler's Mother"
    :pageid      54458
    :abstract    "Arrangement in Grey and Black ..."
    :depiction   "https://upload.wikimedia.org/wikipedia/commons/1/1b/Whistlers_Mother_high_res.jpg"
