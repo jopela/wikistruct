@@ -1,7 +1,8 @@
 (ns wikison.core
   (:gen-class)
   (:require [clj-http.client :as client]
-            [clojure.tools.cli :as c])
+            [clojure.tools.cli :as c]
+            [clojure.string :as string])
   (:import (java.net URL)))
 
 (defn -main
@@ -29,22 +30,35 @@
 (defn article-title
   "returns the title of the page associated with a url"
   [url]
-  "Our_Lady_of_the_Don")
-
+  (let [path (. (URL. url) getFile) ]
+    (last (string/split path #"/"))))
 
 (defn mediawiki-req
   "Fowards a request to the (media)wiki api"
   [url params]
   ; TODO: put the very frequently used, rarely overridden params here
   (let [req-url (api-url url)
-        req-params (merge {"format" "json" "action" "query"} params)
-        req-format (-> req-params "format" keyword ) ]
-    (client/get req-url {:query-params req-params :as req-format})))
+        req-params (merge {"format" "json"
+                           "action" "query"
+                           "ppprop" "disambiguation"} params)
+        req-format (-> "format" req-params  keyword )
+        resp-dic   (-> (client/get req-url {:query-params req-params :as req-format})
+                       :body
+                       :query
+                       :pages)]
+    (-> resp-dic keys first resp-dic)))
 
-;(defn gen-art-prop
-;  "retrieve general json article properties"
-;  [url]
-;  (let [params {"action" "query"
+(defn article-prop
+  "retrieve general article properties that will go into the json article"
+  [url]
+  (let [title  (article-title url)
+        params {"titles" title
+                "inprop" "url"
+                "prop"   "info|pageprops|extracts|langlinks"
+                "exintro" ""
+                "explaintext" ""}]
+
+    (mediawiki-req url params)))
 
 (defn article 
   "return a json document built from the given url"
