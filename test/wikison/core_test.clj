@@ -2,10 +2,10 @@
   (:require [clojure.test :refer :all]
             [wikison.core :refer :all]))
 
-
 (def whistlers-mother
   {:url       "http://en.wikipedia.org/wiki/Whistler's_Mother"
    :title     "Whistler's_Mother"
+   :pageid    54458
    :abstract  "Arrangement in Grey and Black ..."
    :depiction "https://upload.wikimedia.org/wikipedia/commons/1/1b/Whistlers_Mother_high_res.jpg"
    :sections [{:name "History" :text "Anna McNeill Whistler ..." } 
@@ -21,10 +21,14 @@
           ou  (article in) ]
       
       (is (= (ex :url) (ou :url)))
-      (is (= (ex :title) (ou :title)))
+      (is (= (ex :title) (ou :title))))))
 
-          )))
-
+(deftest article-title-test
+  (testing "title of a page from english wikipedia"
+    (let [in "http://en.wikipedia.org/wiki/Our_Lady_of_the_Don"
+          ex "Our_Lady_of_the_Don"
+          ou (article-title in)]
+      (is (= ex ou)))))
 
 (deftest api-url-test
   (testing "api-url for wikipedia url"
@@ -32,5 +36,4 @@
           ex "http://en.wikipedia.org/w/api.php"
           ou (api-url in)]
       (is (= ex ou)))))
-
 

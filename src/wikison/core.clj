@@ -17,12 +17,6 @@
     
     (println "No options given")))
 
-
-(defn article 
-  "return a json document built from the given url"
-  [url]
-  {})
-
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"
   [url]
@@ -32,20 +26,30 @@
         file  "/w/api.php"]
     (. (URL. proto host file) toString)))
 
+(defn article-title
+  "returns the title of the page associated with a url"
+  [url]
+  "Our_Lady_of_the_Don")
+
 
 (defn mediawiki-req
   "Fowards a request to the (media)wiki api"
   [url params]
+  ; TODO: put the very frequently used, rarely overridden params here
   (let [req-url (api-url url)
-        ; TODO: put the very frequently used, rarely overridden params here
         req-params (merge {"format" "json" "action" "query"} params)
         req-format (-> req-params "format" keyword ) ]
     (client/get req-url {:query-params req-params :as req-format})))
-    
-  
 
+;(defn gen-art-prop
+;  "retrieve general json article properties"
+;  [url]
+;  (let [params {"action" "query"
 
-
-
+(defn article 
+  "return a json document built from the given url"
+  [url]
+  {:url   "http://en.wikipedia.org/wiki/Whistler's_Mother"
+   :title "Whistler's_Mother"})
 
 
