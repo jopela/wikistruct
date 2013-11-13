@@ -24,3 +24,13 @@
       (is (= (ex :title) (ou :title)))
 
           )))
+
+
+(deftest api-url-test
+  (testing "api-url for wikipedia url"
+    (let [in "http://en.wikipedia.org/wiki/Montreal"
+          ex "http://en.wikipedia.org/w/api.php"
+          ou (api-url in)]
+      (is (= ex ou)))))
+
+

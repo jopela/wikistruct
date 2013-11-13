@@ -1,7 +1,8 @@
 (ns wikison.core
   (:gen-class)
   (:require [clj-http.client :as client]
-            [clojure.tools.cli :as c]))
+            [clojure.tools.cli :as c])
+  (:import (java.net URL)))
 
 (defn -main
   "json artcile from (media)wiki urls"
@@ -21,6 +22,16 @@
   "return a json document built from the given url"
   [url]
   {})
+
+(defn api-url
+  "return a (media)wiki api url based on the url given as argument"
+  [url]
+  (let [parsed (URL. url)
+        proto (. parsed getProtocol)
+        host  (. parsed getHost)
+        file  "/w/api.php"]
+    (. (URL. proto host file) toString)))
+
 
 (defn mediawiki-req
   "Fowards a request to the (media)wiki api"
