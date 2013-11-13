@@ -49,14 +49,16 @@
     (-> resp-dic keys first resp-dic)))
 
 (defn article-prop
-  "retrieve general article properties that will go into the json article"
+  "retrieve article properties that will go into the json article"
   [url]
   (let [title  (article-title url)
         params {"titles" title
                 "inprop" "url"
-                "prop"   "info|pageprops|extracts|langlinks"
+                "prop"   "info|pageprops|extracts|langlinks|pageimages"
                 "exintro" ""
-                "explaintext" ""}]
+                "explaintext" ""
+                "piprop" "thumbnail"
+                "pithumbsize" 9999}]
 
     (mediawiki-req url params)))
 
@@ -66,4 +68,6 @@
   {:url   "http://en.wikipedia.org/wiki/Whistler's_Mother"
    :title "Whistler's_Mother"})
 
+(def mother-url "https://en.wikipedia.org/wiki/Whistler's_Mother")
+(def mother (article-prop mother-url))
 
