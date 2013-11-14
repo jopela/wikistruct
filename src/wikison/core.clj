@@ -60,7 +60,8 @@
                 "prop"   "info|pageprops|extracts|langlinks|pageimages"
                 "explaintext" ""
                 "piprop" "thumbnail"
-                "pithumbsize" 9999}]
+                "pithumbsize" 9999
+                "lllimit" 150}]
 
     (mediawiki-req url params)))
 
