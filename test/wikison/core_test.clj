@@ -48,7 +48,7 @@
 
 (deftest article-test
   (testing "json document represents the article"
-    (let [in  "http://en.wikipedia.org/wiki/Whistler's_Mother"
+    (let [in  "https://en.wikipedia.org/wiki/Whistler's_Mother"
           ex  whistlers-mother 
           ou  (article in) ]
       

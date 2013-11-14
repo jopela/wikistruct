@@ -5,7 +5,7 @@
             [clojure.string :as string]
             [clojure.set :as cset])
   (:import (java.net URL)))
-
+; TODO: ++ the limits on received languages links.
 (defn -main
   "json artcile from (media)wiki urls"
   [& args]
@@ -87,8 +87,11 @@
 (defn article 
   "return a json document built from the given url"
   [url]
-  {:url   "https://en.wikipedia.org/wiki/Whistler%27s_Mother"
-   :title "Whistler's Mother"})
+  (let [raw-result (raw-article-prop url)
+        simple (simple-prop-extract raw-result)
+        lang (languages-extract raw-result)
+        thumb (thumbnail-extract raw-result) ]
+    (apply merge [simple lang thumb])))
 
 (def mother-url "https://en.wikipedia.org/wiki/Whistler's_Mother")
 (def mother (raw-article-prop mother-url))
