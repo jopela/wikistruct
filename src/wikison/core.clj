@@ -66,7 +66,7 @@
 
 (defn simple-prop-extract
   "Extract the simple properties (ones that directly map to a property in a 
-  wanted result) from a the raw-article-prop result " 
+  wanted result) from the raw-article-prop result " 
   [raw]
   (let [new-raw (cset/rename-keys raw
                              {:fullurl :url
@@ -77,12 +77,17 @@
   "extract the languages from the raw-article-prop result "
   [raw]
   (let [raw-languages (raw :langlinks)]
-    (map :lang raw-languages)))
+    {:other-langs (vec (map :lang raw-languages))}))
+
+(defn thumbnail-extract
+  "extract the thumbnail from the raw-article-prop result "
+  [raw]
+  {:depiction (-> raw :thumbnail :source)})
 
 (defn article 
   "return a json document built from the given url"
   [url]
-  {:url   "http://en.wikipedia.org/wiki/Whistler's_Mother"
+  {:url   "https://en.wikipedia.org/wiki/Whistler%27s_Mother"
    :title "Whistler's Mother"})
 
 (def mother-url "https://en.wikipedia.org/wiki/Whistler's_Mother")

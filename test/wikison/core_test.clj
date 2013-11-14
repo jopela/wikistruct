@@ -33,9 +33,9 @@
                  :pageid 225516})
 
 (def whistlers-mother
-  {:url         "http://en.wikipedia.org/wiki/Whistler's_Mother"
+  {:url         "https://en.wikipedia.org/wiki/Whistler%27s_Mother"
    :title       "Whistler's Mother"
-   :pageid      54458
+   :pageid      225516
    :abstract    "Arrangement in Grey and Black ..."
    :depiction   "https://upload.wikimedia.org/wikipedia/commons/1/1b/Whistlers_Mother_high_res.jpg"
    :lang        "en"
@@ -71,11 +71,20 @@
 
 (deftest simple-prop-extract-test
   (testing "simple property extraction from request result on MediaWiki API"
-    (let [in api-result
-          ex {:url "https://en.wikipedia.org/wiki/Whistler%27s_Mother"
-              :title "Whistler's Mother"
-              :pageid 225516
-              :lang "en"}
-          ou (simple-prop-extract in)]
+    (let [ex (select-keys whistlers-mother [:url :title :pageid :lang]);{:url "https://en.wikipedia.org/wiki/Whistler%27s_Mother" :title "Whistler's Mother" :pageid 225516 :lang "en"}
+          ou (simple-prop-extract api-result)]
       (is (= ex ou)))))
+
+(deftest languages-extract-test
+  (testing "language extraction from request result on MediaWiki API"
+    (let [ex (select-keys whistlers-mother [:other-langs])
+          ou (languages-extract api-result)]
+      (is (= ex ou)))))
+
+(deftest thumbnail-extract-test
+  (testing "thumbnail extraction from request result on MediaWiki API"
+    (let [ex (select-keys whistlers-mother [:depiction])
+          ou (thumbnail-extract api-result)]
+      (is (= ex ou)))))
+
 
