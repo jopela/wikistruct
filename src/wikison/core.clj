@@ -3,11 +3,13 @@
   (:require [clj-http.client :as client]
             [clojure.tools.cli :as c]
             [clojure.string :as string]
-            [clojure.set :as cset])
+            [clojure.set :as cset]
+            [clojure.data.json :as json])
   (:import (java.net URL URLEncoder URLDecoder)))
 
 ; TODO: docstring quality is overall poor. See high-ranking clojure projects
 ; (ring?) for inspiration on how to write better docstring.
+; TODO: must support overriding user-agent header.
 
 (defn -main
   "json artcile from (media)wiki urls"
