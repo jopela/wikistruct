@@ -4,8 +4,11 @@
             [clojure.tools.cli :as c]
             [clojure.string :as string]
             [clojure.set :as cset])
-  (:import (java.net URL)))
-; TODO: ++ the limits on received languages links.
+  (:import (java.net URL URLEncoder URLDecoder)))
+
+; TODO: docstring quality is overall poor. See high-ranking clojure projects
+; (ring?) for inspiration on how to write better docstring.
+
 (defn -main
   "json artcile from (media)wiki urls"
   [& args]
@@ -32,7 +35,9 @@
   "returns the title of the page associated with a url"
   [url]
   (let [path (. (URL. url) getFile) ]
-    (last (string/split path #"/"))))
+    ; URLDecoder/decode so that url-encoded strings can be used to derive 
+    ; real page titles.
+   (URLDecoder/decode (last (string/split path #"/")) "UTF-8")))
 
 (defn mediawiki-req
   "Fowards a request to the (media)wiki api"
@@ -58,20 +63,20 @@
         params {"titles" title
                 "inprop" "url"
                 "prop"   "info|pageprops|extracts|langlinks|pageimages"
-                "explaintext" ""
+         ;       "explaintext" ""
                 "piprop" "thumbnail"
                 "pithumbsize" 9999
-                "lllimit" 150}]
-
+                "lllimit" 150
+                }]
     (mediawiki-req url params)))
 
 (defn simple-prop-extract
-  "Extract the simple properties (ones that directly map to a property in a 
-  wanted result) from the raw-article-prop result " 
+  "Extract the simple properties (ones that directly map to a property in the
+  json result) from the raw-article-prop result " 
   [raw]
   (let [new-raw (cset/rename-keys raw
-                             {:fullurl :url
-                              :pagelanguage :lang})]
+                                  {:fullurl :url
+                                   :pagelanguage :lang})]
     (select-keys new-raw [:url :title :pageid :lang])))
 
 (defn languages-extract
@@ -84,6 +89,15 @@
   "extract the thumbnail from the raw-article-prop result "
   [raw]
   {:depiction (-> raw :thumbnail :source)})
+
+(defn sections-extract
+  ; this is not clear.
+  "extract the sections from the raw-article-prop result. Does so
+  by creating maps for section content and preserves hierarchy of original
+  article."
+  [raw]
+  (let [text (raw :extract)]
+    text))
 
 (defn article 
   "return a json document built from the given url"
