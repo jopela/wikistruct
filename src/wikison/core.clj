@@ -10,20 +10,6 @@
 ; TODO: docstring quality is overall poor. See high-ranking clojure projects
 ; (ring?) for inspiration on how to write better docstring.
 ; TODO: must support overriding user-agent header.
-
-(defn -main
-  "json artcile from (media)wiki urls"
-  [& args]
-  (let [ [options args banner]
-         (c/cli args
-             ["-h" "--help" "print this help banner and exit" :flag true]) ]
-
-    (when (options :help)
-      (println banner)
-      (System/exit 0))
-    
-    (println "No options given")))
-
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"
   [url]
@@ -65,7 +51,7 @@
         params {"titles" title
                 "inprop" "url"
                 "prop"   "info|pageprops|extracts|langlinks|pageimages"
-         ;       "explaintext" ""
+                "explaintext" ""
                 "piprop" "thumbnail"
                 "pithumbsize" 9999
                 "lllimit" 150
@@ -110,6 +96,19 @@
         thumb (thumbnail-extract raw-result) ]
     (apply merge [simple lang thumb])))
 
-(def mother-url "https://en.wikipedia.org/wiki/Whistler's_Mother")
-(def mother (raw-article-prop mother-url))
+; Main entry point
+(defn -main
+  "json artcile from (media)wiki urls"
+  [& args]
+  (let [ [options args banner]
+         (c/cli args
+             ["-h" "--help" "print this help banner and exit" :flag true]) ]
+
+    (when (options :help)
+      (println banner)
+      (System/exit 0))
+    
+    (let [articles (map raw-article-prop args)
+          extracts (map :extract articles)]
+      (println (string/join "\n\n\n*+*+*+*+*+*+*+*+*\n\n\n" extracts)))))
 

@@ -1,0 +1,76 @@
+Peercoin (code: PPC), also known as PPCoin and Peer-to-Peer Coin is the first 
+cryptocurrency based on an implementation of a combined proof-of-stake 
+(PoS)/proof-of-work system (PoW).  Peercoin (PPC) was created by software 
+developer Sunny King (who also developed the cryptocurrency Primecoin) in 
+August 2012. Peercoin was inspired by Bitcoin, and it shares much of the 
+source code and technical implementation of Bitcoin. The Primecoin source code 
+is distributed under the MIT/X11 software license.
+As of 8 November 2013, one Peercoin had a value of approximately 0.59 USD, 
+making Peercoin the third largest cryptocurrency with a money supply valued at 
+12 million USD.
+
+
+== Transactions ==
+A peer-to-peer network handles Peercoin's transactions.
+
+
+=== Addresses ===
+Payments in the Peercoin network are made to addresses, which are based on 
+digital signatures. 
+
+
+=== Confirmations ===
+Transactions are recorded in the Peercoin blockchain.
+
+
+== Distinguishing features ==
+
+
+=== Proof-of-stake ===
+Peercoin's major distinguishing feature is that it uses 
+proof-of-stake/proof-of-work hybrid system. 
+The proof-of-stake system also has other effects (listed below).
+
+
+=== Proof-of-work ===
+SHA-256. For each 16x increase in the network, the PoW block reward is halved.
+
+
+=== Energy efficiency ===
+Peercoin's proof-of-stake system was developed to address the high energy 
+consumption of Bitcoin. 
+
+
+=== Steady inflation ===
+Peercoin is designed so that it will theoretically experience a steady 1% 
+"decentralized" inflation per year 
+(inflation for each user is proportional to the number of coins they have), 
+yielding an unlimited number of coins. 
+
+
+=== Deflationary aspect ===
+The Peercoin transaction fee is fixed at 0.01 PPC for every transaction; 
+however, the fee does not go to miner's income, but rather destroyed in order 
+to offset the inflation caused by the POS minting process.
+
+
+=== Transaction fees ===
+It is designed so that variable transaction fees are removed in favor of one 
+chosen by the network (currently 0.01 PPC). 
+
+
+== Money supply ==
+There are 20.5 million Peercoins in existence, as of October 1, 2013, with a 
+total value of $7.9 million USD.
+
+
+== Economics ==
+Peercoin operates according to a free price system. Prices are determined in a decentralized fashion by trades that occur as a result of sellers' asking prices matching buyers' bid prices as a result of subjective value judgement in a market economy.
+
+
+== Issues/controversies ==
+
+
+=== Centralized check pointing ===
+Peercoin is not truly a completely decentralized currency as it still requires 
+centralized check pointing to avoid several issues.
