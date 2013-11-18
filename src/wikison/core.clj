@@ -12,17 +12,24 @@
 ; (ring?) for inspiration on how to write better docstring.
 ; TODO: must support overriding user-agent header.
 
-; parsing functions.
+; This is a context-free grammar that parses a subset of the wiki creole 1.0
+; syntax. Used to break down our the article extracts into it's component while
+; keeping the hierarchy amongst sections and subsection.
 (def wiki-parser 
   (insta/parser
     "article  = epsilon
      article  = abstract (sep section)*
      abstract = line+
      sep      = #'\\n{2,2}'
-     section  = heading line* section*
-     heading  = '== ' name (' ' name)* ' ==' #'\\n'
+     section  = h1 line* (sep sub1)*
+     sub1     = h2 line* (sep sub2)*
+     sub2     = h3 line*  
+     h1       = '== ' title  ' ==' #'\\n'
+     h2       = '=== ' title ' ===' #'\\n'
+     h3       = '==== ' title ' ====' #'\\n'
+     title    =  name (' ' name)*
      name     = #'[a-zA-Z]+'
-     line     = #'[a-zA-Z \\.]+\\n'"))
+     line     = #'[a-zA-Z \\.]*\\n'"))
 
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"
@@ -125,4 +132,14 @@
     (let [articles (map raw-article-prop args)
           extracts (map :extract articles)]
       (println (string/join "\n\n\n*+*+*+*+*+*+*+*+*\n\n\n" extracts)))))
+
+(def simple-test-6 
+  (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-6.txt"))
+
+(def simple-test-7 
+  (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-7.txt"))
+
+(def simple-test-8
+  (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-8.txt"))
+
 

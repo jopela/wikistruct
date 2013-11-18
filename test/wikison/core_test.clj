@@ -77,6 +77,20 @@
           ou (wiki-parser in)] 
       (is (= ex ou)))))
 
+(deftest wiki-parse-simple-6
+  (testing "parsing of an article that contain an abstract and a section
+           title/heading having many words"
+    (let [in (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-6.txt")
+          ex [:article 
+              [:abstract 
+               [:line "Test abstract.\n"]]
+              [:sep "\n\n"]
+              [:section 
+               [:heading "== " [:name "Section"] " " [:name "title"] " ==" "\n"]
+               [:line "Title with many words.\n"]]]
+          ou (wiki-parser in)] 
+      (is (= ex ou)))))
+
 (deftest article-test
   (testing "json document represents the article"
     (let [in  "https://en.wikipedia.org/wiki/Whistler's_Mother"
