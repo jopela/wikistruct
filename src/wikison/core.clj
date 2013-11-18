@@ -16,9 +16,13 @@
 (def wiki-parser 
   (insta/parser
     "article  = epsilon
-     article  = abstract
+     article  = abstract (sep section)*
      abstract = line+
-     line     = #'[a-zA-Z \\.]*\\n'"))
+     sep      = #'\\n{2,2}'
+     section  = heading line* section*
+     heading  = '== ' name (' ' name)* ' ==' #'\\n'
+     name     = #'[a-zA-Z]+'
+     line     = #'[a-zA-Z \\.]+\\n'"))
 
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"

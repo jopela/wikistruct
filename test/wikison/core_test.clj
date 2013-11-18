@@ -55,6 +55,28 @@
           ou (wiki-parser in)] 
       (is (= ex ou)))))
 
+(deftest wiki-parse-ru-simple-1
+  (testing "parsing of an article that only contains an abstract with ru char"
+    (let [in (slurp "/root/dev/wikison/test/wikison/extracts/ru-simple-test-1.txt")
+          ex [:article 
+              [:abstract 
+               [:line "привет мир от русских коды символов!\n"]]]
+          ou (wiki-parser in)] 
+      (is (= ex ou)))))
+
+(deftest wiki-parse-simple-5
+  (testing "parsing of an article that contain an abstract and a section"
+    (let [in (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-5.txt")
+          ex [:article 
+              [:abstract 
+               [:line "This is the second simplest possible article. It will contain a section.\n"]]
+              [:sep "\n\n"]
+              [:section 
+               [:heading "== " [:name "Section"] " ==" "\n"]
+               [:line "Section text.\n"]]]
+          ou (wiki-parser in)] 
+      (is (= ex ou)))))
+
 (deftest article-test
   (testing "json document represents the article"
     (let [in  "https://en.wikipedia.org/wiki/Whistler's_Mother"

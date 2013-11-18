@@ -1,0 +1,5 @@
+This is the second simplest possible article. It will contain a section.
+
+
+== Section ==
+Section text.
