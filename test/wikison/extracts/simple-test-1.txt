@@ -1,0 +1,9 @@
+This is a simple wiki-like article.
+
+
+== Section1
+this is a section.
+
+
+== Section2
+this is another section.

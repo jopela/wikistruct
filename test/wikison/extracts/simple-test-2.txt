@@ -1,0 +1,29 @@
+This is a more complex test case wiki-like article. It contains some character
+that might be "difficult" to parse.
+
+
+== Section with many words in title ==
+this section contains some text and some subsections.
+
+
+=== Subsection
+This subsection can contains `many` subsections but we will stop it here.
+See the wiki creole syntax definition for more info.
+
+
+=== Money
+One of the most important thing in life is $$$. This bring me to the ultimate
+question of why oh why did I not buy the bitcoins i wanted to buy while
+they were at 200.0$ usd. Look at them now, I'm poor and they are worth 500.0$
+usd. 
+
+== A section can contain only subsection
+
+
+=== Super duper
+Energy efficiency. the big fat chick stunk and like beef and candy depression.
+I see her sick, maybe I'm embarassed.
+
+
+=== Lunch
+The zoo is all I believe in. I just want to do some soft algebra.
