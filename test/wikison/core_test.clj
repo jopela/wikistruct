@@ -46,12 +46,20 @@
               {:name "In music" :text "Whistler and particularly"}]
    })
 
+(deftest wiki-parse-simple-4
+  (testing "parsing of an article that only contains an abstract"
+    (let [in (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-4.txt")
+          ex [:article 
+              [:abstract 
+               [:line "This article only contains an abstract.\n"]]]
+          ou (wiki-parser in)] 
+      (is (= ex ou)))))
+
 (deftest article-test
   (testing "json document represents the article"
     (let [in  "https://en.wikipedia.org/wiki/Whistler's_Mother"
           ex  whistlers-mother 
           ou  (article in) ]
-      
       (is (= (ex :url) (ou :url)))
       (is (= (ex :title) (ou :title))))))
 

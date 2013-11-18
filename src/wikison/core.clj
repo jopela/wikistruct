@@ -4,12 +4,22 @@
             [clojure.tools.cli :as c]
             [clojure.string :as string]
             [clojure.set :as cset]
-            [clojure.data.json :as json])
+            [clojure.data.json :as json]
+            [instaparse.core :as insta])
   (:import (java.net URL URLEncoder URLDecoder)))
 
 ; TODO: docstring quality is overall poor. See high-ranking clojure projects
 ; (ring?) for inspiration on how to write better docstring.
 ; TODO: must support overriding user-agent header.
+
+; parsing functions.
+(def wiki-parser 
+  (insta/parser
+    "article  = epsilon
+     article  = abstract
+     abstract = line+
+     line     = #'[a-zA-Z \\.]*\\n'"))
+
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"
   [url]

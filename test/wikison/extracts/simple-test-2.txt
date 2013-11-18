@@ -17,7 +17,7 @@ question of why oh why did I not buy the bitcoins i wanted to buy while
 they were at 200.0$ usd. Look at them now, I'm poor and they are worth 500.0$
 usd. 
 
-== A section can contain only subsection
+== A section can contain only subsection and not text
 
 
 === Super duper
