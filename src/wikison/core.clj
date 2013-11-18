@@ -14,20 +14,23 @@
 
 ; This is a context-free grammar that parses a subset of the wiki creole 1.0
 ; syntax. Used to break down our the article extracts into it's component while
-; keeping the hierarchy amongst sections and subsection.
+; keeping the hierarchy amongst sections and subsection. Please refer
+; to the wonderful documentation of instaparse at:
+; https://github.com/Engelberg/instaparse for more information.
+
 (def wiki-parser 
   (insta/parser
     "article  = epsilon
      article  = abstract (sep section)*
      abstract = line+
-     sep      = #'\\n{2,2}'
+     <sep>    = <#'\\n{2,2}'>
      section  = h1 line* (sep sub1)*
      sub1     = h2 line* (sep sub2)*
      sub2     = h3 line*  
-     h1       = '== ' title  ' ==' #'\\n'
-     h2       = '=== ' title ' ===' #'\\n'
-     h3       = '==== ' title ' ====' #'\\n'
-     title    =  name (' ' name)*
+     h1       = <'== '> title  <' =='> <#'\\n'>
+     h2       = <'=== '> title <' ==='> <#'\\n'>
+     h3       = <'==== '> title <' ===='> <#'\\n'>
+     title    =  name (<' '> name)*
      name     = #'[a-zA-Z]+'
      line     = #'[a-zA-Z \\.]*\\n'"))
 
