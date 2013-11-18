@@ -11,6 +11,13 @@
 ; TODO: docstring quality is overall poor. See high-ranking clojure projects
 ; (ring?) for inspiration on how to write better docstring.
 ; TODO: must support overriding user-agent header.
+; TODO: must cache the media-wiki request .
+; TODO: must transform the parse tree into the dictionary expected as result.
+; TODO: must add unicode character support (I dont know why \p{L} will not 
+; match unicode in given text).
+; TODO: must implement robust test case for a wide variety of articles.
+; TODO: must add test case for article in all of these supported languages:
+; 
 
 ; This is a context-free grammar that parses a subset of the wiki creole 1.0
 ; syntax. Used to break down our the article extracts into it's component while
@@ -20,19 +27,19 @@
 
 (def wiki-parser 
   (insta/parser
-    "article  = epsilon
-     article  = abstract (sep section)*
-     abstract = line+
-     <sep>    = <#'\\n{2,2}'>
-     section  = h1 line* (sep sub1)*
-     sub1     = h2 line* (sep sub2)*
-     sub2     = h3 line*  
-     <h1>     = <'== '> title  <' =='> <#'\\n'>
-     <h2>     = <'=== '> title <' ==='> <#'\\n'>
-     <h3>     = <'==== '> title <' ===='> <#'\\n'>
-     title    =  name (<' '> name)*
-     <name>   = #'[a-zA-Z]+'
-     <line>   = #'[a-zA-Z \\.]*\\n'"))
+    "article      = epsilon
+     article      = abstract (sep section)*
+     abstract     = line+
+     <sep>        = <#'\\n{2,2}'>
+     section      = h1 line* (sep subsection1)*
+     subsection1  = h2 line* (sep subsection2)*
+     subsection2  = h3 line*  
+     <h1>         = <'== '> title  <' =='> <#'\\n'>
+     <h2>         = <'=== '> title <' ==='> <#'\\n'>
+     <h3>         = <'==== '> title <' ===='> <#'\\n'>
+     title        =  name (<' '> name)*
+     <name>       = #'[a-zA-Z]+'
+     <line>       = #'[a-zA-Z \\.]*' <#'\\n'>"))
 
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"
@@ -126,7 +133,10 @@
   [& args]
   (let [ [options args banner]
          (c/cli args
-             ["-h" "--help" "print this help banner and exit" :flag true]) ]
+             ["-h" "--help" "print this help banner and exit" :flag true]
+             ["-n" "--name" "the name that will be put in the request to the
+                            media wiki API (typically yours)"]
+             ["-e" "--email" "your email address"])]
 
     (when (options :help)
       (println banner)
@@ -144,5 +154,4 @@
 
 (def simple-test-8
   (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-8.txt"))
-
 
