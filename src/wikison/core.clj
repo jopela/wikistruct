@@ -27,12 +27,12 @@
      section  = h1 line* (sep sub1)*
      sub1     = h2 line* (sep sub2)*
      sub2     = h3 line*  
-     h1       = <'== '> title  <' =='> <#'\\n'>
-     h2       = <'=== '> title <' ==='> <#'\\n'>
-     h3       = <'==== '> title <' ===='> <#'\\n'>
+     <h1>     = <'== '> title  <' =='> <#'\\n'>
+     <h2>     = <'=== '> title <' ==='> <#'\\n'>
+     <h3>     = <'==== '> title <' ===='> <#'\\n'>
      title    =  name (<' '> name)*
-     name     = #'[a-zA-Z]+'
-     line     = #'[a-zA-Z \\.]*\\n'"))
+     <name>   = #'[a-zA-Z]+'
+     <line>   = #'[a-zA-Z \\.]*\\n'"))
 
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"
