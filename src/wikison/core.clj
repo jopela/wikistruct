@@ -18,7 +18,6 @@
 ; match unicode in given text).
 ; TODO: must implement robust test case for a wide variety of articles.
 ; TODO: must add test case for article in all of these supported languages:
-; 
 
 ; This is a context-free grammar that parses a subset of the wiki creole 1.0
 ; syntax. Used to break down our the article extracts into it's component while
@@ -26,25 +25,29 @@
 ; to the wonderful documentation of instaparse at:
 ; https://github.com/Engelberg/instaparse for more information.
 
+; this grammar refuses to parse the '' article? why?
 (def wiki-parser 
   (insta/parser
-    "article      = epsilon
-     article      = abstract (sep section)*
-     abstract     = line+
-     <sep>        = <#'\\n{2,2}'>
-     section      = h1 text (sep subsection1)*
-     subsection1  = h2 text (sep subsection2)*
-     subsection2  = h3 text  
-     <h1>         = <'== '> title  <' =='> <#'\\n'>
-     <h2>         = <'=== '> title <' ==='> <#'\\n'>
-     <h3>         = <'==== '> title <' ===='> <#'\\n'>
-     title        =  name (<' '> name)*
-     <name>       = #'[a-zA-Z]+'
-     text         = line*
-     <line>       = #'[a-zA-Z \\.]*' <#'\\n'>
-    
-    
-    "))
+    "article        = ''
+     article        = abstract sections
+     sections       = (sep section)*
+     abstract       = line+
+     <sep>          = <#'\\n{2,2}'>
+     section        = header1 subsections1
+     subsection1    = header2 subsections2
+     subsection2    = header3  
+     header1        = h1 text
+     header2        = h2 text
+     header3        = h3 text
+     subsections1   = (sep subsection1)*
+     subsections2   = (sep subsection2)*
+     <h1>           = <'== '> title  <' =='> <#'\\n'>
+     <h2>           = <'=== '> title <' ==='> <#'\\n'>
+     <h3>           = <'==== '> title <' ===='> <#'\\n'>
+     title          =  name (<' '> name)*
+     <name>         = #'[a-zA-Z]+'
+     text           = line*
+     <line>         = #'[a-zA-Z \\.]*' <#'\\n'>"))
 
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"
@@ -114,14 +117,15 @@
   [raw]
   {:depiction (-> raw :thumbnail :source)})
 
-(defn merge-symbols
+(defn concat-symbols
   "apply a merging function using delim to keyword k within the parse tree
   result given by wiki-parser."
   [delim k & args]
     {k (string/join delim args)})
 
-(def abstract-merger (partial merge-symbols "" :abstract))
-(def text-merger (partial merge-symbols "\n" :text))
+(def abstract-merger (partial concat-symbols"\n" :abstract))
+(def text-merger (partial concat-symbols"\n" :text))
+(def title-merger (partial concat-symbols" " :title))
 
 ; TODO: this implementation is not yet completed.
 (defn text-extract
@@ -162,6 +166,7 @@
           extracts (map :extract articles)]
       (println (string/join "\n\n\n*+*+*+*+*+*+*+*+*\n\n\n" extracts)))))
 
+; for quick testing/prototyping in the repl
 (def simple-test-6 
   (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-6.txt"))
 
@@ -171,8 +176,15 @@
 (def simple-test-8
   (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-8.txt"))
 
-(def tree (wiki-parser simple-test-8))
+(def null-test "")
 
-(def super-tree (insta/transform {:abstract abstract-merger }
+(def tree (wiki-parser simple-test-8))
+(def null-tree (wiki-parser null-test))
+
+(def super-tree (insta/transform {:abstract abstract-merger :text text-merger
+                                  :title title-merger
+                                  :header1 merge
+                                  :header2 merge
+                                  :header3 merge}
                                  tree))
 
