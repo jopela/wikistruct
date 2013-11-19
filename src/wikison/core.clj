@@ -13,6 +13,7 @@
 ; TODO: must support overriding user-agent header.
 ; TODO: must cache the media-wiki request .
 ; TODO: must transform the parse tree into the dictionary expected as result.
+; (IN PROGRESS)
 ; TODO: must add unicode character support (I dont know why \p{L} will not 
 ; match unicode in given text).
 ; TODO: must implement robust test case for a wide variety of articles.
@@ -31,15 +32,19 @@
      article      = abstract (sep section)*
      abstract     = line+
      <sep>        = <#'\\n{2,2}'>
-     section      = h1 line* (sep subsection1)*
-     subsection1  = h2 line* (sep subsection2)*
-     subsection2  = h3 line*  
+     section      = h1 text (sep subsection1)*
+     subsection1  = h2 text (sep subsection2)*
+     subsection2  = h3 text  
      <h1>         = <'== '> title  <' =='> <#'\\n'>
      <h2>         = <'=== '> title <' ==='> <#'\\n'>
      <h3>         = <'==== '> title <' ===='> <#'\\n'>
      title        =  name (<' '> name)*
      <name>       = #'[a-zA-Z]+'
-     <line>       = #'[a-zA-Z \\.]*' <#'\\n'>"))
+     text         = line*
+     <line>       = #'[a-zA-Z \\.]*' <#'\\n'>
+    
+    
+    "))
 
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"
@@ -109,14 +114,25 @@
   [raw]
   {:depiction (-> raw :thumbnail :source)})
 
-(defn sections-extract
+(defn merge-symbols
+  "apply a merging function using delim to keyword k within the parse tree
+  result given by wiki-parser."
+  [delim k & args]
+    {k (string/join delim args)})
+
+(def abstract-merger (partial merge-symbols "" :abstract))
+(def text-merger (partial merge-symbols "\n" :text))
+
+; TODO: this implementation is not yet completed.
+(defn text-extract
   ; this is not clear.
-  "extract the sections from the raw-article-prop result. Does so
+  "extract the abstract and sections from the raw-article-prop result. Does so
   by creating maps for section content and preserves hierarchy of original
   article."
   [raw]
-  (let [text (raw :extract)]
-    text))
+  (let [text (raw :extract)
+        parsed-tree (wiki-parser text)]
+    (select-keys parsed-tree [:abstract :sections])))
 
 (defn article 
   "return a json document built from the given url"
@@ -154,4 +170,9 @@
 
 (def simple-test-8
   (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-8.txt"))
+
+(def tree (wiki-parser simple-test-8))
+
+(def super-tree (insta/transform {:abstract abstract-merger }
+                                 tree))
 

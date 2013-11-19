@@ -40,10 +40,10 @@
    :depiction   "https://upload.wikimedia.org/wikipedia/commons/1/1b/Whistlers_Mother_high_res.jpg"
    :lang        "en"
    :other-langs ["da" "de" "es" "et" "fa" "fr" "he" "la" "nl" "pl"]
-   :sections [{:name "History" :text "Anna McNeill Whistler ..." } 
-              {:name "Appearances in American museums" :text "Whistler's Mother occasionally appears" }
-              {:name "In popular culture" :text "The painting has been"}
-              {:name "In music" :text "Whistler and particularly"}]
+   :sections [{:title "History" :text "Anna McNeill Whistler ..." } 
+              {:title "Appearances in American museums" :text "Whistler's Mother occasionally appears" }
+              {:title "In popular culture" :text "The painting has been"}
+              {:title "In music" :text "Whistler and particularly"}]
    })
 
 (deftest wiki-parse-simple-4
