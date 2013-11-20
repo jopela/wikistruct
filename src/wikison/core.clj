@@ -28,26 +28,24 @@
 ; this grammar refuses to parse the '' article? why?
 (def wiki-parser 
   (insta/parser
-    "article        = ''
-     article        = abstract sections
-     sections       = (sep section)*
-     abstract       = line+
-     <sep>          = <#'\\n{2,2}'>
-     section        = header1 subsections1
-     subsection1    = header2 subsections2
-     subsection2    = header3  
-     header1        = h1 text
-     header2        = h2 text
-     header3        = h3 text
-     subsections1   = (sep subsection1)*
-     subsections2   = (sep subsection2)*
-     <h1>           = <'== '> title  <' =='> <#'\\n'>
-     <h2>           = <'=== '> title <' ==='> <#'\\n'>
-     <h3>           = <'==== '> title <' ===='> <#'\\n'>
-     title          =  name (<' '> name)*
-     <name>         = #'[a-zA-Z]+'
-     text           = line*
-     <line>         = #'[a-zA-Z \\.]*' <#'\\n'>"))
+    "
+    article  = (abstract |abstract section+)
+    text     = #'[a-zA-Z0-9 \\.\\n]+'
+    title    = #'[a-zA-Z0-9 \\.\\n]+'
+    abstract = #'[a-zA-Z0-9 \\.\\n]+'
+    section  = (h1|h1 text|h1 text sub1+|h1 sub1+)
+    sub1     = (h2|h2 text|h2 text sub2+|h2 sub2+)
+    sub2     = (h3|h3 text|h3 text sub3+|h4 sub3+)
+    sub3     = (h4|h4 text|h4 text sub4+|h4 sub4+)
+    sub4     = (h5|h5 text|h5 text sub5+|h5 sub5+)
+    sub5     = (h6|h6 text)
+    <h1>     = <'=='> title <'=='> <#'\\n'>
+    <h2>     = <'==='> title <'==='> <#'\\n'> 
+    <h3>     = <'===='> title <'===='> <#'\\n'> 
+    <h4>     = <'====='> title <'====='> <#'\\n'> 
+    <h5>     = <'======'> title <'======'> <#'\\n'> 
+    <h6>     = <'======='> title <'======'> <#'\\n'> 
+    "))
 
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"
@@ -167,24 +165,8 @@
       (println (string/join "\n\n\n*+*+*+*+*+*+*+*+*\n\n\n" extracts)))))
 
 ; for quick testing/prototyping in the repl
-(def simple-test-6 
-  (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-6.txt"))
+(def simple-test-10
+  (slurp "./test/wikison/extracts/simple-test-10.txt"))
 
-(def simple-test-7 
-  (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-7.txt"))
-
-(def simple-test-8
-  (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-8.txt"))
-
-(def null-test "")
-
-(def tree (wiki-parser simple-test-8))
-(def null-tree (wiki-parser null-test))
-
-(def super-tree (insta/transform {:abstract abstract-merger :text text-merger
-                                  :title title-merger
-                                  :header1 merge
-                                  :header2 merge
-                                  :header3 merge}
-                                 tree))
+(def tree (wiki-parser simple-test-10))
 
