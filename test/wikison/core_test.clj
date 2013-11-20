@@ -46,51 +46,34 @@
               {:title "In music" :text "Whistler and particularly"}]
    })
 
-(deftest wiki-parse-simple-4
-  (testing "parsing of an article that only contains an abstract"
-    (let [in (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-4.txt")
-          ex [:article 
-              [:abstract 
-               [:line "This article only contains an abstract.\n"]]]
-          ou (wiki-parser in)] 
+
+; test-extract tests.
+(deftest parser-simple-1
+  (testing "extract containing only an abstract"
+    (let [in (wiki-parser (slurp "./test/wikison/extracts/simple-test-1.txt"))
+          ex {:abstract "Abstract only article.\n"}
+          ou (text-eval in)]
       (is (= ex ou)))))
 
-(deftest wiki-parse-ru-simple-1
-  (testing "parsing of an article that only contains an abstract with ru char"
-    (let [in (slurp "/root/dev/wikison/test/wikison/extracts/ru-simple-test-1.txt")
-          ex [:article 
-              [:abstract 
-               [:line "привет мир от русских коды символов!\n"]]]
-          ou (wiki-parser in)] 
+(deftest parser-simple-2
+  (testing "abstract + some sections"
+    (let [in (wiki-parser (slurp "./test/wikison/extracts/simple-test-2.txt"))
+          ex {:abstract "Article with a single section."
+              :sections [{:title " Single Section " :text "text.\n"}]}
+          ou (text-eval in)]
       (is (= ex ou)))))
 
-(deftest wiki-parse-simple-5
-  (testing "parsing of an article that contain an abstract and a section"
-    (let [in (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-5.txt")
-          ex [:article 
-              [:abstract 
-               [:line "This is the second simplest possible article. It will contain a section.\n"]]
-              [:sep "\n\n"]
-              [:section 
-               [:heading "== " [:name "Section"] " ==" "\n"]
-               [:line "Section text.\n"]]]
-          ou (wiki-parser in)] 
+(deftest parser-simple-3
+  (testing "several sections"
+    (let [in (wiki-parser (slurp "./test/wikison/extracts/simple-test-3.txt"))
+          ex {:abstract "Article with multiple sections.\n"
+              :sections [ {:title " Section 1 " :text "text 1.\n"}
+                         {:title " Section 2 " :text "text 2.\n"}
+                         {:title " Section 3 " :text "text 3.\n"}]}
+          ou (text-eval in)]
       (is (= ex ou)))))
 
-(deftest wiki-parse-simple-6
-  (testing "parsing of an article that contain an abstract and a section
-           title/heading having many words"
-    (let [in (slurp "/root/dev/wikison/test/wikison/extracts/simple-test-6.txt")
-          ex [:article 
-              [:abstract 
-               [:line "Test abstract.\n"]]
-              [:sep "\n\n"]
-              [:section 
-               [:heading "== " [:name "Section"] " " [:name "title"] " ==" "\n"]
-               [:line "Title with many words.\n"]]]
-          ou (wiki-parser in)] 
-      (is (= ex ou)))))
-
+; other function
 (deftest article-test
   (testing "json document represents the article"
     (let [in  "https://en.wikipedia.org/wiki/Whistler's_Mother"
@@ -115,7 +98,7 @@
 
 (deftest simple-prop-extract-test
   (testing "simple property extraction from request result on MediaWiki API"
-    (let [ex (select-keys whistlers-mother [:url :title :pageid :lang]);{:url "https://en.wikipedia.org/wiki/Whistler%27s_Mother" :title "Whistler's Mother" :pageid 225516 :lang "en"}
+    (let [ex (select-keys whistlers-mother [:url :title :pageid :lang])
           ou (simple-prop-extract api-result)]
       (is (= ex ou)))))
 

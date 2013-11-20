@@ -29,23 +29,28 @@
 (def wiki-parser 
   (insta/parser
     "
-    article  = (abstract |abstract section+)
+    article  = (abstract |abstract sections)
     text     = #'[a-zA-Z0-9 \\.\\n]+'
     title    = #'[a-zA-Z0-9 \\.\\n]+'
     abstract = #'[a-zA-Z0-9 \\.\\n]+'
-    section  = (h1|h1 text|h1 text sub1+|h1 sub1+)
-    sub1     = (h2|h2 text|h2 text sub2+|h2 sub2+)
-    sub2     = (h3|h3 text|h3 text sub3+|h4 sub3+)
-    sub3     = (h4|h4 text|h4 text sub4+|h4 sub4+)
-    sub4     = (h5|h5 text|h5 text sub5+|h5 sub5+)
+    sections = section+
+    section  = (h1|h1 text|h1 text subs1|h1 subs1)
+    sub1     = (h2|h2 text|h2 text subs2|h2 subs2)
+    sub2     = (h3|h3 text|h3 text subs3|h3 subs3)
+    sub3     = (h4|h4 text|h4 text subs4|h4 subs4)
+    sub4     = (h5|h5 text|h5 text subs5|h5 subs5)
     sub5     = (h6|h6 text)
+    subs1    = sub1+
+    subs2    = sub2+
+    subs3    = sub3+
+    subs4    = sub4+
+    subs5    = sub5+
     <h1>     = <'=='> title <'=='> <#'\\n'>
     <h2>     = <'==='> title <'==='> <#'\\n'> 
     <h3>     = <'===='> title <'===='> <#'\\n'> 
     <h4>     = <'====='> title <'====='> <#'\\n'> 
     <h5>     = <'======'> title <'======'> <#'\\n'> 
-    <h6>     = <'======='> title <'======'> <#'\\n'> 
-    "))
+    <h6>     = <'======='> title <'======'> <#'\\n'>"))
 
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"
@@ -97,7 +102,7 @@
 
 (defn simple-prop-extract
   "Extract the simple properties (ones that directly map to a property in the
-  json result) from the raw-article-prop result " 
+  json result) from the raw-article-prop result" 
   [raw]
   (let [new-raw (cset/rename-keys raw
                                   {:fullurl :url
@@ -105,36 +110,47 @@
     (select-keys new-raw [:url :title :pageid :lang])))
 
 (defn languages-extract
-  "extract the languages from the raw-article-prop result "
+  "extract the languages from the raw-article-prop result"
   [raw]
   (let [raw-languages (raw :langlinks)]
     {:other-langs (vec (map :lang raw-languages))}))
 
 (defn thumbnail-extract
-  "extract the thumbnail from the raw-article-prop result "
+  "extract the thumbnail from the raw-article-prop result"
   [raw]
   {:depiction (-> raw :thumbnail :source)})
 
-(defn concat-symbols
-  "apply a merging function using delim to keyword k within the parse tree
-  result given by wiki-parser."
-  [delim k & args]
-    {k (string/join delim args)})
+(defn text-eval 
+  "evaluates the article syntax tree, which generates the text properties for
+  a wiki article."
+  [syntax-tree]
+  (letfn [ (title [s] {:title s})
+           (text  [s] {:text  s})
+           (abstract [s] {:abstract s})
+           (sections [& args] {:sections (vec args)}) ]
+    (insta/transform {:title title
+                      :sub1  merge
+                      :sub2  merge
+                      :sub3  merge
+                      :sub4  merge
+                      :sub5  merge
+                      :section merge
+                      :sections  sections
+                      :subs1 sections
+                      :subs2 sections
+                      :subs3 sections
+                      :subs4 sections
+                      :subs5 sections
+                      :abstract abstract
+                      :article merge}
+                     syntax-tree)))
 
-(def abstract-merger (partial concat-symbols"\n" :abstract))
-(def text-merger (partial concat-symbols"\n" :text))
-(def title-merger (partial concat-symbols" " :title))
-
-; TODO: this implementation is not yet completed.
 (defn text-extract
-  ; this is not clear.
-  "extract the abstract and sections from the raw-article-prop result. Does so
-  by creating maps for section content and preserves hierarchy of original
-  article."
+  "transform the wiki-creole text into a hash-map"
   [raw]
-  (let [text (raw :extract)
-        parsed-tree (wiki-parser text)]
-    (select-keys parsed-tree [:abstract :sections])))
+  (let [wiki-creole (raw :extract)
+        parse-tree (wiki-parser wiki-creole)]
+    (text-eval parse-tree)))
 
 (defn article 
   "return a json document built from the given url"
@@ -164,9 +180,10 @@
           extracts (map :extract articles)]
       (println (string/join "\n\n\n*+*+*+*+*+*+*+*+*\n\n\n" extracts)))))
 
-; for quick testing/prototyping in the repl
-(def simple-test-10
-  (slurp "./test/wikison/extracts/simple-test-10.txt"))
+(def simple-test-1
+  (slurp "./test/wikison/extracts/simple-test-1.txt"))
+(def tree-1 (wiki-parser simple-test-1))
 
-(def tree (wiki-parser simple-test-10))
-
+(def simple-test-2
+  (slurp "./test/wikison/extracts/simple-test-2.txt"))
+(def tree-2 (wiki-parser simple-test-2))
