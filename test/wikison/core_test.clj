@@ -58,7 +58,7 @@
 (deftest parser-simple-2
   (testing "abstract + some sections"
     (let [in (wiki-parser (slurp "./test/wikison/extracts/simple-test-2.txt"))
-          ex {:abstract "Article with a single section."
+          ex {:abstract "Article with a single section.\n"
               :sections [{:title " Single Section " :text "text.\n"}]}
           ou (text-eval in)]
       (is (= ex ou)))))
@@ -67,9 +67,47 @@
   (testing "several sections"
     (let [in (wiki-parser (slurp "./test/wikison/extracts/simple-test-3.txt"))
           ex {:abstract "Article with multiple sections.\n"
-              :sections [ {:title " Section 1 " :text "text 1.\n"}
+              :sections [{:title " Section 1 " :text "text 1.\n"}
                          {:title " Section 2 " :text "text 2.\n"}
                          {:title " Section 3 " :text "text 3.\n"}]}
+          ou (text-eval in)]
+      (is (= ex ou)))))
+
+(deftest parser-simple-4
+  (testing "Section with subsections"
+    (let [in (wiki-parser (slurp "./test/wikison/extracts/simple-test-4.txt"))
+          ex {:abstract "Article with subsection.\n\n"
+              :sections [{:title " Section 1 " 
+                          :text "will contain a sub.\n\n"
+                          :sections [{:text "Text.\n"
+                                      :title " Subsection 1 "}]}]}
+          ou (text-eval in)]
+      (is (= ex ou)))))
+
+; is that unreadable or what?
+(deftest parser-simple-5
+  (testing "All levels of indentation"
+    (let [in (wiki-parser (slurp "./test/wikison/extracts/simple-test-5.txt"))
+          ex {:abstract "All levels.\n\n"
+              :sections [{:title " S1 "
+                          :sections 
+                          [{:title " SS1 "
+                                      :sections 
+                            [{:title " SSS1 "
+                                                  :sections 
+                              [{:title " SSSS1 "
+                                                              
+                                :sections [{:title " SSSSS1 "
+                                                                          
+                                            :sections [{:title 
+                                                      " SSSSSS1 "}]}]}]}]}]}]} 
+          ou (text-eval in)]
+      (is (= ex ou)))))
+
+(deftest parser-ru-simple-1
+  (testing "abstract only with russian char"
+    (let [in (wiki-parser (slurp "./test/wikison/extracts/ru-simple-test-1.txt"))
+          ex {:abstract "привет мир от русских коды символов!\n"}
           ou (text-eval in)]
       (is (= ex ou)))))
 

@@ -5,7 +5,9 @@
             [clojure.string :as string]
             [clojure.set :as cset]
             [clojure.data.json :as json]
-            [instaparse.core :as insta])
+            [instaparse.core :as insta]
+            [clojure.java.io :as io]
+            [clojure.pprint :as p])
   (:import (java.net URL URLEncoder URLDecoder)))
 
 ; TODO: docstring quality is overall poor. See high-ranking clojure projects
@@ -27,30 +29,7 @@
 
 ; this grammar refuses to parse the '' article? why?
 (def wiki-parser 
-  (insta/parser
-    "
-    article  = (abstract |abstract sections)
-    text     = #'[a-zA-Z0-9 \\.\\n]+'
-    title    = #'[a-zA-Z0-9 \\.\\n]+'
-    abstract = #'[a-zA-Z0-9 \\.\\n]+'
-    sections = section+
-    section  = (h1|h1 text|h1 text subs1|h1 subs1)
-    sub1     = (h2|h2 text|h2 text subs2|h2 subs2)
-    sub2     = (h3|h3 text|h3 text subs3|h3 subs3)
-    sub3     = (h4|h4 text|h4 text subs4|h4 subs4)
-    sub4     = (h5|h5 text|h5 text subs5|h5 subs5)
-    sub5     = (h6|h6 text)
-    subs1    = sub1+
-    subs2    = sub2+
-    subs3    = sub3+
-    subs4    = sub4+
-    subs5    = sub5+
-    <h1>     = <'=='> title <'=='> <#'\\n'>
-    <h2>     = <'==='> title <'==='> <#'\\n'> 
-    <h3>     = <'===='> title <'===='> <#'\\n'> 
-    <h4>     = <'====='> title <'====='> <#'\\n'> 
-    <h5>     = <'======'> title <'======'> <#'\\n'> 
-    <h6>     = <'======='> title <'======'> <#'\\n'>"))
+  (insta/parser "./resources/grammar.txt"))
 
 (defn api-url
   "return a (media)wiki api url based on the url given as argument"
@@ -158,8 +137,9 @@
   (let [raw-result (raw-article-prop url)
         simple (simple-prop-extract raw-result)
         lang (languages-extract raw-result)
-        thumb (thumbnail-extract raw-result) ]
-    (apply merge [simple lang thumb])))
+        thumb (thumbnail-extract raw-result) 
+        text  (text-extract raw-result)]
+    (apply merge [simple lang thumb text])))
 
 ; Main entry point
 (defn -main
@@ -176,9 +156,9 @@
       (println banner)
       (System/exit 0))
     
-    (let [articles (map raw-article-prop args)
-          extracts (map :extract articles)]
-      (println (string/join "\n\n\n*+*+*+*+*+*+*+*+*\n\n\n" extracts)))))
+    (let [articles (map article args) ]
+      (doseq [art articles]
+        (p/pprint art)))))
 
 (def simple-test-1
   (slurp "./test/wikison/extracts/simple-test-1.txt"))
@@ -187,3 +167,7 @@
 (def simple-test-2
   (slurp "./test/wikison/extracts/simple-test-2.txt"))
 (def tree-2 (wiki-parser simple-test-2))
+
+(def russian-1
+  (slurp "./test/wikison/extracts/ru-test-1.txt"))
+(def ru-tree-1 (wiki-parser russian-1))

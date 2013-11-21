@@ -1,0 +1,22 @@
+article  = (abstract |abstract sections)
+text     = #"[^=]+"
+title    = #"[^=]+"
+abstract = #"[^=]+"
+sections = section+
+section  = (h1|h1 text|h1 text subs1|h1 subs1)
+sub1     = (h2|h2 text|h2 text subs2|h2 subs2)
+sub2     = (h3|h3 text|h3 text subs3|h3 subs3)
+sub3     = (h4|h4 text|h4 text subs4|h4 subs4)
+sub4     = (h5|h5 text|h5 text subs5|h5 subs5)
+sub5     = (h6|h6 text)
+subs1    = sub1+
+subs2    = sub2+
+subs3    = sub3+
+subs4    = sub4+
+subs5    = sub5+
+<h1>     = <'=='> title <'=='> <#"\n">
+<h2>     = <'==='> title <'==='> <#"\n"> 
+<h3>     = <'===='> title <'===='> <#"\n"> 
+<h4>     = <'====='> title <'====='> <#"\n"> 
+<h5>     = <'======'> title <'======'> <#"\n"> 
+<h6>     = <'======='> title <'======='> <#"\n">

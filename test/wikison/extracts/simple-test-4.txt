@@ -1,1 +1,7 @@
 Article with subsection.
+
+== Section 1 ==
+will contain a sub.
+
+=== Subsection 1 ===
+Text.
