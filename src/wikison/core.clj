@@ -108,8 +108,8 @@
   a wiki article."
   [syntax-tree]
   (letfn [ (title [s] {:title s})
-           (text  [s] {:text  s})
-           (abstract [s] {:abstract s})
+           (text  [& s] {:text  (apply str s)})
+           (abstract [& s] {:abstract (apply str s)})
            (sections [& args] {:sections (vec args)}) ]
     (insta/transform {:title title
                       :sub1  merge
@@ -125,6 +125,8 @@
                       :subs4 sections
                       :subs5 sections
                       :abstract abstract
+                      :sentence str
+                      :text text
                       :article merge}
                      syntax-tree)))
 
@@ -164,14 +166,7 @@
       (doseq [art articles]
         (p/pprint art)))))
 
-(def simple-test-1
-  (slurp "./test/wikison/extracts/simple-test-1.txt"))
-(def tree-1 (wiki-parser simple-test-1))
+(def edge-case
+  (slurp "./test/wikison/extracts/edge-test-1.txt"))
+(def tree-1 (wiki-parser edge-case))
 
-(def simple-test-2
-  (slurp "./test/wikison/extracts/simple-test-2.txt"))
-(def tree-2 (wiki-parser simple-test-2))
-
-(def russian-1
-  (slurp "./test/wikison/extracts/ru-test-1.txt"))
-(def ru-tree-1 (wiki-parser russian-1))

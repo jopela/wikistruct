@@ -111,6 +111,15 @@
           ou (text-eval in)]
       (is (= ex ou)))))
 
+; tougher test case.
+(deftest edge-test-1
+  (testing "Abstract that contain code that is section-like (e.g: 1 == 1)"
+    (let [in (wiki-parser (slurp "./test/wikison/extracts/edge-test-1.txt"))
+          ex {:abstract "Complex\n" 
+              :sections [{:title " S1 " :text "in C : 1 == 1, in clojure (= 1 1).\n"}]}
+          ou (text-eval in)]
+      (is (= ex ou)))))
+
 ; other function
 (deftest article-test
   (testing "json document represents the article"

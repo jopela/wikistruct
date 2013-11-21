@@ -1,7 +1,8 @@
-article  = (abstract |abstract sections)
-text     = #"[^=]+"
+article  = (abstract|abstract sections)
+text     = sentence+
 title    = #"[^=]+"
-abstract = #"[^=]+"
+abstract = sentence+
+sentence = (#"^[^=\n].*\n" | #"\n")
 sections = section+
 section  = (h1|h1 text|h1 text subs1|h1 subs1)
 sub1     = (h2|h2 text|h2 text subs2|h2 subs2)
@@ -14,9 +15,9 @@ subs2    = sub2+
 subs3    = sub3+
 subs4    = sub4+
 subs5    = sub5+
-<h1>     = <'=='> title <'=='> <#"\n">
-<h2>     = <'==='> title <'==='> <#"\n"> 
-<h3>     = <'===='> title <'===='> <#"\n"> 
-<h4>     = <'====='> title <'====='> <#"\n"> 
-<h5>     = <'======'> title <'======'> <#"\n"> 
-<h6>     = <'======='> title <'======='> <#"\n">
+<h1>     = <#"^"> <'=='> title <#".*\n">
+<h2>     = <#"^"> <'==='> title <#".*\n"> 
+<h3>     = <#"^"> <'===='> title <#".*\n"> 
+<h4>     = <#"^"> <'====='> title <#".*\n"> 
+<h5>     = <#"^"> <'======'> title <#".*\n"> 
+<h6>     = <#"^"> <'======='> title <#".*\n"> 
