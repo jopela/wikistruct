@@ -1,9 +1,0 @@
-Section and subsections.
-
-
-== Section ==
-contains a subsection.
-
-
-=== Subsection ===
-Subtext.

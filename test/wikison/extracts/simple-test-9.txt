@@ -1,2 +1,0 @@
-This should contain the last of the simple text. Many lines in sections,
-new characters like (?,!,#,$,%,^,&,* etc.) an 
