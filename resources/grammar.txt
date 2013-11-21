@@ -2,7 +2,7 @@ article  = (abstract|abstract sections)
 text     = sentence+
 title    = #"[^=]+"
 abstract = sentence+
-sentence = (#"^[^=\n].*\n" | #"\n")
+sentence = (#"^[^=\n].*\n"|#"\n")
 sections = section+
 section  = (h1|h1 text|h1 text subs1|h1 subs1)
 sub1     = (h2|h2 text|h2 text subs2|h2 subs2)

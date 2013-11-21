@@ -133,7 +133,9 @@
 (defn text-extract
   "transform the wiki-creole text into a hash-map"
   [raw]
-  (let [wiki-creole (raw :extract)
+  ; appending a newline to the raw text is a workaround for an issue i cannot
+  ; yet fix. it allows the use of the current grammar which is non-ambiguous.
+  (let [wiki-creole (str (raw :extract) "\n")
         parse-tree (wiki-parser wiki-creole)]
     (text-eval parse-tree)))
 
