@@ -1,6 +1,6 @@
-# Wikison 
+# Wikison 0.1
 
-Get json articles from any (Media)Wiki project.
+Query the vast amount of knowledge stored in (Media)Wiki backed project.
 
 ## Features
 
@@ -17,18 +17,40 @@ takes a list of wiki url as input and print the json documents on stdout.
 
 ## Quickstart
 
-### leiningen 
 Add the following line to your leiningen dependencies:
+
+    [wikison "0.1.1"]
+
+and require the library in your project like so:
+
+    (ns myproject.core
+      (:require [wikison.core :as 
+
+### Using as a standalone .jar
 
 ## Upcoming features
 
+In the future, there are plans for adding the following features to Wikison.
+
++ Adding the links to other wiki pages in the result json document (usefull for 
+crawling mediawiki).
++ Adding the links to images in the result json document.
++ Adding support for returning semantic content stored in infoboxes.
++ Better support for gracefull failure when url does not exist, when network
+down etc.
+
 ## You can help Wikison development
 Help the continued support and enhancement of Wikison by:
+...
+
+## Special Note
+This is a first clojure project for me and therefore some code construct
+may not feel as idiomatic as they could be to more seasonned 
 
 ## Special mentions
 Wikison was built using the awesome 
 [Instaparse](https://github.com/Engelberg/instaparse) parser generator. 
-Check it out at https://github.com/Engelberg/instaparse
+Check it out at https://github.com/Engelberg/instaparse.
 
 ## Known issues
 There is a temporary work-around implemented by adding a single "\n" to the 
