@@ -1,6 +1,6 @@
 article  = (abstract|abstract sections)
 text     = sentence+
-title    = #"[^=]+"
+title    = #"[^=\n]+"
 abstract = sentence+
 sentence = (#"^[^=\n].*\n"|#"\n")
 sections = section+
