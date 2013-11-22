@@ -43,25 +43,25 @@
 
 (defn mediawiki-req
   "Fowards a request to the (media)wiki api"
-  [url params]
-  ; TODO: put the very frequently used, rarely overridden params here
+  [user-agent url params]
   (let [req-url (api-url url)
         req-params (merge {"format" "json"
                            "action" "query"
                            "ppprop" "disambiguation"} params)
         req-format (-> "format" req-params  keyword )
         resp-dic   (-> (client/get req-url {:query-params req-params
-                                            :as req-format})
+                                            :as req-format
+                                            :headers 
+                                            {"User-Agent" user-agent}})
                        :body
                        :query
                        :pages)]
     (-> resp-dic keys first resp-dic)))
 
 (defn raw-article
-
   "retrieve article properties that will go into the json article. This is
   the raw result from the wiki api"
-  [url]
+  [user-agent url]
   (let [title  (article-title url)
         params {"titles" title
                 "inprop" "url"
@@ -71,7 +71,7 @@
                 "pithumbsize" 9999
                 "lllimit" 150
                 }]
-    (mediawiki-req url params)))
+    (mediawiki-req user-agent url params)))
 
 (defn simple-prop-extract
   "Extract the simple properties (ones that directly map to a property in the
@@ -134,8 +134,8 @@
 
 (defn article 
   "return a json document built from the given url"
-  [url]
-  (let [raw-result (raw-article url)
+  [user-agent url]
+  (let [raw-result (raw-article user-agent url)
         simple (simple-prop-extract raw-result)
         lang (languages-extract raw-result)
         thumb (thumbnail-extract raw-result) 
@@ -151,17 +151,18 @@
              ["-h" "--help" "print this help banner and exit" :flag true]
              ["-n" "--name" "the name that will be put in the request to the
                             media wiki API (typically yours)"]
-             ["-e" "--email" "your email address"])]
+             ["-u" "--user" "user-agent heder. Should include your mail"])]
 
     (when (options :help)
       (println banner)
       (System/exit 0))
     
-    (let [articles (map article args) ]
+    (when-not (options :user)
+      (println "User agent is required! See --help for details")
+      (System/exit 1))
+
+    (let [user-agent (:user options)
+          articles (map (partial article user-agent) args) ]
       (doseq [art articles]
         (p/pprint art)))))
-
-(def edge-case
-  (slurp "./test/wikison/extracts/edge-test-1.txt"))
-(def tree-1 (wiki-parser edge-case))
 

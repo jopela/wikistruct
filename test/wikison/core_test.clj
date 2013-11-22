@@ -186,7 +186,7 @@
   (testing "json document represents the article"
     (let [in  "https://en.wikipedia.org/wiki/Whistler's_Mother"
           ex  whistlers-mother 
-          ou  (article in) ]
+          ou  (article "wikison-test-suit (pelletier@mtrip.com)" in) ]
       (is (= (ex :url) (ou :url)))
       (is (= (ex :title) (ou :title))))))
 
