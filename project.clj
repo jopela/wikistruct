@@ -1,5 +1,5 @@
 (defproject wikison "0.1.0-alpha"
-  :description "FIXME: write description"
+  :description ""
   :url "http://example.com/FIXME"
   :license {:name "GNU GENERAL PUBLIC LICENSE"
             :url "http://www.gnu.org/licenses/gpl-3.0.txt"}
@@ -10,4 +10,6 @@
                  [instaparse "1.2.11"]]
   :main ^:skip-aot wikison.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all}}
+  :scm {:name "git"
+        :url "https://github.com/jopela/wikison"})

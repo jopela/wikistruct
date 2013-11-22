@@ -12,7 +12,6 @@
 
 ; TODO: docstring quality is overall poor. See high-ranking clojure projects
 ; (ring?) for inspiration on how to write better docstring.
-; TODO: must support overriding user-agent header.
 
 ; This is a context-free grammar that parses a subset of the wiki creole 1.0
 ; syntax. Used to break down our the article extracts into it's component while
