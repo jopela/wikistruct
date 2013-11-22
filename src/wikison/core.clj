@@ -13,13 +13,6 @@
 ; TODO: docstring quality is overall poor. See high-ranking clojure projects
 ; (ring?) for inspiration on how to write better docstring.
 ; TODO: must support overriding user-agent header.
-; TODO: must cache the media-wiki request .
-; TODO: must transform the parse tree into the dictionary expected as result.
-; (IN PROGRESS)
-; TODO: must add unicode character support (I dont know why \p{L} will not 
-; match unicode in given text).
-; TODO: must implement robust test case for a wide variety of articles.
-; TODO: must add test case for article in all of these supported languages:
 
 ; This is a context-free grammar that parses a subset of the wiki creole 1.0
 ; syntax. Used to break down our the article extracts into it's component while

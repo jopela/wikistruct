@@ -1,3 +1,0 @@
-Abstract with == that should not trigger Section.
-== Section 1 ==
-Text.
