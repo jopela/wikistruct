@@ -7,7 +7,7 @@ Get yourself some nice json documents from *any* (Media)Wiki pages.
 Wikison is a clojure wrapper around the /w/api.php MediaWiki API that convert
 a wiki page into a json document. It is a great way to get information about
 entities that exist across multiple Wiki projects (e.g:
-[Wikipedia Montreal](http://en.wikipedia) and [Wikivoyage Montreal]()   
+[Wikipedia Montreal](http://en.wikipedia/wiki/Montreal) and [Wikivoyage Montreal](http://wikivoyage.org/wiki/Montreal)   
 . A short list of features:
 
 + Works across *all* MediaWiki backed projects (e.g: wikipedia.org,
