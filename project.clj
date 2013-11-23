@@ -1,6 +1,6 @@
-(defproject wikison "0.1.0-alpha"
-  :description ""
-  :url "http://example.com/FIXME"
+(defproject wikison "0.1.1"
+  :description "json documents from wiki pages"
+  :url "http://github.con/jopela/wikison"
   :license {:name "GNU GENERAL PUBLIC LICENSE"
             :url "http://www.gnu.org/licenses/gpl-3.0.txt"}
   :dependencies [[org.clojure/clojure "1.5.1"]
