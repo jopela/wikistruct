@@ -107,6 +107,7 @@ down etc.
 
 ## You can help Wikison development
 Help the continued support and enhancement of Wikison by donating bitcoin at:
+
 **jopela**
 184jV73JDd5Y4FQVcrLDrNS1fxWPxaiVgV
 
