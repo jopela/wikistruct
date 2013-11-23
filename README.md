@@ -8,14 +8,14 @@ Wikison is a clojure wrapper around the /w/api.php MediaWiki API that converts
 a wiki page into a json document. It is a great way to get information about
 entities that exist across multiple Wiki projects (e.g:
 [Wikipedia Montreal](http://en.wikipedia.org/wiki/Montreal) and 
-[Wikivoyage Montreal](http://wikivoyage.org/wiki/Montreal)   
-. A short list of features:
+[Wikivoyage Montreal](http://wikivoyage.org/wiki/Montreal). A short list of 
+features:
 
 + Works across *all* MediaWiki backed projects (e.g: wikipedia.org,
 wikivoyage.org, species.wikimedia.org, and even your own wiki's !).
 + Parses the wiki-creole article text for you and generate a tree-like
 document that preserves the hierarchy of the article (subsections as
-children of sections for all section levels)
+children of sections, for all section levels)
 + Can be used as a clojure library or as a .jar stand-alone application that
 takes a list of wiki url as input and print the json documents on stdout.
 
@@ -24,34 +24,42 @@ takes a list of wiki url as input and print the json documents on stdout.
 ### Leiningen
 Add the following line to your leiningen dependencies:
 
-    [wikison "0.1.1"]
+```clojure
+[wikison "0.1.1"]
+```
 
 and require the library in your project like so:
 
-    (ns myproject.core
-      (:require [wikison.core :as wk]))
+```clojure
+(ns myproject.core
+  (:require [wikison.core :as wk]))
+```
 
 ### Fetching content
 To get the desired content, use the article function by giving it a user-agent
 string along with the url of the page:
 
-    ; will fetch the whole Quebec city article.
-    (wk/article "wikison 0.1.1 used by email@example.com" 
-                "http://en.wikipedia.org/wiki/Quebec_City")
+```clojure
+; will fetch the whole Quebec city article.
+(wk/article "wikison 0.1.1 used by email@example.com" 
+            "http://en.wikipedia.org/wiki/Quebec_City")
+```
 
 the user-agent string ideally contains an email address so that you can be 
 contacted if a problem arise (as per the MediaWiki 
 [API Etiquette](http://www.mediawiki.org/wiki/API:Etiquette). The result of the
 previous function call should look something like this:
 
-    {:abstract "Quebec (/kɨˈbɛk/; French: Québec [kebɛk]) ..."
-     :lang "en"
-     :pageid 100727
-     :depiction "http://upload.wikimedia.org/wikipedia/commons/2/24/Quebec_City_Montage.png"
-     :sections [{:title "History" :sections [{:title "Early history"
-                                              :text  "Quebec City is ..."}]}]
-     ...
-    }
+```clojure
+{:abstract "Quebec (/kɨˈbɛk/; French: Québec [kebɛk]) ..."
+ :lang "en"
+ :pageid 100727
+ :depiction "http://upload.wikimedia.org/wikipedia/commons/2/24/Quebec_City_Montage.png"
+ :sections [{:title "History" :sections [{:title "Early history"
+                                          :text  "Quebec City is ..."}]}]
+ ...
+}
+```
 
 There are more properties returned from wk/article and you should try fetching
 a few articles to see them.
@@ -60,18 +68,20 @@ Imagine now that you are still interested in Quebec City, but from a
 travaller's perspective. You could query [wikivoyage](http://wikivoyage.org) 
 for the city article in just the same way you queried wikipedia:
 
-    ; the following call
-    (wk/article "wikison 0.1.1 used by email@example.com"
-                "http://en.wikivoyage.org/wiki/Quebec_City")
+```clojure
+; the following call
+(wk/article "wikison 0.1.1 used by email@example.com"
+            "http://en.wikivoyage.org/wiki/Quebec_City")
 
-    ; would return something similar to this
-    {:abstract "Quebec City (French: Québec) is the "national" capital of ..."
-     :lang "en"
-     :pageid 28931
-     :depiction " ... "
-     :sections [ ... ]
-     ...
-    }
+; would return something similar to this
+{:abstract "Quebec City (French: Québec) is the "national" capital of ..."
+ :lang "en"
+ :pageid 28931
+ :depiction " ... "
+ :sections [ ... ]
+ ...
+}
+```
 
 ### Using as a standalone .jar
 Wikison can be used as a standalone application that takes a list of
