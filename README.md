@@ -1,23 +1,14 @@
-# Wikison 0.1.1
+# Wikistruct 0.1.1
 
-Get yourself some nice json documents from *any* (Media)Wiki page.
+Get yourself some nice data structures from *any* (Media)Wiki page.
 
 ## Features
 
-Wikison is a clojure wrapper around the /w/api.php MediaWiki API that converts
-a wiki page into a json document. It is a great way to get information about
-entities that exist across multiple Wiki projects (e.g:
+Wikistruct is a clojure wrapper around the /w/api.php MediaWiki API that converts
+a wiki page into a clojure data structure. It is a great way to get information
+about entities that exist across multiple Wiki projects (e.g:
 [Wikipedia Montreal](http://en.wikipedia.org/wiki/Montreal) and 
-[Wikivoyage Montreal](http://wikivoyage.org/wiki/Montreal). A short list of 
-features:
-
-+ Works across *all* MediaWiki backed projects (e.g: wikipedia.org,
-wikivoyage.org, species.wikimedia.org, and even your own wiki's !).
-+ Parses the wiki-creole article text for you and generate a tree-like
-document that preserves the hierarchy of the article (subsections as
-children of sections, for all section levels)
-+ Can be used as a clojure library or as a .jar stand-alone application that
-takes a list of wiki url as input and print the json documents on stdout.
+[Wikivoyage Montreal](http://wikivoyage.org/wiki/Montreal).)
 
 ## Quickstart
 
@@ -25,14 +16,14 @@ takes a list of wiki url as input and print the json documents on stdout.
 Add the following line to your leiningen dependencies:
 
 ```clojure
-[wikison "0.1.1"]
+[wikistruct "0.1.1"]
 ```
 
 and require the library in your project like so:
 
 ```clojure
 (ns myproject.core
-  (:require [wikison.core :as wk]))
+  (:require [wikistruct.core :as wk]))
 ```
 
 ### Fetching content
@@ -41,7 +32,7 @@ string along with the url of the page:
 
 ```clojure
 ; will fetch the whole Quebec city article.
-(wk/article "wikison 0.1.1 used by email@example.com" 
+(wk/article "wikistruct 0.1.1 used by email@example.com" 
             "http://en.wikipedia.org/wiki/Quebec_City")
 ```
 
@@ -70,7 +61,7 @@ for the city article in just the same way you queried wikipedia:
 
 ```clojure
 ; the following call
-(wk/article "wikison 0.1.1 used by email@example.com"
+(wk/article "wikistruct 0.1.1 used by email@example.com"
             "http://en.wikivoyage.org/wiki/Quebec_City")
 
 ; would return something similar to this
@@ -84,29 +75,30 @@ for the city article in just the same way you queried wikipedia:
 ```
 
 ### Using as a standalone .jar
-Wikison can be used as a standalone application that takes a list of
+Wikistruct can be used as a standalone application that takes a list of
 url as input. It will fetch the content from those url and
-print the resulting json document to stdout. Building the standalone .jar is 
-straighforward:
+print the resulting data structure serialized as json documents to stdout. 
+Building  and using the standalone .jar is very straightforward:
 
-    git clone https://github.com/jopela/wikison
-    cd wikison
+    git clone https://github.com/jopela/wikistruct 
+    cd Wikistruct 
     lein uberjar
+    cd ./target
 
 
 ## Upcoming features
-In the future, there are plans for adding the following features to Wikison.
+In the future, there are plans for adding the following features to wikistruct .
 
 + Adding the links to other wiki pages in the result json document (usefull for 
 crawling mediawiki).
 + Adding the links to images in the result json document.
 + Adding support for returning semantic content stored in infoboxes.
-+ Adding editing capabilities to wikison (for machine editing of wiki's).
++ Adding editing capabilities to wikistruct (for machine editing of wiki's).
 + Better support for gracefull failure when url does not exist, when network
 down etc.
 
-## You can help Wikison development
-Help the continued support and enhancement of Wikison by donating bitcoin at:
+## Help support development
+Help me support Wikistruct by donating bitcoin at:
 
 **jopela**
 184jV73JDd5Y4FQVcrLDrNS1fxWPxaiVgV
@@ -122,13 +114,13 @@ Wikison was built using the awesome
 Make sure to check this project out!
 
 ## Known issues
-There is a temporary work-around implemented by adding a single newline to 
-character to the wiki-creole text returned by the mediawiki API. This changes 
-nothing to the real content except by adding an empty newline in the last 
-section of every article. This is a bug in the context-free grammar itself and 
-will fixed in a later release. 
+To fix a bug, there is a temporary work-around implemented by adding a single 
+newline character to the wiki-creole text returned by the mediawiki API. This 
+changes nothing to the real content except by adding an empty newline in the 
+last section of every article. This is a bug in the context-free grammar itself 
+and will fixed in a later release. 
 
 ## License
-Copyright © 2013 Jonathan Pelletier
+Copyright © 2013 Jonathan Pelletier (jonathan.pelletier1@gmail.com)
 
 Distributed under the GPL version 3, 29 June 2007
