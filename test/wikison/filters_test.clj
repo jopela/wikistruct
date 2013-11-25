@@ -68,20 +68,27 @@
      [:section [:title "section, empty text"] 
       [:subs1 [:sub1 [:title "subsection"] [:text "not blank"]]]]]])
 
-(def article-test-del-empty
+(def article-test-del-empty-ex
   [:article
   [:abstract "Rich Hickey,the creator of the Clojure programming language.\n"]
   [:sections
      [:section
          [:title " Presentations "]
-         [:text "some presentations"]]]
+         [:text "some presentations"]]
      [:section [:title "section, empty text"] 
-      [:sections [:section [:title "subsection"] [:text "not blank"]]]]])
+      [:sections [:section [:title "subsection"] [:text "not blank"]]]]]])
+
+(def article-test-del-named-ex
+  [:article
+  [:abstract "Rich Hickey,the creator of the Clojure programming language.\n"]
+  [:sections
+     [:section [:title " Presentations "] [:text "some presentations"]]
+     [:section [:title "section, empty text"]]]])
 
 (deftest del-empty-test
   (testing "empty section must be deleted"
     (let [in article-test
-          ex article-test-del-empty
+          ex article-test-del-empty-ex
           ou (del-empty article-test)]
       (is (= ex ou)))))
 

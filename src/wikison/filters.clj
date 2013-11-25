@@ -44,7 +44,6 @@
   "remove the nil from sections"
   [& nodes]
   (let [non-nil-sec (filter #(not (nil? %)) nodes)]
-    (println nodes)
     (vec (cons :sections non-nil-sec))))
 
 (defn del-empty
@@ -63,4 +62,6 @@
                     :subs4    del-nil-sec
                     :subs5    del-nil-sec
                     } article))
+
+
 
