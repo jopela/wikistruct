@@ -2,6 +2,10 @@
 
 Get yourself some nice data structures from *any* (Media)Wiki page.
 
+## NOTE
+Wikistruct as not yet been deployed to clojars! A release should be available
+before the end of december. 
+
 ## Features
 
 Wikistruct is a clojure wrapper around the /w/api.php MediaWiki API that converts
