@@ -7,7 +7,8 @@
                  [clj-http "0.7.7"]
                  [org.clojure/tools.cli "0.2.4"]
                  [org.clojure/data.json "0.2.3"]
-                 [instaparse "1.2.11"]]
+                 [instaparse "1.2.12"]
+                 [org.clojure/core.match "0.2.0"]]
   :main ^:skip-aot wikison.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}

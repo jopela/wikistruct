@@ -121,14 +121,18 @@
                       :text text
                       :article merge}
                      syntax-tree)))
+(defn text-parse
+  "generate a parse tree of the article text from the raw result"
+  [raw]
+  (let [wiki-creole (str (raw :extract) "\n")]
+    (wiki-parser wiki-creole)))
 
 (defn text-extract
   "transform the wiki-creole text into a hash-map"
   [raw]
   ; appending a newline to the raw text is a workaround for an issue i cannot
   ; yet fix. it allows the use of the current grammar which is non-ambiguous.
-  (let [wiki-creole (str (raw :extract) "\n")
-        parse-tree (wiki-parser wiki-creole)]
+  (let [parse-tree (text-parse raw)]
     (text-eval parse-tree)))
 
 (defn article 
