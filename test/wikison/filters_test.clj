@@ -2,6 +2,7 @@
   (:require [clojure.test :refer :all]
             [wikison.filters :refer :all]))
 
+;helper function tests
 (deftest has-child?-test-no
   (testing "section with no subsection have no child"
     (let [in [[:text "some text"] [:title "no child section"]] 
@@ -47,9 +48,42 @@
 
 (deftest empty-sec?-test-no
   (testing "a section with subsection is not empty"
-    (let [in [ [:title "empty"] [:tag "no section"] [:subs1 [:sub1 [:text "a"] [:title "title"]]] ]
+    (let [in [[:title "empty"] [:tag "no section"] 
+              [:subs1 [:sub1 [:text "a"] [:title "title"]]]]
           ex false
           ou (empty-sec? in)]
       (is (= ex ou)))))
+
+
+;filter function tests.
+(def article-test 
+  [:article
+  [:abstract "Rich Hickey,the creator of the Clojure programming language.\n"]
+  [:sections
+     [:section
+         [:title " Presentations "]
+         [:text "some presentations"]]
+     [:section [:title " References "]]
+     [:section [:title "empty text no section"] [:text "\n\n"]]
+     [:section [:title "section, empty text"] 
+      [:subs1 [:sub1 [:title "subsection"] [:text "not blank"]]]]]])
+
+(def article-test-del-empty
+  [:article
+  [:abstract "Rich Hickey,the creator of the Clojure programming language.\n"]
+  [:sections
+     [:section
+         [:title " Presentations "]
+         [:text "some presentations"]]]
+     [:section [:title "section, empty text"] 
+      [:sections [:section [:title "subsection"] [:text "not blank"]]]]])
+
+(deftest del-empty-test
+  (testing "empty section must be deleted"
+    (let [in article-test
+          ex article-test-del-empty
+          ou (del-empty article-test)]
+      (is (= ex ou)))))
+
 
 

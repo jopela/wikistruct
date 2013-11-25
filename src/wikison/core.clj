@@ -13,13 +13,7 @@
 ; TODO: docstring quality is overall poor. See high-ranking clojure projects
 ; (ring?) for inspiration on how to write better docstring.
 
-; This is a context-free grammar that parses a subset of the wiki creole 1.0
-; syntax. Used to break down our the article extracts into it's component while
-; keeping the hierarchy amongst sections and subsection. Please refer
-; to the wonderful documentation of instaparse at:
-; https://github.com/Engelberg/instaparse for more information.
-
-; this grammar refuses to parse the '' article? why?
+; this grammar refuses to parse the '' article? why? must be a detail.
 (def wiki-parser 
   (insta/parser "./resources/grammar.txt"))
 
