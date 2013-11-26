@@ -5,7 +5,8 @@
   to remove unwanted sections or to remove certain words from the text."
   (:require [clojure.core.match :as match]
             [clojure.string :as string]
-            [instaparse.core :as insta]))
+            [instaparse.core :as insta]
+            [clojure.zip :as zip]))
 
 ;helper functions
 (defn has-node?
@@ -46,6 +47,7 @@
   (let [non-nil-sec (filter #(not (nil? %)) nodes)]
     (vec (cons :sections non-nil-sec))))
 
+;remove empty section and empty sections
 (defn del-empty
   "return a copy of the parse tree without the empty sections"
   [article]
@@ -63,5 +65,15 @@
                     :subs5    del-nil-sec
                     } article))
 
-
+(defn del-sec-with-title
+  "entirely delete the section node that have a title that belong to one of the
+  title set."
+  [article ts]
+  (loop [current (zip/vector-zip article)]
+    (if (zip/end? current)
+      (zip/root current)
+      (let [current-node (zip/node current)]
+        (if [(and (= current-node :title) (-> current zip/right zip/node ts))]
+          (recur (-> current zip/up zip/remove))
+          (recur (zip/next current)))))))
 

@@ -93,4 +93,16 @@
       (is (= ex ou)))))
 
 
+(def del-sec-with-title-article-simple-in
+  [:sections [:section [:title "BAD"] [:text "OFFENSIVE"]]])
+
+(def del-sec-with-title-article-simple-ex
+  [:sections])
+
+(deftest del-sec-with-title-1
+  (testing "tree containing only a section with a title that must be removed must not contain section"
+    (let [in del-sec-with-title-article-simple-in
+          ex del-sec-with-title-article-simple-ex
+          ou (del-sec-with-title in #{"BAD"})]
+      (is (= ex ou)))))
 
