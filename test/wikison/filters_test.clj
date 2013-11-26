@@ -3,13 +3,6 @@
             [wikison.filters :refer :all]
             [clojure.zip :as zip]))
 
-;(deftest subsection?-1
-;  (testing "a section with no subsection should return false"
-;    (let [in subsection?-1-in
-;          ex false
-;          ou (
-
-
 (def del-sec-with-title-1-in
   [:article [:abstract "abstract"]
    [:sections 
@@ -44,5 +37,11 @@
           ex del-empty-sec-1-ex
           ou (del-empty-sec in)]
       (is (= ex ou)))))
-          
-          
+
+(deftest match-removable-1
+  (testing "text that is similar to something in the removable set should 
+           return logical true"
+    (let [in " Articles connexes "
+          ex "articles connexes"
+          ou (match-removable? in)]
+      (is (= ex ou)))))
