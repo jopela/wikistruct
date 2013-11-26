@@ -31,10 +31,7 @@
    [:sections
     [:section [:title "title"] [:text "test"]
      [:sections
-
-      [:section [:title "title1"] [:text "\n\n"]] 
-      
-      ]]]])
+      [:section [:title "title1"] [:text "\n\n"]]]]]])
   
 (def del-empty-sec-1-ex
   [:article
