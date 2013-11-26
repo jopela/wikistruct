@@ -29,9 +29,12 @@
 (def del-empty-sec-1-in
   [:article
    [:sections
-    [:section [:title "title"] [:text "test"]]
-    [:sections
-     [:section [:title "title1"] [:text "\n\n"]]]]])
+    [:section [:title "title"] [:text "test"]
+     [:sections
+
+      [:section [:title "title1"] [:text "\n\n"]] 
+      
+      ]]]])
   
 (def del-empty-sec-1-ex
   [:article
@@ -43,6 +46,6 @@
     (let [in del-empty-sec-1-in
           ex del-empty-sec-1-ex
           ou (del-empty-sec in)]
-      (is (= ex in)))))
+      (is (= ex ou)))))
           
           
