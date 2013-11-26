@@ -73,7 +73,7 @@
     (if (zip/end? current)
       (zip/root current)
       (let [current-node (zip/node current)]
-        (if [(and (= current-node :title) (-> current zip/right zip/node ts))]
-          (recur (-> current zip/up zip/remove))
+        (if (and (= current-node :title) (-> current zip/right zip/node ts))
+          (recur (-> current zip/up zip/up zip/remove))
           (recur (zip/next current)))))))
 
