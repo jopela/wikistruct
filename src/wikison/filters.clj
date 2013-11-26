@@ -6,7 +6,7 @@
   (:require [clojure.core.match :as match]
             [clojure.string :as string]
             [instaparse.core :as insta]
-            [clojure.zip :as zip]))
+            [clojure.zip :as z]))
 
 ; helper functions
 ; title we commonly want to remove
@@ -41,18 +41,17 @@
 ;  [loc]
 ;  (let [siblings (rights loc)]
 
-
 (defn del-sec-with-title
   "entirely delete the section node that have a title that belong to one of the
   title set."
   [article ts]
-  (loop [current (zip/vector-zip article)]
-    (if (zip/end? current)
-      (zip/root current)
-      (let [current-node (zip/node current)]
-        (if (and (= current-node :title) (-> current zip/right zip/node ts))
-          (recur (-> current zip/up zip/up zip/remove))
-          (recur (zip/next current)))))))
+  (loop [cur (z/vector-zip article)]
+    (let [node (z/node cur)]
+      (cond 
+        (z/end? cur) (z/root cur)
+        (and (= node :title) (-> cur z/right z/node ts)) (recur (-> cur z/up z/up z/remove))
+        (and (= node :sections) (-> cur z/right not)) (recur (-> cur z/up z/remove))
+        :else (recur (z/next cur))))))
 
 (defn del-empty-sec
   "remove section that have blank text and no child"

@@ -13,7 +13,7 @@
 (def del-sec-with-title-1-in
   [:article [:abstract "abstract"]
    [:sections 
-    [:section [:title "title"] [:text "text"]]]])
+    [:section [:title "BAD"] [:text "text"]]]])
 
 (def del-sec-with-title-1-ex
   [:article [:abstract "abstract"]])
