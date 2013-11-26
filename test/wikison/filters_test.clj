@@ -3,11 +3,6 @@
             [wikison.filters :refer :all]
             [clojure.zip :as zip]))
 
-(def subsection?-1-in
-  (-> [:section [:title "titre"] [:text "text"] [:sections]]
-      zip/vector-zip
-      zip/down))
-
 ;(deftest subsection?-1
 ;  (testing "a section with no subsection should return false"
 ;    (let [in subsection?-1-in
@@ -41,8 +36,7 @@
 (def del-empty-sec-1-ex
   [:article
    [:sections
-    [:section [:title "title"] [:text "test"]]
-    [:sections]]])
+    [:section [:title "title"] [:text "test"]]]])
 
 (deftest del-empty-sec-1
   (testing "section with blank text and no children should be removed."
