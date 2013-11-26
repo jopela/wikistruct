@@ -8,6 +8,31 @@
             [instaparse.core :as insta]
             [clojure.zip :as zip]))
 
+; title we commonly want to remove
+(def removable
+  #{" References "
+    " See also "})
+
+; the article generation process is described by the following diagram
+; raw-article --> parsing --> pre-process --> filtering --> post-filtering 
+; --> evaluation.
+
+; parsing: parses the article into an abstract syntax tree.
+; pre-processing: perform operation such as merging sentences into text in 
+; order to prepare for the filtering stage.
+; filtering: prune the syntax tree of it's unwanted nodes.
+; post-filtering: operations to be performed before evaluation.
+; turns the resulting syntax tree into a concrete representation (json, html,
+; text etc.)
+
+; pre-process transform
+(defn merge-sentence
+  "merge sentences into text nodes"
+  [syntax-tree]
+  (insta/transform {:sentence str
+                    :text (fn [& args] [:text (apply str args)] )}
+                   syntax-tree))
+
 ;helper functions
 (defn has-node?
   "Returns true if one of the element of the parse tree contains a node denoted
@@ -65,6 +90,7 @@
                     :subs5    del-nil-sec
                     } article))
 
+; TODO: refactor these 2 functions.
 (defn del-sec-with-title
   "entirely delete the section node that have a title that belong to one of the
   title set."

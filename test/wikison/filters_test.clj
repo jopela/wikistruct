@@ -2,6 +2,15 @@
   (:require [clojure.test :refer :all]
             [wikison.filters :refer :all]))
 
+; pre-process transform tests
+(deftest merge-sentence-test
+  (testing "tree containing sentences must be merge into text"
+    (let [in [:text [:sentence "qui seme le vent...\n"] 
+             [:sentence "recolte la tempete ...\n"]]
+          ex [:text "qui seme le vent...\nrecolte la tempete ...\n"]
+          ou (merge-sentence in)]
+      (is (= ex ou)))))
+
 ;helper function tests
 (deftest has-child?-test-no
   (testing "section with no subsection have no child"
