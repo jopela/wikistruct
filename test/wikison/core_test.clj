@@ -182,13 +182,13 @@
     (is (= ex ou)))))
 
 ; other function.
-(deftest article-test
-  (testing "json document represents the article"
-    (let [in  "https://en.wikipedia.org/wiki/Whistler's_Mother"
-          ex  whistlers-mother 
-          ou  (article "wikison-test-suit (pelletier@mtrip.com)" in) ]
-      (is (= (ex :url) (ou :url)))
-      (is (= (ex :title) (ou :title))))))
+;(deftest article-test
+;  (testing "json document represents the article"
+;    (let [in  "https://en.wikipedia.org/wiki/Whistler's_Mother"
+;          ex  whistlers-mother 
+;          ou  (article "wikison-test-suit (pelletier@mtrip.com)" in) ]
+;      (is (= (ex :url) (ou :url)))
+;      (is (= (ex :title) (ou :title))))))
 
 (deftest article-title-test
   (testing "title of a page from english wikipedia"

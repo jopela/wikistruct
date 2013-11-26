@@ -7,7 +7,8 @@
             [clojure.data.json :as json]
             [instaparse.core :as insta]
             [clojure.java.io :as io]
-            [clojure.pprint :as p])
+            [clojure.pprint :as p]
+            [wikison.filters :as filters])
 
   (:import (java.net URL URLEncoder URLDecoder)))
 
@@ -139,6 +140,14 @@
         thumb (thumbnail-extract raw-result) 
         text  (text-extract raw-result)]
     (apply merge [simple lang thumb text])))
+
+(defn article
+  "return a document that is a collection of information fetched from url"
+  ([filter-coll text-evaluator user-agent url]
+   true)
+  ([user-agent url]
+   (article nil nil user-agent url)))
+
 
 ; Main entry point
 (defn -main
