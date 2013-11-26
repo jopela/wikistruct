@@ -53,7 +53,6 @@
         (and (= node :sections) (-> cur z/right not)) (recur (-> cur z/up z/remove))
         :else (recur (z/next cur))))))
 
-
 (defn has-section?
   "returns logical true if the location of the given :section in the tree
   has subsections"
