@@ -8,63 +8,19 @@
             [instaparse.core :as insta]
             [clojure.zip :as zip]))
 
-;helper functions
-(defn has-node?
-  "Returns true if one of the element of the parse tree contains a node denoted
-  by one the the keyword given in the ks set"
-  [ks nodes]
-  (some #(contains? ks (first %)) nodes))
+; helper functions
 
-(def has-child?
-  (partial has-node? #{:sections :subs1 :subs2 :subs3 :subs4 :subs5}))
 
-(defn text-val
-  "Return the text value of the node. The text value of a node with no text
-  is nil."
-  [nodes]
-  (letfn [(text-pass-filter [elem] (= (first elem) :text))]
-    (let [filtered (filter text-pass-filter nodes)]
-      (-> filtered first second))))
 
-(defn empty-sec?
-  "Returns true if the section is an empty one. Section emptyness is defined
-  as having no child (subsections) and blank text."
-  [nodes]
-  (let [children? (has-child? nodes)
-        blank-text? (-> nodes text-val string/blank?)]
-    (and (not children?) blank-text?)))
+;(defn subsections?
+;  "Returns true if the loc points to a section that has subsection. nil if
+;  not."
+;  [loc]
+;  (let [siblings (rights loc)]
 
-(defn nil-empty-sec
-  "nil the section if it empty"
-  [& nodes]
-  (if (empty-sec? nodes)
-    nil
-    (vec (cons :section nodes))))
 
-(defn del-nil-sec
-  "remove the nil from sections"
-  [& nodes]
-  (let [non-nil-sec (filter #(not (nil? %)) nodes)]
-    (vec (cons :sections non-nil-sec))))
 
-;remove empty section and empty sections
-(defn del-empty
-  "return a copy of the parse tree without the empty sections"
-  [article]
-  (insta/transform {:section nil-empty-sec 
-                    :sub1    nil-empty-sec 
-                    :sub2    nil-empty-sec 
-                    :sub3    nil-empty-sec 
-                    :sub4    nil-empty-sec 
-                    :sub5    nil-empty-sec
-                    :sections del-nil-sec
-                    :subs1    del-nil-sec
-                    :subs2    del-nil-sec
-                    :subs3    del-nil-sec
-                    :subs4    del-nil-sec
-                    :subs5    del-nil-sec
-                    } article))
-
+; filter functions.
 (defn del-sec-with-title
   "entirely delete the section node that have a title that belong to one of the
   title set."
@@ -76,4 +32,10 @@
         (if [(and (= current-node :title) (-> current zip/right zip/node ts))]
           (recur (-> current zip/up zip/remove))
           (recur (zip/next current)))))))
+
+(defn del-empty-sec
+  "remove section that have blank text and no child"
+  [article]
+  article)
+
 
