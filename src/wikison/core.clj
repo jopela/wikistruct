@@ -14,7 +14,7 @@
 ; TODO: docstring quality is overall poor. See high-ranking clojure projects
 ; (ring?) for inspiration on how to write better docstring.
 
-; this grammar refuses to parse the '' article? why? must be a detail.
+; This grammar refuses to parse the '' article? why? must be a detail.
 (def wiki-parser 
   (insta/parser "./resources/grammar.txt"))
 
