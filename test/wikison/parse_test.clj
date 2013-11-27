@@ -3,6 +3,15 @@
             [wikison.parse :refer :all]
             [instaparse.core :as insta]))
 
+
+(def test-files-list
+  ["./test/wikison/extracts/simple-test-1.txt"
+   "./test/wikison/extracts/simple-test-2.txt"
+   "./test/wikison/extracts/simple-test-3.txt"
+   "./test/wikison/extracts/simple-test-4.txt"
+   "./test/wikison/extracts/simple-test-5.txt"
+   "./test/wikison/extracts/edge-test-1.txt"])
+
 ; test-extract tests.
 (deftest parser-simple-1
   (testing "extract containing only an abstract"
@@ -75,21 +84,23 @@
           ou (creole-parse in)]
       (is (= ex ou)))))
 
-;; grammar must be non-ambiguous for all test cases. THIS IS IMPORTANT for
-;; deterministic results.
-;(deftest non-ambiguous
-;  (testing "non-ambiguity of grammer"
-;    (let [ tests (vals test-cases)]
-;      (doseq [t tests]
-;        (let [results (insta/parses wiki-parser t)]
-;          (is (= 1 (count results)))))))) 
-;
-;; edge case.
-;(deftest edge-test-1
-;  (testing "Abstract that contain code that is section-like (e.g: 1 == 1)"
-;    (let [in (wiki-parser (slurp "./test/wikison/extracts/edge-test-1.txt"))
-;          ex {:abstract "Complex\n" 
-;              :sections [{:title " S1 " :text "in C : 1 == 1, in clojure (= 1 1).\n"}]}
-;          ou (weval/tree-eval-clj in)]
-;    (is (= ex ou)))))
+
+(deftest edge-test-1
+  (testing "Abstract that contain code that is section-like (e.g: 1 == 1)"
+    (let [in (slurp "./test/wikison/extracts/edge-test-1.txt")
+          ex [:article
+              [:abstract "Complex\n"] 
+              [:sections
+               [:section
+                [:title " S1 "] 
+                [:text "in C : 1 == 1, in clojure (= 1 1).\n"]]]]
+          ou (creole-parse in)]
+    (is (= ex ou)))))
+
+(deftest non-ambiguous
+ (testing "grammar must be non-ambiguous for all test cases."
+  (let [ins (map slurp test-files-list)]
+    (doseq [in ins]
+      (let [result (insta/parses wiki-parser in)]
+        (is (= 1 (count result))))))))
 
