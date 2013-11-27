@@ -38,19 +38,26 @@
                      syntax-tree)))
 
 ; helper function.
-(defn translate-keywork
+(defn translate-keyword
   "returns the right hiccup html keyword for the given argument"
   [kw]
   (condp = kw
     :article  :body
     :abstract :p
     :sections :div
+    :section  :div
+    :sub1     :div
+    :sub2     :div
+    :sub3     :div
+    :sub4     :div
+    :sub5     :div
     :subs1    :div
     :subs2    :div 
     :subs3    :div 
     :subs4    :div 
     :subs5    :div 
-    :text     :p))
+    :text     :p
+    kw))
 
 (defn heading
   "takes the location of a title in a syntax-tree and returns the appropriate
@@ -63,8 +70,7 @@
       :sub2    :h3
       :sub3    :h4
       :sub4    :h5
-      :sub5    :h6
-      sec-keyword)))
+      :sub5    :h6)))
 
 (defn rename-titles
   "translate the titles in the syntax tree according to the type of section
@@ -82,7 +88,10 @@
   [syntax-tree]
   (loop [cur (z/vector-zip syntax-tree)]
     (let [node (z/node cur)]
-      (println "super"))))
+      (cond
+        (z/end? cur) (z/root cur)
+        (keyword? node) (recur (z/next (z/replace cur (translate-keyword node))))
+        :else (recur (z/next cur))))))
 
 (defn tree-eval-html
   "evaluates the syntax tree into an html string using hiccup"

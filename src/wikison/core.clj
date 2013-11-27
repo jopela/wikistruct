@@ -19,7 +19,7 @@
 
   ([user-agent url]
    (article [filters-func/del-empty-sec filters-func/del-unwanted-sec]
-            weval/tree-eval-clj
+            weval/tree-eval-html
             user-agent url)))
 
 (defn -main
@@ -28,8 +28,6 @@
   (let [ [options args banner]
          (c/cli args
              ["-h" "--help" "print this help banner and exit" :flag true]
-             ["-n" "--name" "the name that will be put in the request to the
-                            media wiki API (typically yours)"]
              ["-u" "--user" "user-agent heder. Should include your mail"])]
 
     (when (options :help)

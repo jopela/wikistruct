@@ -45,3 +45,23 @@
           ou (rename-titles in)]
       (is (= ex ou)))))
 
+(def rename-sections-1-in
+  [:article 
+   [:abstract "lol"]
+   [:sections
+    [:section [:title "title"] [:text "text"]]]])
+
+(def rename-sections-1-ex
+  [:body
+   [:p "lol"]
+    [:div
+     [:div
+      [:title "title"] [:p "text"]]]])
+
+(deftest rename-sections-test-1
+  (testing "things should be renamed accordingly"
+    (let [in rename-sections-1-in
+          ex rename-sections-1-ex
+          ou (rename-sections in)]
+      (is (= ex ou)))))
+
