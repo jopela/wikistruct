@@ -8,7 +8,8 @@
                  [org.clojure/tools.cli "0.2.4"]
                  [org.clojure/data.json "0.2.3"]
                  [instaparse "1.2.12"]
-                 [org.clojure/core.match "0.2.0"]]
+                 [org.clojure/core.match "0.2.0"]
+                 [hiccup "1.0.4"]]
   :main ^:skip-aot wikison.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}

@@ -46,7 +46,6 @@
 ; turns the resulting syntax tree into a concrete representation (json  html 
 ; text etc.)
 
-; pre-process transform
 (defn merge-sentence
   "merge sentences into text nodes"
   [syntax-tree]
