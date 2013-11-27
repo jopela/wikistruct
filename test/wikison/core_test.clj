@@ -190,25 +190,6 @@
 ;      (is (= (ex :url) (ou :url)))
 ;      (is (= (ex :title) (ou :title))))))
 
-(deftest article-title-test
-  (testing "title of a page from english wikipedia"
-    (let [in "http://en.wikipedia.org/wiki/Our_Lady_of_the_Don"
-          ex "Our_Lady_of_the_Don"
-          ou (article-title in)]
-      (is (= ex ou)))))
-
-(deftest api-url-test
-  (testing "api-url for wikipedia url"
-    (let [in "http://en.wikipedia.org/wiki/Montreal"
-          ex "http://en.wikipedia.org/w/api.php"
-          ou (api-url in)]
-      (is (= ex ou)))))
-
-(deftest simple-prop-extract-test
-  (testing "simple property extraction from request result on MediaWiki API"
-    (let [ex (select-keys whistlers-mother [:url :title :pageid :lang])
-          ou (simple-prop-extract api-result)]
-      (is (= ex ou)))))
 
 (deftest languages-extract-test
   (testing "language extraction from request result on MediaWiki API"

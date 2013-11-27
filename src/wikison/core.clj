@@ -8,7 +8,8 @@
             [instaparse.core :as insta]
             [clojure.java.io :as io]
             [clojure.pprint :as p]
-            [wikison.filters :as filters])
+            [wikison.filters :as filters]
+            [wikison.request :as request])
 
   (:import (java.net URL URLEncoder URLDecoder)))
 
@@ -16,58 +17,13 @@
 ; (ring?) for inspiration on how to write better docstring.
 
 ; This grammar refuses to parse the '' article? why? must be a detail.
+
+;cat: text-parse
 (def wiki-parser 
   (insta/parser "./resources/grammar.txt"))
 
-(defn api-url
-  "return a (media)wiki api url based on the url given as argument"
-  [url]
-  (let [parsed (URL. url)
-        proto (. parsed getProtocol)
-        host  (. parsed getHost)
-        file  "/w/api.php"]
-    (. (URL. proto host file) toString)))
 
-(defn article-title
-  "returns the title of the page associated with a url"
-  [url]
-  (let [path (. (URL. url) getFile) ]
-    ; URLDecoder/decode so that url-encoded strings can be used to derive 
-    ; real page titles.
-   (URLDecoder/decode (last (string/split path #"/")) "UTF-8")))
-
-(defn mediawiki-req
-  "Fowards a request to the (media)wiki api"
-  [user-agent url params]
-  (let [req-url (api-url url)
-        req-params (merge {"format" "json"
-                           "action" "query"
-                           "ppprop" "disambiguation"} params)
-        req-format (-> "format" req-params  keyword )
-        resp-dic   (-> (client/get req-url {:query-params req-params
-                                            :as req-format
-                                            :headers 
-                                            {"User-Agent" user-agent}})
-                       :body
-                       :query
-                       :pages)]
-    (-> resp-dic keys first resp-dic)))
-
-(defn raw-article
-  "retrieve article properties that will go into the json article. This is
-  the raw result from the wiki api"
-  [user-agent url]
-  (let [title  (article-title url)
-        params {"titles" title
-                "inprop" "url"
-                "prop"   "info|pageprops|extracts|langlinks|pageimages"
-                "explaintext" ""
-                "piprop" "thumbnail"
-                "pithumbsize" 9999
-                "lllimit" 150
-                }]
-    (mediawiki-req user-agent url params)))
-
+;cat extract
 (defn simple-prop-extract
   "Extract the simple properties (ones that directly map to a property in the
   json result) from the  raw-article
@@ -78,6 +34,7 @@
                                    :pagelanguage :lang})]
     (select-keys new-raw [:url :title :pageid :lang])))
 
+;cat extract
 (defn languages-extract
   "extract the languages from the  raw-article
   result"
@@ -85,12 +42,14 @@
   (let [raw-languages (raw :langlinks)]
     {:other-langs (vec (map :lang raw-languages))}))
 
+;cat extract
 (defn thumbnail-extract
   "extract the thumbnail from the  raw-article
   result"
   [raw]
   {:depiction (-> raw :thumbnail :source)})
 
+;cat eval
 (defn text-eval 
   "evaluates the article syntax tree, which generates the text properties for
   a wiki article."
@@ -117,12 +76,14 @@
                       :text text
                       :article merge}
                      syntax-tree)))
+; cat text-parse
 (defn text-parse
   "generate a parse tree of the article text from the raw result"
   [raw]
   (let [wiki-creole (str (raw :extract) "\n")]
     (wiki-parser wiki-creole)))
 
+; cat 
 (defn text-extract
   "transform the wiki-creole text into a hash-map"
   [raw]
@@ -131,16 +92,18 @@
   (let [parse-tree (text-parse raw)]
     (text-eval parse-tree)))
 
+; core
 (defn article 
   "return a json document built from the given url"
   [user-agent url]
-  (let [raw-result (raw-article user-agent url)
+  (let [raw-result (request/raw-article user-agent url)
         simple (simple-prop-extract raw-result)
         lang (languages-extract raw-result)
         thumb (thumbnail-extract raw-result) 
         text  (text-extract raw-result)]
     (apply merge [simple lang thumb text])))
 
+; core 
 (defn article
   "return a document that is a collection of information fetched from url"
   ([filter-coll text-evaluator user-agent url]
