@@ -1,7 +1,6 @@
 (ns wikison.core
   (:gen-class)
-  (:require [clj-http.client :as client]
-            [clojure.tools.cli :as c]
+  (:require [clojure.tools.cli :as c]
             [clojure.string :as string]
             [clojure.set :as cset]
             [clojure.data.json :as json]
@@ -104,12 +103,12 @@
     (apply merge [simple lang thumb text])))
 
 ; core 
-(defn article
-  "return a document that is a collection of information fetched from url"
-  ([filter-coll text-evaluator user-agent url]
-   true)
-  ([user-agent url]
-   (article nil nil user-agent url)))
+;(defn article
+;  "return a document that is a collection of information fetched from url"
+;  ([filter-coll text-evaluator user-agent url]
+;   true)
+;  ([user-agent url]
+;   (article nil nil user-agent url)))
 
 
 ; Main entry point
