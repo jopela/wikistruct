@@ -2,53 +2,22 @@
   (:gen-class)
   (:require [clojure.tools.cli :as c]
             [clojure.string :as string]
-            [clojure.set :as cset]
             [clojure.data.json :as json]
+            [clojure.pprint :as p]
             [instaparse.core :as insta]
             [clojure.java.io :as io]
-            [clojure.pprint :as p]
             [wikison.filters :as filters]
-            [wikison.request :as request])
-
-  (:import (java.net URL URLEncoder URLDecoder)))
-
-; TODO: docstring quality is overall poor. See high-ranking clojure projects
-; (ring?) for inspiration on how to write better docstring.
+            [wikison.request :as request]
+            [wikison.extract :as extract]
+            [wikison.parse :as parse]))
 
 ; This grammar refuses to parse the '' article? why? must be a detail.
+(def grammar-content 
+  (-> "grammar.txt" io/resource io/input-stream slurp))
 
-;cat: text-parse
 (def wiki-parser 
-  (insta/parser "./resources/grammar.txt"))
+  (insta/parser grammar-content))
 
-
-;cat extract
-(defn simple-prop-extract
-  "Extract the simple properties (ones that directly map to a property in the
-  json result) from the  raw-article
-  result" 
-  [raw]
-  (let [new-raw (cset/rename-keys raw
-                                  {:fullurl :url
-                                   :pagelanguage :lang})]
-    (select-keys new-raw [:url :title :pageid :lang])))
-
-;cat extract
-(defn languages-extract
-  "extract the languages from the  raw-article
-  result"
-  [raw]
-  (let [raw-languages (raw :langlinks)]
-    {:other-langs (vec (map :lang raw-languages))}))
-
-;cat extract
-(defn thumbnail-extract
-  "extract the thumbnail from the  raw-article
-  result"
-  [raw]
-  {:depiction (-> raw :thumbnail :source)})
-
-;cat eval
 (defn text-eval 
   "evaluates the article syntax tree, which generates the text properties for
   a wiki article."
@@ -75,14 +44,12 @@
                       :text text
                       :article merge}
                      syntax-tree)))
-; cat text-parse
 (defn text-parse
   "generate a parse tree of the article text from the raw result"
   [raw]
   (let [wiki-creole (str (raw :extract) "\n")]
     (wiki-parser wiki-creole)))
 
-; cat 
 (defn text-extract
   "transform the wiki-creole text into a hash-map"
   [raw]
@@ -91,14 +58,13 @@
   (let [parse-tree (text-parse raw)]
     (text-eval parse-tree)))
 
-; core
 (defn article 
   "return a json document built from the given url"
   [user-agent url]
   (let [raw-result (request/raw-article user-agent url)
-        simple (simple-prop-extract raw-result)
-        lang (languages-extract raw-result)
-        thumb (thumbnail-extract raw-result) 
+        simple (extract/simple-prop-extract raw-result)
+        lang (extract/languages-extract raw-result)
+        thumb (extract/thumbnail-extract raw-result) 
         text  (text-extract raw-result)]
     (apply merge [simple lang thumb text])))
 
@@ -111,7 +77,6 @@
 ;   (article nil nil user-agent url)))
 
 
-; Main entry point
 (defn -main
   "json artcile from (media)wiki urls"
   [& args]
