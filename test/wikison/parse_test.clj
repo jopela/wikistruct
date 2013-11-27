@@ -48,66 +48,33 @@
                   [:title " Subsection 1 "][:text "Text.\n"]]]]]]
           ou (creole-parse in)]
       (is (= ex ou)))))
-;
-;; thats unreadable.
-;(deftest parser-simple-5
-;  (testing "All levels of indentation"
-;    (let [in (wiki-parser (slurp "./test/wikison/extracts/simple-test-5.txt"))
-;          ex {:abstract "All levels.\n\n"
-;              :sections [{:title " S1 "
-;                          :sections 
-;                          [{:title " SS1 "
-;                                      :sections 
-;                            [{:title " SSS1 "
-;                                                  :sections 
-;                              [{:title " SSSS1 "
-;                                                              
-;                                :sections [{:title " SSSSS1 "
-;                                                                          
-;                                            :sections [{:title 
-;                                                      " SSSSSS1 "}]}]}]}]}]}]} 
-;          ou (weval/tree-eval-clj in)]
-;      (is (= ex ou)))))
-;
-;; russian text parsing test.
-;(def ru-exp-1 
-;  {:abstract "(лат. Tiberius Claudius Drusus),годы — Тибе́рий Кла́вдий Неро́н \n"
-;   :sections [
-;              {:title " Ученый " :text "В 14 году, когда скончался Август, Клавдий был избран главой посольства к \n"}
-;              {:title " Секретариат " :text "В первые годы своего правления Клавдий организовал императорский ."}]})
-;
-;(deftest parse-ru-test-1
-;  (testing "russian article."
-;    (let [in (wiki-parser (slurp "./test/wikison/extracts/ru-test-1.txt"))
-;          ex ru-exp-1
-;          ou (weval/tree-eval-clj in)]
-;    (is (= ex ou)))))
-;
-;(def en-exp-1 
-;  {:abstract "Peercoin (code: PPC), also known as PPCoin and Peer-to-Peer Coin is the first \n"
-;   :sections [{:title " Transactions " :text "A peer-to-peer network handles Peercoin's transactions.\n\n" 
-;               :sections [{:title " Addresses " :text "digital signatures. \n"} 
-;                          {:title " Confirmations " :text "Transactions are recorded in the Peercoin blockchain.\n"}]}
-;              {:title " Distinguishing features " :text "\n\n" 
-;               :sections 
-;               [{:title " Proof-of-stake " :text "Peercoin's major distinguishing feature is that it uses\n\n\n"} 
-;                {:title " Proof-of-work " :text "SHA-256. For each 16x increase in the network, the PoW block reward is halved.\n"}]}
-;              ]})
-;
-;(def es-exp-1
-;  {:abstract "Los escarabeoideos (Scarabaeoidea) son una superfamilia de coleópteros \n" 
-;   :sections [
-;               {:title " Características " :text "Las características distintivas de este vasto grupo son las antenas terminadas \n"}
-;               {:title " Historia natural " :text "(Rutelinae, Cetoniinae, Melolonthinae), etc. \n"}
-;               {:title " Referencias "}]})
-;
-;(deftest parse-es-test-1
-;  (testing "spanish article"
-;    (let [in (wiki-parser (slurp "./test/wikison/extracts/es-test-1.txt"))
-;          ex es-exp-1
-;          ou (weval/tree-eval-clj in)]
-;    (is (= ex ou)))))
-;
+
+(deftest parser-simple-5
+  (testing "All levels of indentation"
+    (let [in (slurp "./test/wikison/extracts/simple-test-5.txt")
+          ex [:article 
+              [:abstract "All levels.\n"]
+              [:sections
+               [:section
+                [:title " S1 "]
+                [:subs1
+                 [:sub1
+                  [:title " SS1 "]
+                  [:subs2
+                   [:sub2 
+                    [:title " SSS1 "]
+                    [:subs3
+                     [:sub3 
+                      [:title " SSSS1 "]
+                      [:subs4
+                       [:sub4
+                        [:title " SSSSS1 "]
+                        [:subs5
+                         [:sub5
+                          [:title " SSSSSS1 "]]]]]]]]]]]]]]
+          ou (creole-parse in)]
+      (is (= ex ou)))))
+
 ;; grammar must be non-ambiguous for all test cases. THIS IS IMPORTANT for
 ;; deterministic results.
 ;(deftest non-ambiguous
