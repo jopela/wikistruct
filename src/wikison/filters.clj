@@ -23,7 +23,7 @@
                  "fuente" "zie ook" "quellen" 
                  "ligações externas" "referências" "bibliographie" 
                  "articles connexes" "liens externes" "editar"
-                 "bearbeiten" "annexe" })
+                 "bearbeiten" "annexe" "external links" })
 
 ; function that can be used 
 (defn match-any?
@@ -54,11 +54,10 @@
                     :text (fn [& args] [:text (apply str args)] )}
                    syntax-tree))
 
-
 (defn del-sec-with-title
   "delete the section node that have a title for which tf (title function)
   returns true"
-  [article tf]
+  [tf article]
   (loop [cur (z/vector-zip article)]
     (let [node (z/node cur)]
       (cond 
@@ -66,6 +65,8 @@
         (and (= node :title) (-> cur z/right z/node tf)) (recur (-> cur z/up z/up z/remove))
         (and (= node :sections) (-> cur z/right not)) (recur (-> cur z/up z/remove))
         :else (recur (z/next cur))))))
+
+(def del-unwanted-sec (partial del-sec-with-title match-removable?)) 
 
 ; helper for del-empty-sec.
 (defn has-section?

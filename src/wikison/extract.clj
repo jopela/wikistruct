@@ -2,8 +2,9 @@
   "Code that extract several properties from the a raw article"
   (:require [clojure.tools.cli :as c]
             [clojure.set :as cset]
-            [wikison.eval :as weval]
-            [wikison.parse :as parse ]))
+            [wikison.parse :as parse]
+            [wikison.filters :as filters-func]
+            ))
 
 (defn simple-prop-extract
   "Extract the simple properties (ones that directly map to a property in the
@@ -30,6 +31,9 @@
 
 (defn text-extract
   "extract the desired form of article text from the raw wiki-creole"
-  [raw]
-  (let [parse-tree (parse/wiki-creole-parse raw)]
-    (weval/tree-eval-clj parse-tree)))
+  [filters eval-func raw]
+  (let [parse-tree (parse/wiki-creole-parse raw)
+        pre-filter (filters-func/merge-sentence parse-tree)
+        pipeline (apply comp filters)
+        filtered-parse-tree (pipeline pre-filter)]
+    (eval-func filtered-parse-tree)))

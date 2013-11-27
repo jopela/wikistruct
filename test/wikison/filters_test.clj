@@ -15,7 +15,7 @@
   (testing "tree containing only a section with a title that must be removed must not contain section"
     (let [in del-sec-with-title-1-in
           ex del-sec-with-title-1-ex
-          ou (del-sec-with-title in #{"BAD"})]
+          ou (del-sec-with-title #{"BAD"} in)]
       (is (= ex ou)))))
 
 ; delete empty section test.
