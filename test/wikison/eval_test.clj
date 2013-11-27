@@ -18,3 +18,30 @@
           ou (heading in)]
       (is (= ex ou)))))
 
+(def rename-titles-1-in
+  [:article
+   [:abstract "abstract\n"]
+   [:sections
+    [:section
+     [:title "title"] [:text "text"]
+     [:subs1
+      [:sub1
+       [:title "sub1"] [:text "subtext"]]]]]])
+
+(def rename-titles-1-ex
+  [:article
+   [:abstract "abstract\n"]
+   [:sections
+    [:section
+     [:h1 "title"] [:text "text"]
+     [:subs1
+      [:sub1
+       [:h2 "sub1"] [:text "subtext"]]]]]])
+
+(deftest rename-titles-test-1
+  (testing "title under section become h1 and title under sub1 become h2"
+    (let [in rename-titles-1-in
+          ex rename-titles-1-ex
+          ou (rename-titles in)]
+      (is (= ex ou)))))
+
