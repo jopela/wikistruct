@@ -3,7 +3,6 @@
             [wikison.parse :refer :all]
             [instaparse.core :as insta]))
 
-
 (def test-files-list
   ["./test/wikison/extracts/simple-test-1.txt"
    "./test/wikison/extracts/simple-test-2.txt"

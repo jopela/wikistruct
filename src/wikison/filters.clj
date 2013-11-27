@@ -46,12 +46,6 @@
 ; turns the resulting syntax tree into a concrete representation (json  html 
 ; text etc.)
 
-(defn merge-sentence
-  "merge sentences into text nodes"
-  [syntax-tree]
-  (insta/transform {:sentence str
-                    :text (fn [& args] [:text (apply str args)] )}
-                   syntax-tree))
 
 (defn del-sec-with-title
   "delete the section node that have a title for which tf (title function)
