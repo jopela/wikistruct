@@ -11,13 +11,10 @@
 (def heading-test-1-ex
   :h1)
 
-
 (deftest heading-test
   (testing "syntax tree should be transformed into clj hash data structure"
     (let [in heading-test-1-in
           ex heading-test-1-ex
           ou (heading in)]
       (is (= ex ou)))))
-
-
 

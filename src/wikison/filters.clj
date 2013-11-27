@@ -50,8 +50,8 @@
 (defn del-sec-with-title
   "delete the section node that have a title for which tf (title function)
   returns true"
-  [tf article]
-  (loop [cur (z/vector-zip article)]
+  [tf syntax-tree]
+  (loop [cur (z/vector-zip syntax-tree)]
     (let [node (z/node cur)]
       (cond 
         (z/end? cur) (z/root cur)
@@ -72,8 +72,8 @@
 
 (defn del-empty-sec
   "remove section that have blank text and no child"
-  [article]
-  (loop [cur (z/vector-zip article)]
+  [syntax-tree]
+  (loop [cur (z/vector-zip syntax-tree)]
     (let [node (z/node cur)]
       (cond 
         (z/end? cur) (z/root cur)

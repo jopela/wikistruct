@@ -37,7 +37,6 @@
                      syntax-tree)))
 
 ; helper function.
-
 (defn heading 
   "takes the location of a title in a syntax-tree and returns the appropriate
   html hx element associated with it"
