@@ -3,8 +3,6 @@
             [wikison.core :refer :all]
             [instaparse.core :as insta]))
 
-
-
 (def testfiles
   ["en-test-1.txt"
    "es-test-1.txt"
