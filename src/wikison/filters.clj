@@ -23,7 +23,7 @@
                  "fuente" "zie ook" "quellen" 
                  "ligações externas" "referências" "bibliographie" 
                  "articles connexes" "liens externes" "editar"
-                 "bearbeiten" "annexe" "external links" })
+                 "bearbeiten" "annexe" "external links" "see also" })
 
 ; function that can be used 
 (defn match-any?
