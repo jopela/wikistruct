@@ -9,7 +9,9 @@
   (letfn [ (title [s] {:title s})
            (text  [& s] {:text  (apply str s)})
            (abstract [& s] {:abstract (apply str s)})
-           (sections [& args] {:sections (vec args)}) ]
+           (sections [& args] {:sections (vec args)})
+           (article  [& args] {:article (apply merge args)})]
+
     (insta/transform {:title title
                       :sub1  merge
                       :sub2  merge
@@ -26,7 +28,7 @@
                       :abstract abstract
                       :sentence str
                       :text text
-                      :article merge}
+                      :article article}
                      syntax-tree)))
 
       
