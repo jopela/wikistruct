@@ -72,6 +72,33 @@
           ou (del-empty-sec in)]
       (is (= ex ou)))))
 
+(def del-empty-sec-3-in
+  [:article
+   [:abstract "A\n"]
+   [:sections
+    [:section
+     [:title "T"]
+     [:text "\n\n"]
+     [:subs1
+      [:sub1
+       [:title "title"]
+       [:text "\n"]]]]]])
+
+(def del-empty-sec-3-ex
+  [:article
+   [:abstract "A\n"]])
+
+(deftest del-empty-sec-3
+  (testing "should remove nested empty subsection"
+    (let [in del-empty-sec-3-in
+          ex del-empty-sec-3-ex
+          ou (del-empty-sec-1-in in)]
+      (is (= ex ou)))))
+
+
+(deftest del-empty-sec-4
+  (testing "should remove nested empty section with no text node"
+    
 (deftest match-removable-1
   (testing "text that is similar to something in the removable set should 
            return logical true"
