@@ -10,7 +10,8 @@
    "./test/wikison/extracts/simple-test-4.txt"
    "./test/wikison/extracts/simple-test-5.txt"
    "./test/wikison/extracts/edge-test-1.txt"
-   "./test/wikison/extracts/edge-test-2.txt"])
+   "./test/wikison/extracts/edge-test-2.txt"
+   "./test/wikison/extracts/edge-test-3.txt"])
 
 ; test-extract tests.
 (deftest parser-simple-1
@@ -108,6 +109,19 @@
                 [:subs2 
                  [:sub2
                   [:title " Sub-sub "] [:text "text\n"]]]]]]
+          ou (creole-parse in)]
+      (is (= ex ou)))))
+
+(deftest edge-test-3
+  (testing "section can contain different levels of lower subsections"
+    (let [in (slurp "./test/wikison/extracts/edge-test-3.txt")
+          ex [:article 
+              [:abstract "Abstract\n"]
+              [:sections
+               [:section
+                [:title " S1 "] [:text "text1\n"] 
+                [:subs2 [:sub2 [:title " S2 "] [:text "text2\n"]]] 
+                [:subs1 [:sub1 [:title " S3 "] [:text "text3\n\n"]]]]]]
           ou (creole-parse in)]
       (is (= ex ou)))))
 
