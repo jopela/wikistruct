@@ -5,7 +5,8 @@
             [wikison.filters :as filters-func]
             [wikison.request :as request]
             [wikison.eval :as weval]
-            [wikison.extract :as extract]))
+            [wikison.extract :as extract]
+            [wikison.parse :as parse]))
 
 (defn article
   "return a document based on information fetched from the given url"
@@ -28,7 +29,9 @@
   (let [ [options args banner]
          (c/cli args
              ["-h" "--help" "print this help banner and exit" :flag true]
-             ["-u" "--user" "user-agent heder. Should include your mail"])]
+             ["-u" "--user" "user-agent heder. Should include your mail"]
+             ["-a" "--article" "extract only the article part and print it to
+                               stdout" :flag true])]
 
     (when (options :help)
       (println banner)
@@ -41,5 +44,7 @@
     (let [user-agent (:user options)
           articles (map (partial article user-agent) args) ]
       (doseq [art articles]
-        (p/pprint art)))))
+        (if (options :article)
+          (println (art :article))
+          (p/pprint art))))))
 

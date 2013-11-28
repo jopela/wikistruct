@@ -9,7 +9,8 @@
    "./test/wikison/extracts/simple-test-3.txt"
    "./test/wikison/extracts/simple-test-4.txt"
    "./test/wikison/extracts/simple-test-5.txt"
-   "./test/wikison/extracts/edge-test-1.txt"])
+   "./test/wikison/extracts/edge-test-1.txt"
+   "./test/wikison/extracts/edge-test-2.txt"])
 
 ; test-extract tests.
 (deftest parser-simple-1
@@ -95,6 +96,20 @@
                 [:text "in C : 1 == 1, in clojure (= 1 1).\n"]]]]
           ou (creole-parse in)]
     (is (= ex ou)))))
+
+(deftest edge-test-2
+  (testing "Sections can contain any sublevel sections"
+    (let [in (slurp "./test/wikison/extracts/edge-test-2.txt")
+          ex [:article 
+              [:abstract "Any kind of sub section.\n"]
+              [:sections
+               [:section
+                [:title " Section 1 "] [:text "See sub-sub.\n"]
+                [:subs2 
+                 [:sub2
+                  [:title " Sub-sub "] [:text "text\n"]]]]]]
+          ou (creole-parse in)]
+      (is (= ex ou)))))
 
 (deftest non-ambiguous
  (testing "grammar must be non-ambiguous for all test cases."

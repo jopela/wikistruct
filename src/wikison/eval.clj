@@ -93,9 +93,15 @@
         (keyword? node) (recur (z/next (z/replace cur (translate-keyword node))))
         :else (recur (z/next cur))))))
 
+
 (defn tree-eval-html
-  "evaluates the syntax tree into an html string using hiccup"
+  "evaluates the syntax tree into an html string using hiccup. Since this is 
+  html, suppress newlines char"
   [syntax-tree]
-  {:article (-> syntax-tree rename-titles rename-sections hiccup/html)}) 
+  {:article (-> syntax-tree 
+                rename-titles 
+                rename-sections 
+                hiccup/html
+                (string/replace #"\n" " "))}) 
 
 
