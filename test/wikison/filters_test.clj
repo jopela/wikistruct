@@ -48,6 +48,27 @@
           ou (section-text? in)]
       (is (= ex ou)))))
 
+(def container-node-locs-test-1-in
+  (z/vector-zip [:section 
+                    [:title "title"]
+                    [:text "text"]
+                    [:subs1
+                     [:sub1
+                      [:title "title"]
+                      [:text "text"]]]]))
+
+(def container-node-locs-test-1-ex
+  [:subs1
+   [:sub1
+    [:title "title"]
+    [:text "text"]]])
+
+(deftest container-node-locs-test-1
+  (testing "should return container subtrees when a section has containers"
+    (let [in container-node-locs-test-1-in
+          ex container-node-locs-test-1-ex
+          ou (-> in container-node-locs first z/up z/node)]
+      (is (= ex ou)))))
 
 (def del-sec-with-title-1-in
   [:article [:abstract "abstract"]

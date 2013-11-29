@@ -55,11 +55,7 @@
 
 (def del-unwanted-sec (partial del-sec-with-title match-removable?)) 
 ; ~~~~~~~~~~~~~~~~~ functions related to del-empty-sections ~~~~~~~~~~~~~~~~~~~
-(defn container?
-  "returns logical true if the node is labelled as a container."
-  [node]
-  (let [containers #{:sections :subs1 :subs2 :subs3 :subs4 :subs5}]
-    (containers node)))
+(def container? #{:sections :subs1 :subs2 :subs3 :subs4 :subs5})
 
 (def not-blank? (complement string/blank?))
 
@@ -75,11 +71,16 @@
 (def no-section-text?
   (complement section-text?))
 
+; input is loc of something like [:section [:title "title"] [:text "text"]]
+; output should be the loc of the container tag 
 (defn container-node-locs
   "returns a list of the container nodes location of the given section 
-  location. Should be a loc to the actual container tag (e.g: :sections)"
+  location. Return value is a loc to the actual container tag (e.g: :sections)"
   [loc]
-  [])
+    (let [root-of-container? (partial value-of-match container?)
+          build-loc (comp z/down z/vector-zip)
+          childs (z/children loc)]
+      (map build-loc (filter root-of-container? childs))))
 
 ; foward declaration for mutual recursive functions.
 (declare empty-container?)
@@ -113,4 +114,3 @@
         (and (container? node) (empty-container? cur)) (recur (z/remove cur))
         :else (recur (z/next cur))))))
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
