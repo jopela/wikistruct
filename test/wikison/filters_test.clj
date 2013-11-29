@@ -1,7 +1,53 @@
 (ns wikison.filters-test
   (:require [clojure.test :refer :all]
             [wikison.filters :refer :all]
-            [clojure.zip :as zip]))
+            [clojure.zip :as z]))
+
+(deftest value-of-match-test-1
+  (testing "when there is a match, should return the value"
+    (let [in [:matchme "value"]
+          ex "value"
+          ou (value-of-match #{:matchme} in)]
+      (is (= ex ou)))))
+
+(deftest value-of-match-test-2
+  (testing "when there is no match, should return the nil"
+    (let [in [:matchme "value"]
+          ex nil
+          ou (value-of-match #{:matchyou} in)]
+      (is (= ex ou)))))
+
+(deftest value-of-match-test-3
+  (testing "when given a non-corresponding pattern, should return nil"
+    (let [in [:article [:abstract "something"]]
+          ex nil
+          ou (value-of-match #{:anything} in)]
+      (is (= ex ou)))))
+
+(deftest section-text?-1 
+  (testing "section containing non-empty text should return logical true"
+    (let [in (z/vector-zip [:section [:title "title"] [:text "text"]])
+          ex true
+          ou (section-text? in)]
+      (is (and ex ou)))))
+
+(deftest section-text?-2
+  (testing "section containing empty text should return logical false"
+    (let [in (z/vector-zip [:section [:title "title"] [:text "\n\n"]])
+          ex nil
+          ou (section-text? in)]
+      (is (= ex ou)))))
+
+(deftest section-text?-3
+  (testing "section containing no text should return logical false"
+    (let [in (z/vector-zip [:section [:title "title"] [:subs1
+                                                       [:sub1 
+                                                        [:title "t"]
+                                                        [:text "text"]]]])
+          ex nil
+          ou (section-text? in)]
+      (is (= ex ou)))))
+
 
 (def del-sec-with-title-1-in
   [:article [:abstract "abstract"]

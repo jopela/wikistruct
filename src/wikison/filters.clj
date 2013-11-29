@@ -8,7 +8,7 @@
             [instaparse.core :as insta]
             [clojure.zip :as z]))
 
-; helper functions
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~ helper functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; title we commonly want to remove. To be used as tf passed to 
 ; del-sec-with-title.
 (def removable #{
@@ -25,7 +25,14 @@
                  "articles connexes" "liens externes" "editar"
                  "bearbeiten" "annexe" "external links" "see also" })
 
-; function that can be used 
+(defn value-of-match
+  "takes the given node and tries to match it for a [k v] pattern. if it 
+  matches and k is in the kws set, return the value of v. Else, return nil."
+  [kws node]
+  (match/match node
+    [k v] (if (kws k) v nil)
+    :else nil))
+
 (defn match-any?
   "Returns logical true if (-> txt trim lower-case) belongs to rs"
   [rs txt]
@@ -33,18 +40,6 @@
     (rs cmp-txt)))
 
 (def match-removable? (partial match-any? removable))
-
-; the article generation process is described by the following diagram
-; raw-article --> parsing --> pre-process --> filtering --> post-filtering 
-; --> evaluation.
-
-; parsing: parses the article into an abstract syntax tree.
-; pre-processing: perform operation such as merging sentences into text in 
-; order to prepare for the filtering stage.
-; filtering: prune the syntax tree of it's unwanted nodes.
-; post-filtering: operations to be performed before evaluation.
-; turns the resulting syntax tree into a concrete representation (json  html 
-; text etc.)
 
 (defn del-sec-with-title
   "delete the section node that have a title for which tf (title function)
@@ -59,17 +54,53 @@
         :else (recur (z/next cur))))))
 
 (def del-unwanted-sec (partial del-sec-with-title match-removable?)) 
-
+; ~~~~~~~~~~~~~~~~~ functions related to del-empty-sections ~~~~~~~~~~~~~~~~~~~
 (defn container?
   "returns logical true if the node is labelled as a container."
   [node]
   (let [containers #{:sections :subs1 :subs2 :subs3 :subs4 :subs5}]
     (containers node)))
 
-(defn empty-container?
-  "returns logical true if the container only contains empty section."
+(def not-blank? (complement string/blank?))
+
+(defn section-text?
+  "returns logical true if the given loc of the section contains a text node
+  and that it's not blank. By loc of the section i mean a loc to something
+  like [:section [:title 'title'] [:text 'text']]"
   [loc]
-  false)
+  (let [child-nodes (z/children loc)
+        text? (comp not-blank? (partial value-of-match #{:text}))]
+    (some text? child-nodes)))
+
+(def no-section-text?
+  (complement section-text?))
+
+(defn container-node-locs
+  "returns a list of the container nodes location of the given section 
+  location. Should be a loc to the actual container tag (e.g: :sections)"
+  [loc]
+  [])
+
+; foward declaration for mutual recursive functions.
+(declare empty-container?)
+(defn empty-section?
+  "returns logical true if the loc of the given section is empty. The
+  location reveived is the location of something that looks like this
+  [:section [:title 'title'] [:text 'text']]. This function is mutual 
+  recursive with empty-container?"
+  [loc]
+  (let [text-nil (no-section-text? loc)
+        container-locs (container-node-locs  loc)]
+    (and text-nil (every? identity (map empty-container? container-locs)))))
+    
+(defn empty-container?
+  "returns logical true if the container only contains empty section. This
+  function is mutual recursive with empty-section?."
+  ; loc is the location of some container (:sections, subs1 etc.)
+  [loc]
+  ; create root locations for every section in the sections container.
+  (let [section-locs (map z/vector-zip (z/rights loc))]
+    (every? identity (map empty-section? section-locs))))
 
 (defn del-empty-sections
   "remove empty sections container. The definition of emptyness is this 
@@ -81,3 +112,5 @@
         (z/end? cur) (z/root cur)
         (and (container? node) (empty-container? cur)) (recur (z/remove cur))
         :else (recur (z/next cur))))))
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
