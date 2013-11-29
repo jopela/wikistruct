@@ -19,7 +19,7 @@
     (apply merge [simple-properties lang thumb text])))
 
   ([user-agent url]
-   (article [filters-func/del-empty-sec filters-func/del-unwanted-sec]
+   (article [filters-func/del-empty-sections filters-func/del-unwanted-sec]
             weval/tree-eval-html
             user-agent url)))
 

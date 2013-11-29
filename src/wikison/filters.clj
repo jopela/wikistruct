@@ -60,24 +60,24 @@
 
 (def del-unwanted-sec (partial del-sec-with-title match-removable?)) 
 
-; helper for del-empty-sec.
-(defn has-section?
-  "returns logical true if the location of the given :section in the tree
-  has subsections"
-  [loc]
-  (let [siblings (z/rights loc)]
-    (letfn [(non-empty-sections? [s] (and (= (first s) :sections) (-> s second empty? not)))]
-      (some non-empty-sections? siblings))))
+(defn container?
+  "returns logical true if the node is labelled as a container."
+  [node]
+  (let [containers #{:sections :subs1 :subs2 :subs3 :subs4 :subs5}]
+    (containers node)))
 
-(defn del-empty-sec
-  "remove section that have blank text and no child"
+(defn empty-container?
+  "returns logical true if the container only contains empty section."
+  [loc]
+  false)
+
+(defn del-empty-sections
+  "remove empty sections container. The definition of emptyness is this 
+  function precisely."
   [syntax-tree]
   (loop [cur (z/vector-zip syntax-tree)]
     (let [node (z/node cur)]
       (cond 
         (z/end? cur) (z/root cur)
-        (and (= node :text) (-> cur z/right z/node string/blank?) (-> cur z/up z/up z/down has-section? not)) (recur (-> cur z/up z/up z/remove))
-        (and (= node :sections) (-> cur z/right not)) (recur (-> cur z/up z/remove))
+        (and (container? node) (empty-container? cur)) (recur (z/remove cur))
         :else (recur (z/next cur))))))
-
-

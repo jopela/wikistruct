@@ -3,23 +3,6 @@
             [wikison.filters :refer :all]
             [clojure.zip :as zip]))
 
-(def has-section?-1-in
-  (-> [:section [:title "blank"] [:text "\n\n"] [:subs1 [:sub1 [:title "title"] [:text "text"]]]]
-      zip/vector-zip
-      zip/down
-      zip/right 
-      zip/right
-      zip/down))
-
-(def has-section?-1-ex true)
-
-(deftest has-section?-test-1
-  (testing "sub1 with subsections should be considered has having section"
-    (let [in has-section?-1-in
-          ex has-section?-1-ex
-          ou (has-section? in)]
-      (is (= ex ou)))))
-
 (def del-sec-with-title-1-in
   [:article [:abstract "abstract"]
    [:sections 
@@ -52,7 +35,7 @@
   (testing "section with blank text and no children should be removed."
     (let [in del-empty-sec-1-in
           ex del-empty-sec-1-ex
-          ou (del-empty-sec in)]
+          ou (del-empty-sections in)]
       (is (= ex ou)))))
 
 (def del-empty-sec-2-in
@@ -69,7 +52,7 @@
   (testing "should not delete empty section that have children."
     (let [in del-empty-sec-2-in
           ex del-empty-sec-2-ex
-          ou (del-empty-sec in)]
+          ou (del-empty-sections in)]
       (is (= ex ou)))))
 
 (def del-empty-sec-3-in
@@ -92,7 +75,7 @@
   (testing "should remove nested empty subsection"
     (let [in del-empty-sec-3-in
           ex del-empty-sec-3-ex
-          ou (del-empty-sec in)]
+          ou (del-empty-sections in)]
       (is (= ex ou)))))
 
 (def del-empty-sec-4-in
@@ -115,7 +98,42 @@
   (testing "should remove nested empty section with no text node"
     (let [in del-empty-sec-4-in
           ex del-empty-sec-4-ex
-          ou (del-empty-sec in)]
+          ou (del-empty-sections in)]
+      (is (= ex ou)))))
+
+(def del-empty-sec-5-in
+  [:article
+   [:abstract "A\n"]
+   [:sections
+    [:section
+     [:title "title"]
+     [:subs2
+      [:sub2
+       [:title "title"]
+       [:subs3
+        [:sub3
+         [:title "title"]]]]]
+     [:subs1
+      [:sub1
+       [:title "title"]
+       [:text "text"]]]]]])
+
+(def del-empty-sec-5-ex
+  [:article
+   [:abstract "A\n"]
+   [:sections
+    [:section
+     [:title "title"]
+     [:subs1
+      [:sub1
+       [:title "title"]
+       [:text "text"]]]]]])
+
+(deftest del-empty-sec-5
+  (testing "empty sections container should be removed from syntax-tree"
+    (let [in del-empty-sec-5-in
+          ex del-empty-sec-5-ex
+          ou (del-empty-sections in)]
       (is (= ex ou)))))
 
 (deftest match-removable-1
@@ -125,3 +143,4 @@
           ex "articles connexes"
           ou (match-removable? in)]
       (is (= ex ou)))))
+
