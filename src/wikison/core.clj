@@ -50,7 +50,7 @@
 
 ; ~~~ emergency bug test definitions
 (def user-agent "wikison 0.1.1 (jonathan.pelletier1@gmail.com)")
-(def url "http://en.wikipedia.org/wiki/Pauline_Marois")
+(def url "http://en.wikipedia.org/wiki/God")
 (def text (request/raw-article user-agent url))
 (def tree (parse/wiki-creole-parse text))
 

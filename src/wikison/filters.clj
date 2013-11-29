@@ -20,7 +20,7 @@
                  "sources" "hauptartikel" "article détaillé"  "artículo" 
                  "literature" "literatur" "références" "externe" "fotogaleri" 
                  "anmerkungen" "sieheauch" "links" "source" 
-                 "fuente" "zie ook" "quellen" 
+                 "fuente" "zie ook" "quellen" "references"
                  "ligações externas" "referências" "bibliographie" 
                  "articles connexes" "liens externes" "editar"
                  "bearbeiten" "annexe" "external links" "see also" })
