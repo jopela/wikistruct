@@ -203,6 +203,34 @@
           ou (del-empty-sections in)]
       (is (= ex ou)))))
 
+
+(def del-empty-sec-6-in
+  [:article
+   [:abstract "a"
+    [:sections
+     [:section 
+      [:title "title"]
+      [:text "\n\n"]]
+     [:section
+      [:title "title"]
+      [:text "text"]]]]])
+
+(def del-empty-sec-6-ex
+  [:article 
+   [:abstract "a"
+    [:sections
+     [:section
+      [:title "title"]
+      [:text "text"]]]]])
+
+(deftest del-empty-sec-6
+  (testing "empty individual section surrounded by non-empty section should
+           be removed"
+    (let [in del-empty-sec-6-in
+          ex del-empty-sec-6-ex
+          ou (del-empty-sections in)]
+      (is (= ex ou)))))
+
 (deftest match-removable-1
   (testing "text that is similar to something in the removable set should 
            return logical true"
