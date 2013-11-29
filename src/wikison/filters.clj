@@ -56,6 +56,7 @@
 (def del-unwanted-sec (partial del-sec-with-title match-removable?)) 
 ; ~~~~~~~~~~~~~~~~~ functions related to del-empty-sections ~~~~~~~~~~~~~~~~~~~
 (def container? #{:sections :subs1 :subs2 :subs3 :subs4 :subs5})
+(def section? #{:section :sub1 :sub2 :sub3 :sub4 :sub5})
 
 (def not-blank? (complement string/blank?))
 
@@ -113,5 +114,8 @@
         (z/end? cur) (z/root cur)
         (and (container? node) (empty-container? cur)) (recur 
                                                          (z/remove (z/up cur)))
+        (and (section? node) (empty-section? (z/up cur))) (recur
+                                                            (z/remove
+                                                              (z/up cur)))
         :else (recur (z/next cur))))))
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
