@@ -111,6 +111,7 @@
     (let [node (z/node cur)]
       (cond 
         (z/end? cur) (z/root cur)
-        (and (container? node) (empty-container? cur)) (recur (z/remove cur))
+        (and (container? node) (empty-container? cur)) (recur 
+                                                         (z/remove (z/up cur)))
         :else (recur (z/next cur))))))
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
