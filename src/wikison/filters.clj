@@ -30,7 +30,7 @@
   matches and k is in the kws set, return the value of v. Else, return nil."
   [kws node]
   (match/match node
-    [k v] (if (kws k) v nil)
+    [k v & args] (if (kws k) v nil)
     :else nil))
 
 (defn match-any?

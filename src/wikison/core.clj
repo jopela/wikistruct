@@ -6,7 +6,8 @@
             [wikison.request :as request]
             [wikison.eval :as weval]
             [wikison.extract :as extract]
-            [wikison.parse :as parse]))
+            [wikison.parse :as parse]
+            [clojure.zip :as z]))
 
 (defn article
   "return a document based on information fetched from the given url"
@@ -53,4 +54,20 @@
 (def url "http://en.wikipedia.org/wiki/God")
 (def text (request/raw-article user-agent url))
 (def tree (parse/wiki-creole-parse text))
+
+(def test-filter [:article
+                 [:abstract "a"]
+                 [:sections
+                  [:section
+                   [:title "section"]
+                   [:text "\n\n"]
+                   [:subs1
+                    [:sub1
+                     [:title "title"]
+                     [:text "some text"]]]]]])
+
+(def root-loc (z/vector-zip test-filter))
+(def section-loc (-> root-loc z/down z/right z/right z/down z/right))
+(def container-nodes (filters-func/container-node-locs section-loc))
+                      
 
