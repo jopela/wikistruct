@@ -51,23 +51,16 @@
 
 ; ~~~ emergency bug test definitions
 (def user-agent "wikison 0.1.1 (jonathan.pelletier1@gmail.com)")
-(def url "http://en.wikipedia.org/wiki/God")
-(def text (request/raw-article user-agent url))
-(def tree (parse/wiki-creole-parse text))
+(def url1 "http://ru.wikivoyage.org/wiki/Анкара")
+(def text1 (request/raw-article user-agent url1))
+(def tree1 (parse/wiki-creole-parse text1))
 
-(def test-filter [:article
-                 [:abstract "a"]
-                 [:sections
-                  [:section
-                   [:title "section"]
-                   [:text "\n\n"]
-                   [:subs1
-                    [:sub1
-                     [:title "title"]
-                     [:text "some text"]]]]]])
+(def url2 "http://en.wikipedia.org/wiki/S-expression")
+(def text2 (request/raw-article user-agent url2))
+(def tree2 (parse/wiki-creole-parse text2))
 
-(def root-loc (z/vector-zip test-filter))
-(def section-loc (-> root-loc z/down z/right z/right z/down z/right))
-(def container-nodes (filters-func/container-node-locs section-loc))
-                      
+(def url3 "http://arz.wikipedia.org/wiki/انقره")
+(def text3 (request/raw-article user-agent url3))
+(def tree3 (parse/wiki-creole-parse text3))
 
+(def art3 (article user-agent url3))
