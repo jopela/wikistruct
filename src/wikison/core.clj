@@ -9,8 +9,13 @@
             [wikison.parse :as parse]
             [clojure.zip :as z]))
 
+(def default-filters
+  [filters-func/del-empty-sections filters-func/del-unwanted-sec])
+
 (defn article
-  "return a document based on information fetched from the given url"
+  "return a document based on information fetched from the given url.
+  filters and eval-func MUST be found in the wikison.filters and  wikison.eval
+  namespace respectively."
   ([filters eval-func user-agent url]
    (let [raw-result (request/raw-article user-agent url)
          simple-properties (extract/simple-prop-extract raw-result)
@@ -19,9 +24,14 @@
          text  (extract/text-extract filters eval-func raw-result)]
     (apply merge [simple-properties lang thumb text])))
 
+  ([eval-func user-agent url]
+   (article default-filters
+            eval-func
+            user-agent url))
+
   ([user-agent url]
-   (article [filters-func/del-empty-sections filters-func/del-unwanted-sec]
-            weval/tree-eval-html
+   (article default-filters
+            weval/tree-eval-identity
             user-agent url)))
 
 (defn -main

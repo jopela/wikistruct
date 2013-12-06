@@ -104,4 +104,9 @@
                 hiccup/html
                 (string/replace #"\n" " "))}) 
 
+(defn tree-eval-identity
+  "returns an article that contains the syntax tree itself."
+  [syntax-tree]
+  {:article syntax-tree})
+
 
