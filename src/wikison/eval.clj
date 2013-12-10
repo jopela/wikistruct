@@ -39,7 +39,7 @@
 
 ; helper function.
 (defn translate-keyword
-  "returns the right hiccup html keyword for the given argument"
+  "returns the right hiccup html keyword for the given argument."
   [kw]
   (condp = kw
     :article  :body
@@ -61,7 +61,7 @@
 
 (defn heading
   "takes the location of a title in a syntax-tree and returns the appropriate
-  html hx element associated with it"
+  html hx element associated with it."
   [title-loc]
   (let [sec-keyword (-> title-loc z/up z/up z/down z/node)]
     (condp = sec-keyword
@@ -72,6 +72,25 @@
       :sub4    :h5
       :sub5    :h6)))
 
+(defn translate-keyword-partial
+  "returns the right html keyword for the given argument in the case of a 
+  partial evaluation."
+  [kw]
+  (condp = kw
+    :sub1     :div
+    :sub2     :div
+    :sub3     :div
+    :sub4     :div
+    :sub5     :div
+    :subs1    :div
+    :subs2    :div 
+    :subs3    :div 
+    :subs4    :div 
+    :subs5    :div 
+    :text     :p
+    kw))
+
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (defn rename-titles
   "translate the titles in the syntax tree according to the type of section
   they belong in."
@@ -84,19 +103,19 @@
         :else (recur (z/next cur))))))
 
 (defn rename-sections
-  "rename different sections of the syntax tree into something more html"
+  "rename different sections of the syntax tree into something more html."
   [syntax-tree]
   (loop [cur (z/vector-zip syntax-tree)]
     (let [node (z/node cur)]
       (cond
         (z/end? cur) (z/root cur)
-        (keyword? node) (recur (z/next (z/replace cur (translate-keyword node))))
+        (keyword? node) (recur 
+                          (z/next (z/replace cur (translate-keyword node))))
         :else (recur (z/next cur))))))
-
 
 (defn tree-eval-html
   "evaluates the syntax tree into an html string using hiccup. Since this is 
-  html, suppress newlines char"
+  html, suppress newlines char."
   [syntax-tree]
   {:article (-> syntax-tree 
                 rename-titles 
@@ -104,9 +123,16 @@
                 hiccup/html
                 (string/replace #"\n" " "))}) 
 
+(defn tree-eval-html-partial
+  "partially evaluates the syntax tree into html text. Useful when further 
+  processing is required on some part of the tree."
+  [syntax-tree]
+  (let [renamed-tree (-> syntax-tree
+                         rename-sections)]
+    syntax-tree))
+
 (defn tree-eval-identity
   "returns an article that contains the syntax tree itself."
   [syntax-tree]
   {:article syntax-tree})
-
 
