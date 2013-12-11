@@ -124,12 +124,11 @@
                 (string/replace #"\n" " "))}) 
 
 (defn tree-eval-html-partial
-  "partially evaluates the syntax tree into html text. Useful when further 
-  processing is required on some part of the tree."
+  "partially evaluates the syntax tree into html text but stops
+  at the section level. Useful when further processing is required on some part
+  of the tree."
   [syntax-tree]
-  (let [renamed-tree (-> syntax-tree
-                         rename-sections)]
-    syntax-tree))
+  syntax-tree)
 
 (defn tree-eval-identity
   "returns an article that contains the syntax tree itself."

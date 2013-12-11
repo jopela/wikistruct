@@ -58,6 +58,40 @@
      [:div
       [:title "title"] [:p "text"]]]])
 
+(def tree-eval-partial-test-1-in
+  [:article 
+   [:abstract "introduction"]
+   [:sections
+    [:section
+     [:title "s1"]
+     [:text "a"]
+     [:subs1
+      [:sub1 
+       [:title "ss1"]
+       [:text "b"]]
+      [:sub1
+       [:title "ss2"]
+       [:text "c"]
+       [:subs2
+        [:sub2
+         [:title "sss1"]
+         [:text "d"]]]]]]]])
+      
+(def tree-eval-partial-test-1-ex
+  [:article
+   [:abstract "introduction"]
+   [:sections
+    [:section
+     [:title "s1"]
+     [:text "<p>a</p><div><div><h2>ss1</h2><p>b</p></div><div><h2>ss2</h2><p>c</p><div><div><h3>sss1</h3><p>d</p></div></div></div></div>"]]]])
+
+(deftest tree-eval-partial-test-1
+  (testing "should partially render syntax-tree up to the section level"
+    (let [in tree-eval-partial-test-1-in
+          ex tree-eval-partial-test-1-ex
+          ou (tree-eval-html-partial in)]
+      (is (= ex ou)))))
+
 (deftest rename-sections-test-1
   (testing "things should be renamed accordingly"
     (let [in rename-sections-1-in
