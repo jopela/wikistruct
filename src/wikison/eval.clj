@@ -113,6 +113,7 @@
                           (z/next (z/replace cur (translate-keyword node))))
         :else (recur (z/next cur))))))
 
+; ~~~~~ html evaluators and al.
 (defn tree-eval-html
   "evaluates the syntax tree into an html string using hiccup. Since this is 
   html, suppress newlines char."
@@ -130,6 +131,19 @@
   [syntax-tree]
   syntax-tree)
 
+(defn subtree-eval-html-partial
+  "takes a tree rooted at some subsX and transform it into a text node that
+  looks like this [:text 'text']."
+  [syntax-tree]
+  (let [text-node (-> syntax-tree
+                      rename-titles
+                      rename-sections
+                      hiccup/html
+                      (string/replace #"\n" " "))]
+    [:text text-node]))
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; perform no transformation on the syntax tree before turning it into
+; an article.
 (defn tree-eval-identity
   "returns an article that contains the syntax tree itself."
   [syntax-tree]

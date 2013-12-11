@@ -4,9 +4,12 @@
             [instaparse.core :as insta]
             [clojure.zip :as z]))
 
-
 (def heading-test-1-in
-  (-> [:section [:title "title"] [:text "text"]] z/vector-zip z/down z/right z/down))
+  (-> [:section [:title "title"] [:text "text"]] 
+      z/vector-zip 
+      z/down 
+      z/right 
+      z/down))
   
 (def heading-test-1-ex
   :h1)
@@ -90,6 +93,29 @@
     (let [in tree-eval-partial-test-1-in
           ex tree-eval-partial-test-1-ex
           ou (tree-eval-html-partial in)]
+      (is (= ex ou)))))
+
+(def sehp1-in
+     [:subs1
+      [:sub1 
+       [:title "ss1"]
+       [:text "b"]]
+      [:sub1
+       [:title "ss2"]
+       [:text "c"]
+       [:subs2
+        [:sub2
+         [:title "sss1"]
+         [:text "d"]]]]])
+
+(def sehp1-ex
+  [:text "<div><div><h2>ss1</h2><p>b</p></div><div><h2>ss2</h2><p>c</p><div><div><h3>sss1</h3><p>d</p></div></div></div></div>"])
+
+(deftest subtree-eval-html-partial-1
+  (testing "should turn subtree into pure textnode"
+    (let [in sehp1-in
+          ex sehp1-ex
+          ou (subtree-eval-html-partial in)]
       (is (= ex ou)))))
 
 (deftest rename-sections-test-1
