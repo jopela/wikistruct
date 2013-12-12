@@ -109,7 +109,7 @@
          [:text "d"]]]]])
 
 (def sehp1-ex
-  [:text "<div><div><h2>ss1</h2><p>b</p></div><div><h2>ss2</h2><p>c</p><div><div><h3>sss1</h3><p>d</p></div></div></div></div>"])
+  "<div><div><h2>ss1</h2><p>b</p></div><div><h2>ss2</h2><p>c</p><div><div><h3>sss1</h3><p>d</p></div></div></div></div>")
 
 (deftest subtree-eval-html-partial-1
   (testing "should turn subtree into pure textnode"

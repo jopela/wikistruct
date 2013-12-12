@@ -124,13 +124,6 @@
                 hiccup/html
                 (string/replace #"\n" " "))}) 
 
-(defn tree-eval-html-partial
-  "partially evaluates the syntax tree into html text but stops
-  at the section level. Useful when further processing is required on some part
-  of the tree."
-  [syntax-tree]
-  syntax-tree)
-
 (defn subtree-eval-html-partial
   "takes a tree rooted at some subsX and transform it into a text node that
   looks like this [:text 'text']."
@@ -140,7 +133,29 @@
                       rename-sections
                       hiccup/html
                       (string/replace #"\n" " "))]
-    [:text text-node]))
+    text-node))
+
+(defn edit-subs
+  "walks the syntax tree and edit the subs section to replace then
+  with text nodes."
+  [syntax-tree]
+  (loop [cur (z/vector-zip syntax-tree)]
+    (let [node (z/node cur)]
+      (cond
+        (z/end? cur) (z/root cur)
+        (= node :subs1) (recur (z/next (z/replace (z/up cur) (-> cur 
+                                                    z/up 
+                                                    subtree-eval-html-partial)))) 
+        :else (recur (z/next cur))))))
+
+(defn tree-eval-html-partial
+  "partially evaluates the syntax tree into html text but stops
+  at the section level. Useful when further processing is required on some part
+  of the tree."
+  [syntax-tree]
+  syntax-tree)
+
+
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; perform no transformation on the syntax tree before turning it into
 ; an article.
