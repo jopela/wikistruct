@@ -1,0 +1,8 @@
+TODO:
+
+partial evaluator for article fetching.
+QA on editorial content for these cities: Montreal, London, Paris, Moscow
+Madrid.
+
+integration with the glue script and nailgun setup.
+see to it that the triple store is in order?

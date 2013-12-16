@@ -95,6 +95,77 @@
           ou (tree-eval-html-partial in)]
       (is (= ex ou)))))
 
+(def edit-subs-test-1-in tree-eval-partial-test-1-in)
+
+(def edit-subs-test-1-ex
+  [:article
+   [:abstract "introduction"]
+   [:sections
+    [:section
+     [:title "s1"]
+     [:text "a"]
+     [:markdown "<div><div><h2>ss1</h2><p>b</p></div><div><h2>ss2</h2><p>c</p><div><div><h3>sss1</h3><p>d</p></div></div></div></div>"]]]])
+
+(deftest edit-subs-test-1
+  (testing "should transform any subsection of a section into a text node."
+    (let [in edit-subs-test-1-in
+          ex edit-subs-test-1-ex
+          ou (edit-subs in)]
+      (is (= ex ou)))))
+
+(def markdown-text-test-1-in edit-subs-test-1-ex)
+
+(def markdown-text-test-1-ex 
+  [:article
+   [:abstract "introduction"]
+   [:sections
+    [:section
+     [:title "s1"]
+     [:markdown "<p>a</p>"]
+     [:markdown "<div><div><h2>ss1</h2><p>b</p></div><div><h2>ss2</h2><p>c</p><div><div><h3>sss1</h3><p>d</p></div></div></div></div>"]]]])
+
+(deftest mardown-text-test-1
+  (testing "should wrap remaining text into a paragraph"
+    (let [in markdown-text-test-1-in 
+          ex markdown-text-test-1-ex
+          ou (markdown-text in)]
+      (is (= ex ou)))))
+
+(def edit-subs-test-2-in 
+  [:article 
+   [:abstract "introduction"]
+   [:sections
+    [:section
+     [:title "s1"]
+     [:text "a"]
+     [:subs2
+      [:sub2 
+       [:title "ss1"]
+       [:text "b"]]
+      [:sub2
+       [:title "ss2"]
+       [:text "c"]
+       [:subs3
+        [:sub3
+         [:title "sss1"]
+         [:text "d"]]]]]]]])
+
+(def edit-subs-test-2-ex 
+  [:article
+   [:abstract "introduction"]
+   [:sections
+    [:section
+     [:title "s1"]
+     [:text "a"]
+     [:markdown "<div><div><h3>ss1</h3><p>b</p></div><div><h3>ss2</h3><p>c</p><div><div><h4>sss1</h4><p>d</p></div></div></div></div>"]]]])
+
+(deftest edit-subs-test-2
+  (testing "Should transform any kind of subs of a section into a text node."
+    (let [in edit-subs-test-2-in
+          ex edit-subs-test-2-ex
+          ou (edit-subs in)]
+      (is (= ex ou)))))
+
 (def sehp1-in
      [:subs1
       [:sub1 
@@ -109,7 +180,7 @@
          [:text "d"]]]]])
 
 (def sehp1-ex
-  "<div><div><h2>ss1</h2><p>b</p></div><div><h2>ss2</h2><p>c</p><div><div><h3>sss1</h3><p>d</p></div></div></div></div>")
+  [:markdown "<div><div><h2>ss1</h2><p>b</p></div><div><h2>ss2</h2><p>c</p><div><div><h3>sss1</h3><p>d</p></div></div></div></div>"])
 
 (deftest subtree-eval-html-partial-1
   (testing "should turn subtree into pure textnode"
@@ -123,5 +194,18 @@
     (let [in rename-sections-1-in
           ex rename-sections-1-ex
           ou (rename-sections in)]
+      (is (= ex ou)))))
+
+(def merge-section-test-1-in
+  [[:title "title"] [:markdown "<p>a</p>"] [:markdown "<div>b</div>"]])
+
+(def merge-section-test-1-ex
+  [[:title "title"] [:text "<p>a</p><div>b</div>"]])
+
+(deftest merge-section-test-1
+  (testing "markdown section should be merged back into text"
+    (let [in merge-section-test-1-in
+          ex merge-section-test-1-ex
+          ou (merge-section in)]
       (is (= ex ou)))))
 
