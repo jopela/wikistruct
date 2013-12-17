@@ -31,7 +31,7 @@
 
   ([user-agent url]
    (article default-filters
-            weval/tree-eval-identity
+            weval/tree-eval-html-partial
             user-agent url)))
 
 (defn -main

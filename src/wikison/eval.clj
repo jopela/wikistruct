@@ -175,7 +175,7 @@
                                edit-subs
                                markdown-text)]
     (letfn [(sec-fn [& args] (into [:section] (merge-section args)))]
-      (insta/transform {:section sec-fn} pre-processed-tree))))
+      {:article (insta/transform {:section sec-fn} pre-processed-tree)})))
 
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; perform no transformation on the syntax tree before turning it into
