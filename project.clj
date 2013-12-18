@@ -10,7 +10,6 @@
                  [instaparse "1.2.12"]
                  [org.clojure/core.match "0.2.0"]
                  [hiccup "1.0.4"]]
-  :plugins [[lein-marginalia "0.7.1"]]
   :main ^:skip-aot wikison.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}

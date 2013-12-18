@@ -81,12 +81,12 @@
          [:text "d"]]]]]]]])
       
 (def tree-eval-partial-test-1-ex
-  [:article
+  {:article [:article
    [:abstract "introduction"]
    [:sections
     [:section
      [:title "s1"]
-     [:text "<p>a</p><div><div><h2>ss1</h2><p>b</p></div><div><h2>ss2</h2><p>c</p><div><div><h3>sss1</h3><p>d</p></div></div></div></div>"]]]])
+     [:text "<p>a</p><div><div><h2>ss1</h2><p>b</p></div><div><h2>ss2</h2><p>c</p><div><div><h3>sss1</h3><p>d</p></div></div></div></div>"]]]]})
 
 (deftest tree-eval-partial-test-1
   (testing "should partially render syntax-tree up to the section level"

@@ -174,8 +174,9 @@
   (let [pre-processed-tree (-> syntax-tree
                                edit-subs
                                markdown-text)]
-    (letfn [(sec-fn [& args] (into [:section] (merge-section args)))]
-      {:article (insta/transform {:section sec-fn} pre-processed-tree)})))
+    (letfn [(sec-fn [& args] (into [:section] (merge-section args)))
+            (rm-nl [x] [:text (string/replace x #"\n" " ")])]
+      {:article (insta/transform {:section sec-fn :text rm-nl} pre-processed-tree)})))
 
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; perform no transformation on the syntax tree before turning it into
