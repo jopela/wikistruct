@@ -175,9 +175,18 @@
                                edit-subs
                                markdown-text)]
     (letfn [(sec-fn [& args] (into [:section] (merge-section args)))
-            (rm-nl [x] [:text (string/replace x #"\n" " ")])]
-      {:article (insta/transform {:section sec-fn :text rm-nl} pre-processed-tree)})))
+            (rm-nl [x] [:text (string/replace x #"\n" "") ])]
+      {:article (insta/transform {:section sec-fn :markdown rm-nl} pre-processed-tree)})))
 
+(def test-tree 
+  [:article 
+   [:abstract "introduction"]
+    [:sections
+     [:section 
+      [:title "un titre"]
+      [:text "this is some\ntext"]]]])
+
+(tree-eval-html-partial test-tree)
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; perform no transformation on the syntax tree before turning it into
 ; an article.
