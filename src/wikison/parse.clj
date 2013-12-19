@@ -25,7 +25,10 @@
 (defn creole-parse
   "transform some  wiki creole into an abstract syntax tree"
   [creole]
-  (-> creole wiki-parser merge-sentence))
+  (let [parse-result (-> creole wiki-parser)]
+    (cond 
+      (insta/failure? parse-result) nil
+      :else (-> creole wiki-parser merge-sentence))))
 
 (defn wiki-creole-parse
   "generate a parse tree of the article text from the raw result"

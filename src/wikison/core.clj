@@ -25,7 +25,9 @@
               lang (extract/languages-extract raw-result)
               thumb (extract/thumbnail-extract raw-result) 
               text  (extract/text-extract filters eval-func raw-result)]
-          (apply merge [simple-properties lang thumb text])))))
+         (if (nil? text)
+          {:error (str "wiki-creole parsing error for " url)}
+          (apply merge [simple-properties lang thumb text]))))))
 
   ([eval-func user-agent url]
    (article default-filters

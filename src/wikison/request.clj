@@ -21,7 +21,19 @@
     ; URLDecoder/decode so that url-encoded strings can be used to derive 
     ; real page titles.
    (URLDecoder/decode (last (string/split path #"/")) "UTF-8")))
+ 
+(defn- response-dic
+  "return the value of the pages dictionary found in the wiki API response"
+  [raw-response]
+  (-> raw-response :body :query :pages))
 
+(defn- first-page
+  "return the value of the first key inside the pages dictionary of
+  the result from the mediawiki api."
+  [raw-response]
+  (let [response (response-dic raw-response)
+        first-key (-> response keys first)]
+    (response first-key)))
 
 (defn- page-id
   "extract the page id out of the raw response from the wikimedia api"
@@ -60,7 +72,7 @@
                                               " does not exist "
                                               "on the queried wiki")}
 
-      :else (-> resp-dic keys first resp-dic))))
+      :else (first-page resp-dic))))
 
 (defn raw-article
   "retrieve article properties that will go into the json article. This is

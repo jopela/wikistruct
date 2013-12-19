@@ -46,4 +46,15 @@
             ex wiki-parsing-err
             ou (article user-agent-test in)]
       (is (and (ou :error) (= (ou :error) (ex :error))))))))
+
+(def urltest5 "ajasjsjjajaj")
+(def malformed-err {:error (str urltest5 " is a malformed url")})
+(deftest malformed-url
+  (testing "a malformed url should generate an error dictionary, not blow 
+           up the system with an exception"
+    (let [in urltest5
+          ex malformed-err
+          ou (article user-agent-test in)]
+      (is (and (ou :error) (= (ou :error) (ex :error)))))))
+
         
