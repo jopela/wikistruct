@@ -16,13 +16,16 @@
   "return a document based on information fetched from the given url.
   filters and eval-func MUST be found in the wikison.filters and  wikison.eval
   namespace respectively."
+
   ([filters eval-func user-agent url]
-   (let [raw-result (request/raw-article user-agent url)
-         simple-properties (extract/simple-prop-extract raw-result)
-         lang (extract/languages-extract raw-result)
-         thumb (extract/thumbnail-extract raw-result) 
-         text  (extract/text-extract filters eval-func raw-result)]
-    (apply merge [simple-properties lang thumb text])))
+   (let [raw-result (request/raw-article user-agent url)]
+     (if (raw-result :error)
+      raw-result 
+       (let [ simple-properties (extract/simple-prop-extract raw-result)
+              lang (extract/languages-extract raw-result)
+              thumb (extract/thumbnail-extract raw-result) 
+              text  (extract/text-extract filters eval-func raw-result)]
+          (apply merge [simple-properties lang thumb text])))))
 
   ([eval-func user-agent url]
    (article default-filters
@@ -60,17 +63,17 @@
           (p/pprint art))))))
 
 ; ~~~ emergency bug test definitions
-(def user-agent "wikison 0.1.1 (jonathan.pelletier1@gmail.com)")
-(def url1 "http://ru.wikivoyage.org/wiki/Анкара")
-(def text1 (request/raw-article user-agent url1))
-(def tree1 (parse/wiki-creole-parse text1))
-
-(def url2 "http://en.wikipedia.org/wiki/S-expression")
-(def text2 (request/raw-article user-agent url2))
-(def tree2 (parse/wiki-creole-parse text2))
-
-(def url3 "http://arz.wikipedia.org/wiki/انقره")
-(def text3 (request/raw-article user-agent url3))
-(def tree3 (parse/wiki-creole-parse text3))
-
-(def art3 (article user-agent url3))
+;(def user-agent "wikison 0.1.1 (jonathan.pelletier1@gmail.com)")
+;(def url1 "http://ru.wikivoyage.org/wiki/Анкара")
+;(def text1 (request/raw-article user-agent url1))
+;(def tree1 (parse/wiki-creole-parse text1))
+;
+;(def url2 "http://en.wikipedia.org/wiki/S-expression")
+;(def text2 (request/raw-article user-agent url2))
+;(def tree2 (parse/wiki-creole-parse text2))
+;
+;(def url3 "http://arz.wikipedia.org/wiki/انقره")
+;(def text3 (request/raw-article user-agent url3))
+;(def tree3 (parse/wiki-creole-parse text3))
+;
+;(def art3 (article user-agent url3))

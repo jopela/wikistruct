@@ -36,3 +36,4 @@
         pipeline (apply comp filters)
         filtered-parse-tree (pipeline parse-tree)]
     (eval-func filtered-parse-tree)))
+

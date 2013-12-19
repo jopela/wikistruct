@@ -7,7 +7,7 @@
 (def user-agent-test "wikison 0.1.1 (jonathan.pelletier1@gmail.com)")
 
 (def urltest1 "http://anonresolvablehostnameforyou.com")
-(def unresolvable-err {:error (str "hostname for " url1 " could not be resolved")})
+(def unresolvable-err {:error (str "hostname for " urltest1 " could not be resolved")})
 (deftest unresolvable-url
   (testing "an error keyword should be present in the result dictionary
            whenever the url hostname could not be resolved."
@@ -18,7 +18,7 @@
       (is (and (ou :error) (= (ou :error) (ex :error)))))))
 
 (def urltest2 "http://google.com/wiki/Montreal")
-(def http-404-err {:error (str "query for " urltest2 " return http error code 404")})
+(def http-404-err {:error (str "query for " urltest2 " returned http error code 404")})
 (deftest http-error-code
   (testing "error keyword text should indicate that there has been an error 
            when a server returns a 404 status code."

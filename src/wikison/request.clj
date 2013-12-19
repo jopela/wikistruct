@@ -22,22 +22,45 @@
     ; real page titles.
    (URLDecoder/decode (last (string/split path #"/")) "UTF-8")))
 
+
+(defn- page-id
+  "extract the page id out of the raw response from the wikimedia api"
+  [raw-response]
+  (let [resp-dictionary (-> raw-response :body :query :pages)]
+    (-> resp-dictionary keys first name (Integer/parseInt))))
+
 (defn mediawiki-req
   "Fowards a request to the (media)wiki api"
   [user-agent url params]
-  (let [req-url (api-url url)
+  (let [error-codes (set (range 400 501))
+        req-url (api-url url)
         req-params (merge {"format" "json"
                            "action" "query"
                            "ppprop" "disambiguation"} params)
         req-format (-> "format" req-params  keyword )
-        resp-dic   (-> (client/get req-url {:query-params req-params
+        resp-dic   (client/get req-url {:query-params req-params
                                             :as req-format
                                             :headers 
-                                            {"User-Agent" user-agent}})
-                       :body
-                       :query
-                       :pages)]
-    (-> resp-dic keys first resp-dic)))
+                                            {"User-Agent" user-agent}
+                                            :throw-exceptions false
+                                            :ignore-unknown-host? true})]
+    (cond
+      (nil? resp-dic) {:error (str "hostname for "
+                                   url
+                                   " could not be resolved")}
+      (-> resp-dic 
+          :status 
+          error-codes) {:error (str "query for "
+                                    url 
+                                    " returned http error code "
+                                    (-> resp-dic :status))}
+
+      (-> resp-dic page-id neg?) {:error (str "page for "
+                                              url 
+                                              " does not exist "
+                                              "on the queried wiki")}
+
+      :else (-> resp-dic keys first resp-dic))))
 
 (defn raw-article
   "retrieve article properties that will go into the json article. This is
