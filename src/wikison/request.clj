@@ -96,7 +96,6 @@
                                     " returned http error code "
                                     (-> resp-dic :status))}
 
-
       :else (wiki-response url resp-dic))))
 
 (defn raw-article

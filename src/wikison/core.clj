@@ -54,7 +54,6 @@
              ["-u" "--user" "user-agent heder. Should include your mail"]
              ["-a" "--article" "extract only the article part and print it to
                                stdout" :flag true])]
-
     (when (options :help)
       (println banner)
       (System/exit 0))
