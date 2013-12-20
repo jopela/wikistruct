@@ -20,7 +20,11 @@
   namespace respectively."
 
   ([filters eval-func user-agent url]
-   (let [raw-result (try (request/raw-article user-agent url) (catch MalformedURLException e {:error (str url " is a malformed url")}))]
+   (let [raw-result (try 
+                      (request/raw-article user-agent url) 
+                      (catch 
+                        MalformedURLException 
+                        e {:error (str url " is a malformed url")}))]
      (if (raw-result :error)
       raw-result 
        (let [ simple-properties (extract/simple-prop-extract raw-result)

@@ -58,7 +58,7 @@
       (is (and (ou :error) (= (ou :error) (ex :error)))))))
 
 (def urltest6 "http://ja.wikivoyage.org/wiki/japs")
-(def non-json-content-err {:error (str "asked " urltest6 " for json but she returned text/html. Will not parse!")})
+(def non-json-content-err {:error (str "asked " urltest6 " for json but she returned text/html; charset=UTF-8. Will not parse!")})
 (deftest return-non-json
   (testing "when the response body does not containt error code 4xx-5xx but 
            returns something else then application/json, article should return 
@@ -66,6 +66,6 @@
     (let [in urltest6
           ex non-json-content-err
           ou (article user-agent-test in)]
-      (is (and (ou :error) (= (ou :error) (ex :error)))))))
+      (is (= (ou :error) (ex :error))))))
 
           
