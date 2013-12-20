@@ -7,7 +7,9 @@
             [wikison.eval :as weval]
             [wikison.extract :as extract]
             [wikison.parse :as parse]
-            [clojure.zip :as z]))
+            [clojure.zip :as z]
+            [clojure.data.json :as json])
+  (:import (java.net MalformedURLException)))
 
 (def default-filters
   [filters-func/del-empty-sections filters-func/del-unwanted-sec])
@@ -18,7 +20,7 @@
   namespace respectively."
 
   ([filters eval-func user-agent url]
-   (let [raw-result (request/raw-article user-agent url)]
+   (let [raw-result (try (request/raw-article user-agent url) (catch MalformedURLException e {:error (str url " is a malformed url")}))]
      (if (raw-result :error)
       raw-result 
        (let [ simple-properties (extract/simple-prop-extract raw-result)

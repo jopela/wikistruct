@@ -41,7 +41,7 @@
 (deftest invalid-creole 
   (testing "proper error string should indicate that wiki creole parsing failed
            when it happens"
-    (with-redefs [raw-article (constantly {:editurl "http://en.wikipedia.org/w/index.php?title=Rich_Hickey&action=edit", :lastrevid 586090578, :ns 0, :length 1460, :pagelanguage "en", :title "Rich Hickey", :thumbnail {:source "http://upload.wikimedia.org/wikipedia/commons/f/f4/Rich_Hickey.jpg", :width 9999, :height 7188}, :extract "Rich Hickey is the creator of the Clojure program==$34===23========ming language", :fullurl "http://en.wikipedia.org/wiki/Rich_Hickey", :pageid 20746480, :contentmodel "wikitext", :touched "2013-12-14T20:24:56Z", :counter ""})]
+    (with-redefs [raw-article (constantly {:editurl "http://en.wikipedia.org/w/index.php?title=Rich_Hickey&action=edit", :lastrevid 586090578, :ns 0, :length 1460, :pagelanguage "en", :title "Rich Hickey", :thumbnail {:source "http://upload.wikimedia.org/wikipedia/commons/f/f4/Rich_Hickey.jpg", :width 9999, :height 7188}, :extract "==a=", :fullurl "http://en.wikipedia.org/wiki/Rich_Hickey", :pageid 20746480, :contentmodel "wikitext", :touched "2013-12-14T20:24:56Z", :counter ""})]
       (let [in urltest4 
             ex wiki-parsing-err
             ou (article user-agent-test in)]
@@ -57,4 +57,15 @@
           ou (article user-agent-test in)]
       (is (and (ou :error) (= (ou :error) (ex :error)))))))
 
-        
+(def urltest6 "http://ja.wikivoyage.org/wiki/japs")
+(def non-json-content-err {:error (str "asked " urltest6 " for json but she returned text/html. Will not parse!")})
+(deftest return-non-json
+  (testing "when the response body does not containt error code 4xx-5xx but 
+           returns something else then application/json, article should return 
+           an error dic"
+    (let [in urltest6
+          ex non-json-content-err
+          ou (article user-agent-test in)]
+      (is (and (ou :error) (= (ou :error) (ex :error)))))))
+
+          

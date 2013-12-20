@@ -71,6 +71,7 @@
                                               url 
                                               " does not exist "
                                               "on the queried wiki")}
+      
 
       :else (first-page resp-dic))))
 
