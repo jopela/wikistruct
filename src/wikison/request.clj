@@ -98,6 +98,20 @@
 
       :else (wiki-response url resp-dic))))
 
+(defn url-pageid
+  "takes a url and returns a a pageid if it exists. Returns nil if not present"
+  [url]
+  (letfn [(split-first [x] (first (string/split x #"=")))
+          (split-second [x] (second (string/split x #"=")))]
+    (let [parsed (URL. url)]
+      (if-let [query (. parsed getQuery)]
+        (let [components (string/split query #"&")
+              dictionary (zipmap (map split-first components) 
+                                 (map split-second components))]
+          (dictionary "curid"))
+      nil))))
+
+
 (defn raw-article
   "retrieve article properties that will go into the json article. This is
   the raw result from the wiki api"
