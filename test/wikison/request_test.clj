@@ -2,6 +2,9 @@
   (:require [clojure.test :refer :all]
             [wikison.request :refer :all]))
 
+
+(def test-user-agent "wikison v0.1.1 (jonathan.pelletier1@gmail.com)")
+
 (deftest api-url-test
   (testing "api-url for wikipedia url"
     (let [in "http://en.wikipedia.org/wiki/Montreal"
@@ -37,4 +40,13 @@
           ex nil
           ou (url-pageid in)]
       (is (= ex ou)))))
+
+(deftest raw-article-test-1
+  (testing "trying to fetch an article either by id or by title should get the
+           exact same result"
+    (let [in-1 "http://en.wikipedia.org/wiki/index.php?curid=2997438"
+          in-2 "http://en.wikipedia.org/wiki/Club_Passim"
+          ou-1 (raw-article test-user-agent in-1)
+          ou-2 (raw-article test-user-agent in-2)]
+      (is (= ou-1 ou-2)))))
 

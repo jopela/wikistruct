@@ -18,10 +18,11 @@
 (defn article-title
   "returns the title of the page associated with a url"
   [url]
-  (let [path (. (URL. url) getFile) ]
+  (if-let [path (. (URL. url) getFile) ]
     ; URLDecoder/decode so that url-encoded strings can be used to derive 
     ; real page titles.
-   (URLDecoder/decode (last (string/split path #"/")) "UTF-8")))
+   (URLDecoder/decode (last (string/split path #"/")) "UTF-8")
+   nil))
  
 (defn- response-dic
   "return the value of the pages dictionary found in the wiki API response"
@@ -111,19 +112,48 @@
           (dictionary "curid"))
       nil))))
 
-
-(defn raw-article
-  "retrieve article properties that will go into the json article. This is
-  the raw result from the wiki api"
+(defn raw-article-dispatch
+  "takes a url and returns :pageid if it contains a page id. Otherwise return
+  nil. User-agent argument is included to make signature identical to the 
+  calling function"
   [user-agent url]
-  (let [title  (article-title url)
-        params {"titles" title
-                "inprop" "url"
-                "prop"   "info|pageprops|extracts|langlinks|pageimages"
-                "explaintext" ""
-                "piprop" "thumbnail"
-                "pithumbsize" 9999
-                "lllimit" 150
-                }]
+  (let [not-nil? (complement nil?)]
+    (cond
+      (not-nil? (url-pageid url)) :pageids
+      (not-nil? (article-title url)) :titles
+      :else nil)))
+
+(defn raw-article-query
+  "function template for fetching an article with the mediawiki API"
+  [user-agent handle-fn url]
+  (let [handle (handle-fn url)
+        params (merge {"inprop" "url"
+                       "prop"   "info|pageprops|extracts|langlinks|pageimages"
+                       "explaintext" ""
+                       "piprop" "thumbnail"
+                       "pithumbsize" 9999
+                       "lllimit" 150 } handle)]
     (mediawiki-req user-agent url params)))
+
+(defn query-handle
+  "takes a url and returns an handle query map"
+  [property handle-extract url]
+  {property (handle-extract url)})
+
+(def title-handle (partial query-handle "titles" article-title))
+(def pageid-handle (partial query-handle "pageids" url-pageid))
+
+(defmulti raw-article raw-article-dispatch)
+
+(defmethod raw-article :pageids [user-agent url] 
+  (raw-article-query user-agent pageid-handle url))
+
+(defmethod raw-article :titles [user-agent url]
+  (raw-article-query user-agent title-handle url))
+
+(defmethod raw-article :default [user-agent url]
+  {:error (str "could not figure out how to issue a media wiki API call to "
+               url)})
+               
+
             
