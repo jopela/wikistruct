@@ -9,7 +9,8 @@
                  [org.clojure/data.json "0.2.3"]
                  [instaparse "1.2.12"]
                  [org.clojure/core.match "0.2.0"]
-                 [hiccup "1.0.4"]]
+                 [hiccup "1.0.4"]
+                 [com.taoensso/timbre "3.0.0-RC2"]]
   :main ^:skip-aot wikison.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}

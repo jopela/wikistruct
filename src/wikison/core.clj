@@ -8,8 +8,18 @@
             [wikison.extract :as extract]
             [wikison.parse :as parse]
             [clojure.zip :as z]
-            [clojure.data.json :as json])
+            [clojure.data.json :as json]
+            [taoensso.timbre :as timbre])
   (:import (java.net MalformedURLException)))
+
+(timbre/refer-timbre)
+
+(defn error-report
+  "generates a human readable error report of the result of the editorial
+  content generation."
+  [error-sources]
+  (doseq [e error-sources]
+    (error (str (e :error) "\n"))))
 
 (def default-filters
   [filters-func/del-empty-sections filters-func/del-unwanted-sec])
@@ -45,15 +55,26 @@
             weval/tree-eval-html-partial
             user-agent url)))
 
+(defn error?
+  "returns logical true if the result returned by article is an error
+  dictionnary. Return true otherwise."
+  [article]
+  (contains? article :error))
+
+(def not-error? (complement error?))
+
 (defn -main
-  "json artcile from (media)wiki urls"
+  "json article from (media)wiki urls"
   [& args]
   (let [ [options args banner]
          (c/cli args
              ["-h" "--help" "print this help banner and exit" :flag true]
              ["-u" "--user" "user-agent heder. Should include your mail"]
              ["-a" "--article" "extract only the article part and print it to
-                               stdout" :flag true])]
+                               stdout. Uses the partial evaluator by default" 
+              :flag true]
+             ["-m" "--markup-html" "return a (totally) rendered html version of 
+                                   the article part" :flag true])]
     (when (options :help)
       (println banner)
       (System/exit 0))
@@ -62,12 +83,30 @@
       (println "User agent is required! See --help for details")
       (System/exit 1))
 
-    (let [user-agent (:user options)
-          articles (map (partial article user-agent) args) ]
-      (doseq [art articles]
-        (if (options :article)
-          (println (art :article))
-          (p/pprint art))))))
+    (let [user-agent (:user options)]
+      ; logger configuration
+      (timbre/set-config! [:appenders :spit :enabled?] true)
+      (timbre/set-config! [:shared-appender-config :spit-filename] 
+                          "/var/log/wikison.log")
+      (timbre/set-config! [:appenders :standard-out :enabled?] false)
+      (cond 
+       (options :article) (let [articles (map 
+                                           (partial article user-agent) args)]
+        (doseq [art articles]
+         (println (art :article))))
+       (options :markup-html) (let [articles (map 
+                                          (fn [x] (article 
+                                                    weval/tree-eval-html
+                                                    user-agent
+                                                    x))
+                                          args)
+                                    errors (filter error? articles)
+                                    valid (filter not-error? articles)]
+           (error-report errors)
+           (p/pprint (vec (map :article valid)))
+           (System/exit 0))
+       :else (do (p/pprint (map (partial article user-agent) args)) 
+                 (System/exit 0))))))
 
 ; ~~~ emergency bug test definitions
 ;(def user-agent "wikison 0.1.1 (jonathan.pelletier1@gmail.com)")
