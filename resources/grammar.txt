@@ -1,4 +1,4 @@
-article  = (abstract|abstract sections)
+article  = (abstract|abstract sections|abstract subs1|abstract subs2|abstract subs3|abstract subs4|abstract subs5)
 text     = sentence+
 title    = #"[^=\n]+"
 abstract = sentence+

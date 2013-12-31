@@ -32,7 +32,7 @@
 
 (defn wiki-creole-parse
   "generate a parse tree of the article text from the raw result"
-  [creole]
-  (let [wiki-creole (str (creole :extract) "\n")]
+  [raw]
+  (let [wiki-creole (str (raw :extract) "\n")]
     (creole-parse wiki-creole)))
 

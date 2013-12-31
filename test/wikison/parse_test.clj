@@ -11,7 +11,8 @@
    "./test/wikison/extracts/simple-test-5.txt"
    "./test/wikison/extracts/edge-test-1.txt"
    "./test/wikison/extracts/edge-test-2.txt"
-   "./test/wikison/extracts/edge-test-3.txt"])
+   "./test/wikison/extracts/edge-test-3.txt"
+   "./test/wikison/extracts/edge-test-4.txt"])
 
 ; test-extract tests.
 (deftest parser-simple-1
@@ -122,6 +123,17 @@
                 [:title " S1 "] [:text "text1\n"] 
                 [:subs2 [:sub2 [:title " S2 "] [:text "text2\n"]]] 
                 [:subs1 [:sub1 [:title " S3 "] [:text "text3\n\n"]]]]]]
+          ou (creole-parse in)]
+      (is (= ex ou)))))
+
+(deftest edge-test-4
+  (testing "Article content may be insde subs of any level after Abstract."
+    (let [in (slurp "./test/wikison/extracts/edge-test-4.txt")
+          ex [:article 
+              [:abstract "Abstract\n"]
+              [:subs1
+               [:sub1
+                [:title " S "] [:text "starting with sub1.\n"]]]]
           ou (creole-parse in)]
       (is (= ex ou)))))
 
