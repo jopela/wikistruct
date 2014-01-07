@@ -118,4 +118,10 @@
                                                             (z/remove
                                                               (z/up cur)))
         :else (recur (z/next cur))))))
+
+(defn remove-brackets
+  "remove square brackets from text when they either contain 'Citation needed'
+  or numbers."
+  [text]
+  (string/replace text #"(?i)\[Citation needed\]|\[[0-9]+\]" ""))
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

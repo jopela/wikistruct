@@ -21,15 +21,18 @@
   (doseq [e error-sources]
     (error (str (e :error) "\n"))))
 
-(def default-filters
+(def default-post-filters
   [filters-func/del-empty-sections filters-func/del-unwanted-sec])
+
+(def default-text-filters
+  [filters-func/remove-brackets])
 
 (defn article
   "return a document based on information fetched from the given url.
   filters and eval-func MUST be found in the wikison.filters and  wikison.eval
   namespace respectively."
 
-  ([filters eval-func user-agent url]
+  ([raw-text-filters post-filters eval-func user-agent url]
    (let [raw-result (try 
                       (request/raw-article user-agent url) 
                       (catch 
@@ -40,20 +43,31 @@
        (let [ simple-properties (extract/simple-prop-extract raw-result)
               lang (extract/languages-extract raw-result)
               thumb (extract/thumbnail-extract raw-result) 
-              text  (extract/text-extract filters eval-func raw-result)]
+              text (extract/text-extract raw-text-filters post-filters eval-func raw-result)]
          (if (nil? text)
           {:error (str "wiki-creole parsing error for " url)}
           (apply merge [simple-properties lang thumb text]))))))
 
-  ([eval-func user-agent url]
-   (article default-filters
+  ([post-filters eval-func user-agent url]
+   (article default-text-filters
+            post-filters
             eval-func
-            user-agent url))
+            user-agent
+            url))
+
+  ([eval-func user-agent url]
+   (article default-text-filters
+            default-post-filters
+            eval-func
+            user-agent 
+            url))
 
   ([user-agent url]
-   (article default-filters
+   (article default-text-filters
+            default-post-filters
             weval/tree-eval-html-partial
-            user-agent url)))
+            user-agent 
+            url)))
 
 (defn error?
   "returns logical true if the result returned by article is an error

@@ -31,8 +31,15 @@
 
 (defn text-extract
   "extract the desired form of article text from the raw wiki-creole"
-  [filters eval-func raw]
-  (if-let [parse-tree (parse/wiki-creole-parse raw)]
-    (let [pipeline (apply comp filters) filtered-parse-tree (pipeline parse-tree)] (eval-func filtered-parse-tree))
-    nil))
+  [text-filters post-filters eval-func raw]
+  (let [creole (raw :extract)
+        text-pipeline (apply comp text-filters)
+        filtered-creole (text-pipeline creole)]
+    (if-let [parse-tree (parse/creole-parse filtered-creole)]
+      (let [pipeline (apply comp post-filters) 
+            filtered-parse-tree (pipeline parse-tree)] 
+        (eval-func filtered-parse-tree))
+      nil)))
+
+  
 
