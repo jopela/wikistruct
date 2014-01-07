@@ -239,3 +239,11 @@
           ou (match-removable? in)]
       (is (= ex ou)))))
 
+(deftest remove-bracket-1
+  (testing "text containing bracket that contains 'Citation needed' or 
+           number should be removed."
+    (let [in "Sandra is 27 years old [Citation needed]. Wait it's cited here [1]"
+          ex "Sandra is 27 years old . Wait it's cited here "
+          ou (remove-brackets in)]
+      (is (= ex ou)))))
+

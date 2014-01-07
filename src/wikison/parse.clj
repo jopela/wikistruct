@@ -29,5 +29,5 @@
         parse-result (-> creole-with-newline wiki-parser)]
     (cond 
       (insta/failure? parse-result) nil
-      :else (-> creole wiki-parser merge-sentence))))
+      :else (merge-sentence parse-result))))
 

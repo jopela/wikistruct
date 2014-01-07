@@ -18,7 +18,7 @@
 (deftest parser-simple-1
   (testing "extract containing only an abstract"
     (let [in (slurp "./test/wikison/extracts/simple-test-1.txt")
-          ex [:article [:abstract "Abstract only article.\n"]]
+          ex [:article [:abstract "Abstract only article.\n\n"]]
           ou (creole-parse in)]
       (is (= ex ou)))))
 
@@ -28,7 +28,7 @@
           ex [:article 
               [:abstract "Article with a single section.\n"]
               [:sections 
-               [:section [:title " Single Section "] [:text "text.\n"]]]]
+               [:section [:title " Single Section "] [:text "text.\n\n"]]]]
           ou (creole-parse in)]
       (is (= ex ou)))))
 
@@ -40,7 +40,7 @@
               [:sections 
                [:section [:title " Section 1 "] [:text "text 1.\n"]]
                [:section [:title " Section 2 "] [:text "text 2.\n"]]
-               [:section [:title " Section 3 "] [:text "text 3.\n"]]]]
+               [:section [:title " Section 3 "] [:text "text 3.\n\n"]]]]
           ou (creole-parse in)]
       (is (= ex ou)))))
 
@@ -56,7 +56,7 @@
                 [:text "will contain a sub.\n\n"]
                 [:subs1 
                  [:sub1
-                  [:title " Subsection 1 "][:text "Text.\n"]]]]]]
+                  [:title " Subsection 1 "][:text "Text.\n\n"]]]]]]
           ou (creole-parse in)]
       (is (= ex ou)))))
 
@@ -82,7 +82,8 @@
                         [:title " SSSSS1 "]
                         [:subs5
                          [:sub5
-                          [:title " SSSSSS1 "]]]]]]]]]]]]]]
+                          [:title " SSSSSS1 "]
+                          [:text "\n"]]]]]]]]]]]]]]
           ou (creole-parse in)]
       (is (= ex ou)))))
 
@@ -95,7 +96,7 @@
               [:sections
                [:section
                 [:title " S1 "] 
-                [:text "in C : 1 == 1, in clojure (= 1 1).\n"]]]]
+                [:text "in C : 1 == 1, in clojure (= 1 1).\n\n"]]]]
           ou (creole-parse in)]
     (is (= ex ou)))))
 
@@ -109,7 +110,7 @@
                 [:title " Section 1 "] [:text "See sub-sub.\n"]
                 [:subs2 
                  [:sub2
-                  [:title " Sub-sub "] [:text "text\n"]]]]]]
+                  [:title " Sub-sub "] [:text "text\n\n"]]]]]]
           ou (creole-parse in)]
       (is (= ex ou)))))
 
@@ -122,7 +123,7 @@
                [:section
                 [:title " S1 "] [:text "text1\n"] 
                 [:subs2 [:sub2 [:title " S2 "] [:text "text2\n"]]] 
-                [:subs1 [:sub1 [:title " S3 "] [:text "text3\n\n"]]]]]]
+                [:subs1 [:sub1 [:title " S3 "] [:text "text3\n\n\n"]]]]]]
           ou (creole-parse in)]
       (is (= ex ou)))))
 
@@ -133,7 +134,7 @@
               [:abstract "Abstract\n"]
               [:subs1
                [:sub1
-                [:title " S "] [:text "starting with sub1.\n"]]]]
+                [:title " S "] [:text "starting with sub1.\n\n"]]]]
           ou (creole-parse in)]
       (is (= ex ou)))))
 

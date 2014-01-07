@@ -56,3 +56,5 @@
     (let [ex (select-keys whistlers-mother [:depiction])
           ou (thumbnail-extract api-result)]
       (is (= ex ou)))))
+
+
