@@ -42,7 +42,7 @@
   "returns the right hiccup html keyword for the given argument."
   [kw]
   (condp = kw
-    :article  :body
+    :article  :div
     :abstract :p
     :sections :div
     :section  :div

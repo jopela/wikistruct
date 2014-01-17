@@ -23,7 +23,14 @@
                  "fuente" "zie ook" "quellen" "references"
                  "ligações externas" "referências" "bibliographie" 
                  "articles connexes" "liens externes" "editar"
-                 "bearbeiten" "annexe" "external links" "see also" })
+                 "bearbeiten" "annexe" "external links" "see also" 
+                 "関連項目" "bibliografia" "anmerkungen und einzelnachweise"
+                 "autres références" "وصلات خارجية" "ссылки" "см. также"
+                 "外部リンク" "参考文献" "lien externe" "article connexe"
+                 "Voir aussi" "Notes et références" "المصادر" "روابط خارجية"
+                 "pictures" "Ссылки" "collegamenti esterni" "voci correlate"
+                 "参考" "ver também" "enlaces externos" "véase también" 
+                 "siehe auch" "externe links"})
 
 (defn value-of-match
   "takes the given node and tries to match it for a [k v] pattern. if it 

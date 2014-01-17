@@ -55,7 +55,7 @@
     [:section [:title "title"] [:text "text"]]]])
 
 (def rename-sections-1-ex
-  [:body
+  [:div
    [:p "lol"]
     [:div
      [:div
