@@ -9,6 +9,7 @@
             [wikison.parse :as parse]
             [clojure.zip :as z]
             [clojure.data.json :as json]
+            [clojure.pprint :as pprint]
             [taoensso.timbre :as timbre])
   (:import (java.net MalformedURLException)))
 
@@ -27,9 +28,12 @@
 (def default-text-filters
   [filters-func/remove-brackets])
 
+(def default-eval-function
+  weval/tree-eval-html-partial)
+
 (defn article
   "return a document based on information fetched from the given url.
-  filters and eval-func MUST be found in the wikison.filters and  wikison.eval
+  filters and eval-func MUST be found in the wikison.filters and wikison.eval
   namespace respectively."
 
   ([raw-text-filters post-filters eval-func user-agent url]
@@ -65,7 +69,7 @@
   ([user-agent url]
    (article default-text-filters
             default-post-filters
-            weval/tree-eval-html-partial
+            default-eval-function
             user-agent 
             url)))
 
@@ -122,6 +126,8 @@
        :else (do (p/pprint (map (partial article user-agent) args)) 
                  (System/exit 0))))))
 
+
+
 ; ~~~ emergency bug test definitions
 ;(def user-agent "wikison 0.1.1 (jonathan.pelletier1@gmail.com)")
 ;(def url1 "http://ru.wikivoyage.org/wiki/Анкара")
@@ -137,3 +143,4 @@
 ;(def tree3 (parse/wiki-creole-parse text3))
 ;
 ;(def art3 (article user-agent url3))
+

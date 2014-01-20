@@ -126,6 +126,51 @@
                                                               (z/up cur)))
         :else (recur (z/next cur))))))
 
+(defn remove-nested-parens
+  "remove nested parenthesis from the text"
+  [text]
+  (string/replace text #"(\((?:\(.*?\)|[^\(])*?\))" ""))
+
+(defn remove-foward-slash
+  "remove all the text in between 2 foward slash"
+  [text]
+  (string/replace text #"/.*/" ""))
+
+(defn remove-space-comma
+  "remove space before a comma"
+  [text]
+  (string/replace text #" ," ","))
+
+(defn remove-2-spaces
+  "remove 2 consecutive spaces from string"
+  [text]
+  (string/replace text #"  " " "))
+
+(defn remove-pronounciation-text
+  "remove text pronounciation from a piece of text"
+  [text]
+  (-> text
+      remove-nested-parens
+      remove-foward-slash
+      remove-2-spaces
+      remove-space-comma))
+
+ (defn edit-first-sentence
+  "apply an edit function to the first sentence (according to the. punctuation)
+   of the text." 
+   [edit-func text]
+   (let [sentence-match #"^.*?\."
+         first-sentence (re-find sentence-match text)]
+     (string/replace text sentence-match (edit-func first-sentence))))
+
+(def remove-pronounciation-fs (partial 
+                                edit-first-sentence 
+                                remove-pronounciation-text))
+
+
+
+
+; ~~~~~~~~~~ text filters.
 (defn remove-brackets
   "remove square brackets from text when they either contain 'Citation needed'
   or numbers."

@@ -1,7 +1,8 @@
 (ns wikison.filters-test
   (:require [clojure.test :refer :all]
             [wikison.filters :refer :all]
-            [clojure.zip :as z]))
+            [clojure.zip :as z]
+            [clojure.string :as string]))
 
 (deftest value-of-match-test-1
   (testing "when there is a match, should return the value"
@@ -245,5 +246,104 @@
     (let [in "Sandra is 27 years old [Citation needed]. Wait it's cited here [1]"
           ex "Sandra is 27 years old . Wait it's cited here "
           ou (remove-brackets in)]
+      (is (= ex ou)))))
+
+; test cases for  removal of pronounciation content.
+(def remove-pronounciation-text-in-1
+  "boston (pronounced listeni/ˈbɒstən/) is the capital and largest city[9] of the state of massachusetts (officially the commonwealth of massachusetts), in the united states.")
+
+(def remove-pronounciation-text-ex-1
+  "boston is the capital and largest city[9] of the state of massachusetts, in the united states.")
+
+(def remove-pronounciation-text-in-2
+  "Canada /ˈkænədə/ is a country in North America consisting of 10 provinces and 3 territories.")
+
+(def remove-pronounciation-text-ex-2
+  "Canada is a country in North America consisting of 10 provinces and 3 territories.")
+  
+(def remove-pronounciation-text-in-3
+  "France (UK /ˈfrɑːns/; US Listeni/ˈfræns/; French: [fʁɑ̃s] ( listen)), officially the French Republic (French: République française [ʁepyblik fʁɑ̃sɛz]), is a sovereign country in Western Europe that includes overseas regions and territories.")
+
+(def remove-pronounciation-text-ex-3
+  "France, officially the French Republic, is a sovereign country in Western Europe that includes overseas regions and territories.")
+
+(def remove-pronounciation-text-in-4
+  "Russia /ˈrʌʃə/ or /ˈrʊʃə/ (Russian: Россия, tr. Rossiya, IPA: [rɐˈsʲijə] ( listen)), also officially known as the Russian Federation[7] (Russian: Российская Федерация, tr.  Rossiyskaya Federatsiya, IPA: [rɐˈsʲijskəjə fʲɪdʲɪˈrat͡sɨjə] ( listen)), is a country situated in northern Eurasia.") 
+(def remove-pronounciation-text-ex-4
+  "Russia, also officially known as the Russian Federation[7], is a country situated in northern Eurasia.")
+
+(def remove-pronounciation-text-in-5
+  "Alberta /ælˈbɜrtə/ is a province of Canada.")
+
+(def remove-pronounciation-text-ex-5
+  "Alberta is a province of Canada.")
+
+(def remove-pronounciation-text-in-6
+  "Moscow (/ˈmɒskaʊ/ or /ˈmɒskoʊ/; Russian: Москва, tr. Moskva, IPA: [mɐˈskva] ( )) is the capital city and the most populous federal subject of Russia.")
+
+(def remove-pronounciation-text-ex-6
+  "Moscow is the capital city and the most populous federal subject of Russia.")
+
+(deftest remove-pronounciation-test-1
+  (testing "should remove all content in parens from text."
+    (let [in remove-pronounciation-text-in-1
+          ex remove-pronounciation-text-ex-1
+          ou (remove-pronounciation-text in)]
+      (is (= ex ou)))))
+
+(deftest remove-pronounciation-test-2
+  (testing "should remove all content in parens from text."
+    (let [in remove-pronounciation-text-in-2
+          ex remove-pronounciation-text-ex-2
+          ou (remove-pronounciation-text in)]
+      (is (= ex ou)))))
+
+(deftest remove-pronounciation-test-3
+  (testing "should remove all content in parens from text."
+    (let [in remove-pronounciation-text-in-3
+          ex remove-pronounciation-text-ex-3
+          ou (remove-pronounciation-text in)]
+      (is (= ex ou)))))
+
+(deftest remove-pronounciation-test-4
+  (testing "should remove all content in parens from text."
+    (let [in remove-pronounciation-text-in-4
+          ex remove-pronounciation-text-ex-4
+          ou (remove-pronounciation-text in)]
+      (is (= ex ou)))))
+
+(deftest remove-pronounciation-test-5
+  (testing "should remove all content in parens from text."
+    (let [in remove-pronounciation-text-in-5
+          ex remove-pronounciation-text-ex-5
+          ou (remove-pronounciation-text in)]
+      (is (= ex ou)))))
+
+(deftest remove-pronounciation-test-6
+  (testing "should remove all content in parens from text."
+    (let [in remove-pronounciation-text-in-6
+          ex remove-pronounciation-text-ex-6
+          ou (remove-pronounciation-text in)]
+      (is (= ex ou)))))
+
+; ~~~~~~~~~~~~~~ edit-first-sentence test ~~~~~~~~~~~~~~~~~
+
+(def edit-first-sentence-in-1
+  "This is a sentence. This is one too.")
+
+(defn remove-test-in-1
+  "test function"
+  [text]
+  (string/replace text #"T" ""))
+
+(def edit-first-sentence-ex-1
+  "his is a sentence. This is one too.")
+
+(deftest edit-first-sentence-1
+  (testing "should only edit the first sentence."
+    (let [in-sentence edit-first-sentence-in-1
+          in-edit-func remove-test-in-1
+          ex edit-first-sentence-ex-1
+          ou (edit-first-sentence in-edit-func in-sentence)]
       (is (= ex ou)))))
 
