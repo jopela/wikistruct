@@ -156,19 +156,38 @@
       remove-space-comma))
 
  (defn edit-first-sentence
-  "apply an edit function to the first sentence (according to the. punctuation)
-   of the text." 
-   [edit-func text]
-   (let [sentence-match #"^.*?\."
-         first-sentence (re-find sentence-match text)]
-     (string/replace text sentence-match (edit-func first-sentence))))
+  "apply an edit function to the first sentence 
+  (according to the sentence-match) of the text." 
+   [edit-func sentence-match text]
+   (let [first-sentence (re-find sentence-match text)]
+     (string/replace-first text sentence-match (edit-func first-sentence))))
 
-(def remove-pronounciation-fs (partial 
-                                edit-first-sentence 
-                                remove-pronounciation-text))
+(def remove-pronounciation-ascii-fs (partial 
+                                        edit-first-sentence 
+                                        #".*?\."
+                                        remove-pronounciation-text))
 
+(def remove-pronounciation-jap-fs (partial 
+                                        edit-first-sentence 
+                                        #".*?\。"
+                                        remove-pronounciation-text))
 
+(defn del-lang-pronounciation
+  "remove the pronounciation from the text with the ascii breaking of 
+  sentences."
+  [label func syntax-tree]
+  (insta/transform {label #([label (func %1)])} syntax-tree))
 
+(def del-ascii-pronounciation 
+  (partial del-lang-pronounciation :abstract remove-pronounciation-ascii-fs))
+
+(def del-jap-pronounciation
+  (partial del-lang-pronounciation :abstract remove-pronounciation-jap-fs))
+
+(defn del-pronounciation
+  "remove pronounciation text from the first sentence of the abstract section."
+  [syntax-tree]
+  (-> syntax-tree del-ascii-pronounciation del-jap-pronounciation))
 
 ; ~~~~~~~~~~ text filters.
 (defn remove-brackets

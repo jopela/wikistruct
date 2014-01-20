@@ -343,7 +343,11 @@
   (testing "should only edit the first sentence."
     (let [in-sentence edit-first-sentence-in-1
           in-edit-func remove-test-in-1
+          in-match-sentence #".*?\."
           ex edit-first-sentence-ex-1
-          ou (edit-first-sentence in-edit-func in-sentence)]
+          ou (edit-first-sentence in-edit-func in-match-sentence in-sentence)]
       (is (= ex ou)))))
+
+; ~~~~~~~~~~~~ del-pronounciation test ~~~~~~~~~~~~~~~~~~
+(def del-pronounciation-in-1 "lol")
 
