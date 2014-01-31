@@ -49,7 +49,7 @@
        (let [ simple-properties (extract/simple-prop-extract raw-result)
               lang (extract/languages-extract raw-result)
               thumb (extract/thumbnail-extract raw-result) 
-              text (extract/text-extract raw-text-filters post-filters eval-func raw-result)]
+              text (try (extract/text-extract raw-text-filters post-filters eval-func raw-result) (catch Exception e nil))]
          (if (nil? text)
           {:error (str "wiki-creole parsing error for " url)}
           (apply merge [simple-properties lang thumb text]))))))

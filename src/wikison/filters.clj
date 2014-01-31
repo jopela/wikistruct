@@ -131,7 +131,9 @@
 (defn remove-nested-parens
   "remove nested parenthesis from the text"
   [text]
-  (string/replace text #" ?(\((?:\(.*?\)|[^\(])*?\))" ""))
+  (try
+    (string/replace text #" ?(\((?:\(.*?\)|[^\(])*?\))" "")
+    (catch StackOverflowError e text)))
 
 (defn remove-foward-slash
   "remove all the text in between 2 foward slash"
