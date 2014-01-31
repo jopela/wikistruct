@@ -30,7 +30,8 @@
                  "Voir aussi" "Notes et références" "المصادر" "روابط خارجية"
                  "pictures" "Ссылки" "collegamenti esterni" "voci correlate"
                  "参考" "ver também" "enlaces externos" "véase también" 
-                 "siehe auch" "externe links" "international relations"})
+                 "siehe auch" "externe links" "international relations"
+                 "sources and citations"})
 
 (defn value-of-match
   "takes the given node and tries to match it for a [k v] pattern. if it 
