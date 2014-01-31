@@ -30,7 +30,7 @@
                  "Voir aussi" "Notes et références" "المصادر" "روابط خارجية"
                  "pictures" "Ссылки" "collegamenti esterni" "voci correlate"
                  "参考" "ver também" "enlaces externos" "véase también" 
-                 "siehe auch" "externe links"})
+                 "siehe auch" "externe links" "international relations"})
 
 (defn value-of-match
   "takes the given node and tries to match it for a [k v] pattern. if it 
@@ -111,6 +111,7 @@
   (let [section-locs (map z/vector-zip (z/rights loc))]
     (every? identity (map empty-section? section-locs))))
 
+
 (defn del-empty-sections
   "remove empty sections container. The definition of emptyness is this 
   function precisely."
@@ -129,7 +130,7 @@
 (defn remove-nested-parens
   "remove nested parenthesis from the text"
   [text]
-  (string/replace text #"(\((?:\(.*?\)|[^\(])*?\))" ""))
+  (string/replace text #" ?(\((?:\(.*?\)|[^\(])*?\))" ""))
 
 (defn remove-foward-slash
   "remove all the text in between 2 foward slash"
@@ -155,39 +156,12 @@
       remove-2-spaces
       remove-space-comma))
 
- (defn edit-first-sentence
-  "apply an edit function to the first sentence 
-  (according to the sentence-match) of the text." 
-   [edit-func sentence-match text]
-   (let [first-sentence (re-find sentence-match text)]
-     (string/replace-first text sentence-match (edit-func first-sentence))))
-
-(def remove-pronounciation-ascii-fs (partial 
-                                        edit-first-sentence 
-                                        #".*?\."
-                                        remove-pronounciation-text))
-
-(def remove-pronounciation-jap-fs (partial 
-                                        edit-first-sentence 
-                                        #".*?\。"
-                                        remove-pronounciation-text))
-
-(defn del-lang-pronounciation
-  "remove the pronounciation from the text with the ascii breaking of 
-  sentences."
-  [label func syntax-tree]
-  (insta/transform {label #([label (func %1)])} syntax-tree))
-
-(def del-ascii-pronounciation 
-  (partial del-lang-pronounciation :abstract remove-pronounciation-ascii-fs))
-
-(def del-jap-pronounciation
-  (partial del-lang-pronounciation :abstract remove-pronounciation-jap-fs))
-
 (defn del-pronounciation
   "remove pronounciation text from the first sentence of the abstract section."
   [syntax-tree]
-  (-> syntax-tree del-ascii-pronounciation del-jap-pronounciation))
+  (insta/transform 
+    {:abstract (fn [x] [:abstract (remove-pronounciation-text x)])} 
+    syntax-tree))
 
 ; ~~~~~~~~~~ text filters.
 (defn remove-brackets

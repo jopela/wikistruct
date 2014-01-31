@@ -124,7 +124,7 @@
                 rename-titles 
                 rename-sections 
                 hiccup/html
-                (string/replace #"\n" "<br>"))}) 
+                (string/replace #"\n+" "<br>"))}) 
 
 (defn markdown-text
   [syntax-tree]
@@ -175,7 +175,7 @@
                                edit-subs
                                markdown-text)]
     (letfn [(sec-fn [& args] (into [:section] (merge-section args)))
-            (rm-nl [x] [:markdown (string/replace x #"\n" "<br>") ])]
+            (rm-nl [x] [:markdown (string/replace x #"\n+" "<br>") ])]
       {:article (insta/transform {:section sec-fn :markdown rm-nl} pre-processed-tree)})))
 
 (def test-tree 

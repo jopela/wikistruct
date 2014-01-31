@@ -326,28 +326,28 @@
           ou (remove-pronounciation-text in)]
       (is (= ex ou)))))
 
-; ~~~~~~~~~~~~~~ edit-first-sentence test ~~~~~~~~~~~~~~~~~
-
-(def edit-first-sentence-in-1
-  "This is a sentence. This is one too.")
-
-(defn remove-test-in-1
-  "test function"
-  [text]
-  (string/replace text #"T" ""))
-
-(def edit-first-sentence-ex-1
-  "his is a sentence. This is one too.")
-
-(deftest edit-first-sentence-1
-  (testing "should only edit the first sentence."
-    (let [in-sentence edit-first-sentence-in-1
-          in-edit-func remove-test-in-1
-          in-match-sentence #".*?\."
-          ex edit-first-sentence-ex-1
-          ou (edit-first-sentence in-edit-func in-match-sentence in-sentence)]
-      (is (= ex ou)))))
-
 ; ~~~~~~~~~~~~ del-pronounciation test ~~~~~~~~~~~~~~~~~~
-(def del-pronounciation-in-1 "lol")
+(def del-pronounciation-in-1 
+  [:article
+   [:abstract remove-pronounciation-text-in-4]
+   [:sections
+    [:section 
+     [:title "section title"] 
+     [:text "some text"]]]])
+
+(def del-pronounciation-ex-1 
+  [:article
+   [:abstract remove-pronounciation-text-ex-4]
+   [:sections
+    [:section 
+     [:title "section title"] 
+     [:text "some text"]]]])
+
+(deftest del-pronounciation-1
+  (testing "IPA char and related content should be removed from the first 
+           sentence of the abstract text."
+    (let [in del-pronounciation-in-1
+          ex del-pronounciation-ex-1
+          ou (del-pronounciation in)]
+      (is (= ex ou)))))
 

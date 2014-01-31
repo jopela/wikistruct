@@ -23,7 +23,9 @@
     (error (str (e :error) "\n"))))
 
 (def default-post-filters
-  [filters-func/del-empty-sections filters-func/del-unwanted-sec])
+  [filters-func/del-pronounciation 
+   filters-func/del-empty-sections 
+   filters-func/del-unwanted-sec])
 
 (def default-text-filters
   [filters-func/remove-brackets])
