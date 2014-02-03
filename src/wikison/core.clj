@@ -22,6 +22,7 @@
   (doseq [e error-sources]
     (error (str (e :error) "\n"))))
 
+
 (def default-post-filters
   [filters-func/del-pronounciation 
    filters-func/del-empty-sections 
@@ -81,6 +82,11 @@
   [article]
   (contains? article :error))
 
+(defn depiction-url
+  "returns the depiction url of the given wikipedia url."
+  [user-agent url]
+  (request/depiction-raw user-agent url))
+
 (def not-error? (complement error?))
 
 (defn -main
@@ -89,12 +95,13 @@
   (let [ [options args banner]
          (c/cli args
              ["-h" "--help" "print this help banner and exit" :flag true]
-             ["-u" "--user" "user-agent heder. Should include your mail"]
+             ["-u" "--user" "user-agent header. Should include your mail"]
              ["-a" "--article" "extract only the article part and print it to
                                stdout. Uses the partial evaluator by default" 
               :flag true]
              ["-m" "--markup-html" "return a (totally) rendered html version of 
-                                   the article part" :flag true])]
+                                   the article part" :flag true]
+             ["-d" "--depiction" "extract the depiction of given resources" :flag true])]
     (when (options :help)
       (println banner)
       (System/exit 0))
@@ -125,24 +132,11 @@
            (error-report errors)
            (p/pprint (vec (map :article valid)))
            (System/exit 0))
+       (options :depiction) (do (doseq [d (map #(depiction-url user-agent %) args)]
+                              (if (error? d) 
+                                (do (error (str (d :error) "\n")) (println nil))
+                                (p/pprint (:depiction (extract/thumbnail-extract d)))))
+                                (System/exit 0))
+
        :else (do (p/pprint (map (partial article user-agent) args)) 
                  (System/exit 0))))))
-
-
-
-; ~~~ emergency bug test definitions
-;(def user-agent "wikison 0.1.1 (jonathan.pelletier1@gmail.com)")
-;(def url1 "http://ru.wikivoyage.org/wiki/Анкара")
-;(def text1 (request/raw-article user-agent url1))
-;(def tree1 (parse/wiki-creole-parse text1))
-;
-;(def url2 "http://en.wikipedia.org/wiki/S-expression")
-;(def text2 (request/raw-article user-agent url2))
-;(def tree2 (parse/wiki-creole-parse text2))
-;
-;(def url3 "http://arz.wikipedia.org/wiki/انقره")
-;(def text3 (request/raw-article user-agent url3))
-;(def tree3 (parse/wiki-creole-parse text3))
-;
-;(def art3 (article user-agent url3))
-

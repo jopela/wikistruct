@@ -113,8 +113,9 @@
       nil))))
 
 (defn raw-article-dispatch
-  "takes a url and returns :pageid if it contains a page id. Otherwise return
-  nil. User-agent argument is included to make signature identical to the 
+  "takes a url and returns :pageids or :titles if it contains a pageid or a 
+  title. Otherwise return nil. User-agent argument is included to make 
+  signature identical to the 
   calling function"
   [user-agent url]
   (let [not-nil? (complement nil?)]
@@ -154,6 +155,23 @@
 (defmethod raw-article :default [user-agent url]
   {:error (str "could not figure out how to issue a media wiki API call to "
                url)})
-               
 
-            
+(defn depiction-request
+  "fowards a request to the media-wiki api for a depiction."
+  [user-agent handle url]
+  (let [params (merge {"prop" "pageimages"
+                       "piprop" "thumbnail"
+                       "pithumbsize" 99999
+                       "pilimit" 1} handle)
+        response (mediawiki-req user-agent url params)]
+    (mediawiki-req user-agent url params)))
+
+(defmulti depiction-raw raw-article-dispatch)
+
+(defmethod depiction-raw :pageids [user-agent url]
+  (depiction-request user-agent (pageid-handle url) url))
+
+(defmethod depiction-raw :titles [user-agent url]
+  (depiction-request user-agent (title-handle url) url))
+
+
