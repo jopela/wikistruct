@@ -27,7 +27,7 @@
                  "関連項目" "bibliografia" "anmerkungen und einzelnachweise"
                  "autres références" "وصلات خارجية" "ссылки" "см. также"
                  "外部リンク" "参考文献" "lien externe" "article connexe"
-                 "Voir aussi" "Notes et références" "المصادر" "روابط خارجية"
+                 "Voir aussi" "notes et références" "المصادر" "روابط خارجية"
                  "pictures" "Ссылки" "collegamenti esterni" "voci correlate"
                  "参考" "ver também" "enlaces externos" "véase también" 
                  "siehe auch" "externe links" "international relations"
