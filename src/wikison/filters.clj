@@ -31,7 +31,9 @@
                  "pictures" "Ссылки" "collegamenti esterni" "voci correlate"
                  "参考" "ver também" "enlaces externos" "véase también" 
                  "siehe auch" "externe links" "international relations"
-                 "sources and citations"})
+                 "sources and citations" "actualité" "voir aussi" 
+                 "bibliografía" "referenties" "notes" "imagens" "литература" 
+                 "Литература"})
 
 (defn value-of-match
   "takes the given node and tries to match it for a [k v] pattern. if it 
@@ -60,6 +62,7 @@
         (and (= node :title) (-> cur z/right z/node tf)) (recur (-> cur z/up z/up z/remove))
         (and (= node :sections) (-> cur z/right not)) (recur (-> cur z/up z/remove))
         :else (recur (z/next cur))))))
+
 
 (def del-unwanted-sec (partial del-sec-with-title match-removable?)) 
 ; ~~~~~~~~~~~~~~~~~ functions related to del-empty-sections ~~~~~~~~~~~~~~~~~~~
@@ -111,7 +114,6 @@
   ; create root locations for every section in the sections container.
   (let [section-locs (map z/vector-zip (z/rights loc))]
     (every? identity (map empty-section? section-locs))))
-
 
 (defn del-empty-sections
   "remove empty sections container. The definition of emptyness is this 
@@ -172,4 +174,11 @@
   or numbers."
   [text]
   (string/replace text #"(?i)\[Citation needed\]|\[[0-9]+\]" ""))
+
+(defn remove-portail
+  "remove sentences that have the words Portail in them."
+  [text]
+  (string/replace text #"\s?Portail .*?(\.|\n|$)" ""))
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+

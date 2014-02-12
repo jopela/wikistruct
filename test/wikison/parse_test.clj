@@ -12,7 +12,11 @@
    "./test/wikison/extracts/edge-test-1.txt"
    "./test/wikison/extracts/edge-test-2.txt"
    "./test/wikison/extracts/edge-test-3.txt"
-   "./test/wikison/extracts/edge-test-4.txt"])
+   "./test/wikison/extracts/edge-test-4.txt"
+   "./test/wikison/extracts/edge-test-5.txt"
+   "./test/wikison/extracts/edge-test-6.txt"
+   "./test/wikison/extracts/edge-test-7.txt"
+   ])
 
 ; test-extract tests.
 (deftest parser-simple-1
@@ -135,6 +139,55 @@
               [:subs1
                [:sub1
                 [:title " S "] [:text "starting with sub1.\n\n"]]]]
+          ou (creole-parse in)]
+      (is (= ex ou)))))
+
+(deftest edge-test-5
+  (testing "Article having sections after subs1 should be persed correctly ."
+    (let [in (slurp "./test/wikison/extracts/edge-test-5.txt")
+          ex [:article 
+              [:abstract "Abstract\n"]
+              [:subs1
+               [:sub1
+                [:title " SU1 "] [:text "sub1.\n"]]
+               [:sub1
+                [:title " SU2 "] [:text "sub1.\n"]]]
+              [:sections
+               [:section
+                [:title " S "] [:text "sec.\n\n"]]]]
+          ou (creole-parse in)]
+      (is (= ex ou)))))
+
+(deftest edge-test-6
+  (testing "Articles having an equal sign begin a section should be 
+           parsed correctly."
+    (let [in (slurp "./test/wikison/extracts/edge-test-6.txt")
+          ex [:article 
+              [:abstract "Abstract\n"]
+              [:sections
+               [:section
+                [:title " S "] [:text "S1.\n"]
+               [:subs1
+                [:sub1
+                 [:title " SS "] [:text "dim\n=3\n\n"]]]]]]
+
+          ou (creole-parse in)]
+      (is (= ex ou)))))
+
+(deftest edge-test-7
+  (testing "Articles starting with subs2 should be parsed correctly."
+    (let [in (slurp "./test/wikison/extracts/edge-test-7.txt")
+          ex [:article 
+              [:abstract "Article\n"]
+              [:subs2
+               [:sub2
+                [:title " SS1 "] [:text "s1\n"]]
+               [:sub2
+                [:title " SS2 "] [:text "s2\n"]]]
+               [:sections
+                [:section
+                 [:title " S1 "] [:text "s3\n\n"]]]]
+
           ou (creole-parse in)]
       (is (= ex ou)))))
 

@@ -86,6 +86,22 @@
           ou (del-sec-with-title #{"BAD"} in)]
       (is (= ex ou)))))
 
+(def del-sec-with-title-2-in
+  [:article [:abstract "abstract"]
+   [:sections 
+    [:section [:title "Литература"] [:text "text"]]]])
+
+(def del-sec-with-title-2-ex
+  [:article [:abstract "abstract"]])
+
+(deftest del-sec-with-title-2
+  (testing "When a russian article contains a bad section, it should be 
+           removed"
+    (let [in del-sec-with-title-2-in
+          ex del-sec-with-title-2-ex
+          ou (del-sec-with-title #{"Литература"} in)]
+      (is (= ex ou)))))
+
 ; delete empty section test.
 (def del-empty-sec-1-in
   [:article
@@ -349,5 +365,37 @@
     (let [in del-pronounciation-in-1
           ex del-pronounciation-ex-1
           ou (del-pronounciation in)]
+      (is (= ex ou)))))
+
+(def remove-portail-in-1 "Ceci est l'article de Toronto. Portail de toronto. Bien.")
+(def remove-portail-ex-1 "Ceci est l'article de Toronto. Bien.")
+
+(deftest remove-portail-1
+  (testing "Sentence containing the word Portail should be removed."
+    (let [in remove-portail-in-1
+          ex remove-portail-ex-1
+          ou (remove-portail in)]
+      (is (= ex ou)))))
+
+(def remove-portail-in-2 "Ceci est l'article de Toronto. Portail de toronto\n")
+(def remove-portail-ex-2 "Ceci est l'article de Toronto.")
+
+(deftest remove-portail-2
+  (testing "Sentence containing the word Portail  and ending with a newline 
+           should be removed."
+    (let [in remove-portail-in-2
+          ex remove-portail-ex-2
+          ou (remove-portail in)]
+      (is (= ex ou)))))
+
+(def remove-portail-in-3 "Ceci est l'article de Toronto. Portail de toronto")
+(def remove-portail-ex-3 "Ceci est l'article de Toronto.")
+
+(deftest remove-portail-3
+  (testing "Sentence containing the word Portail at the end of a string 
+           should be removed."
+    (let [in remove-portail-in-3
+          ex remove-portail-ex-3
+          ou (remove-portail in)]
       (is (= ex ou)))))
 

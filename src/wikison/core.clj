@@ -22,14 +22,14 @@
   (doseq [e error-sources]
     (error (str (e :error) "\n"))))
 
-
 (def default-post-filters
   [filters-func/del-pronounciation 
    filters-func/del-empty-sections 
    filters-func/del-unwanted-sec])
 
 (def default-text-filters
-  [filters-func/remove-brackets])
+  [filters-func/remove-brackets
+   filters-func/remove-portail])
 
 (def default-eval-function
   weval/tree-eval-html-partial)
@@ -140,3 +140,10 @@
 
        :else (do (p/pprint (map (partial article user-agent) args)) 
                  (System/exit 0))))))
+
+
+(def super-url "http://en.wikipedia.org/wiki/index.php?curid=18958249")
+
+(:extract (request/raw-article "jopela" super-url))
+
+

@@ -1,8 +1,8 @@
-article  = (abstract|abstract sections|abstract subs1|abstract subs2|abstract subs3|abstract subs4|abstract subs5)
+article  = (abstract|abstract sections|abstract subs1|abstract subs2|abstract subs3|abstract subs4|abstract subs5|abstract subs1 sections| abstract subs2 sections | abstract subs2 subs1 sections)
 text     = sentence+
 title    = #"[^=\n]+"
 abstract = sentence+
-sentence = (#"^[^=\n].*\n"|#"\n")
+sentence = (#"^[^=\n].*\n"|#"\n"|#"^=[^=]")
 sections = section+
 section  = (h1|h1 text|h1 text subs1|h1 subs1|h1 text subs2|h1 text subs3|h1 text subs4|h1 text subs5|h1 subs2|h1 subs2|h1 subs3|h1 subs4|h1 subs5|h1 text subs2 subs1|h1 subs2 subs1|h1 text subs3 subs2 subs1)
 sub1     = (h2|h2 text|h2 text subs2|h2 subs2|h2 text subs3|h2 text subs4|h2 text subs5|h2 subs3|h2 subs4|h2 subs5)
