@@ -8,33 +8,6 @@
             [instaparse.core :as insta]
             [clojure.zip :as z]))
 
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~ helper functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; title we commonly want to remove. To be used as tf passed to 
-; del-sec-with-title.
-(def removable #{
-                 "pour approfondir" "note" "collega" "voci" "further reading"
-                 "gallery" "weblinks" "einzelnachweise" "altri progetti" 
-                 "referencias" "bibliography" "enlaces" "notas" "refer" 
-                 "articles" "siehe" "véase" "galleria" "ver tam" 
-                 "bakgrunnsstoff" "annexes" "images" "galerie" "anhang" 
-                 "sources" "hauptartikel" "article détaillé"  "artículo" 
-                 "literature" "literatur" "références" "externe" "fotogaleri" 
-                 "anmerkungen" "sieheauch" "links" "source" 
-                 "fuente" "zie ook" "quellen" "references"
-                 "ligações externas" "referências" "bibliographie" 
-                 "articles connexes" "liens externes" "editar"
-                 "bearbeiten" "annexe" "external links" "see also" 
-                 "関連項目" "bibliografia" "anmerkungen und einzelnachweise"
-                 "autres références" "وصلات خارجية" "ссылки" "см. также"
-                 "外部リンク" "参考文献" "lien externe" "article connexe"
-                 "Voir aussi" "notes et références" "المصادر" "روابط خارجية"
-                 "pictures" "Ссылки" "collegamenti esterni" "voci correlate"
-                 "参考" "ver também" "enlaces externos" "véase también" 
-                 "siehe auch" "externe links" "international relations"
-                 "sources and citations" "actualité" "voir aussi" 
-                 "bibliografía" "referenties" "notes" "imagens" "литература" 
-                 "Литература"})
-
 (defn value-of-match
   "takes the given node and tries to match it for a [k v] pattern. if it 
   matches and k is in the kws set, return the value of v. Else, return nil."
@@ -49,8 +22,6 @@
   (let [cmp-txt (-> txt string/trim string/lower-case)]
     (rs cmp-txt)))
 
-(def match-removable? (partial match-any? removable))
-
 (defn del-sec-with-title
   "delete the section node that have a title for which tf (title function)
   returns true"
@@ -63,8 +34,13 @@
         (and (= node :sections) (-> cur z/right not)) (recur (-> cur z/up z/remove))
         :else (recur (z/next cur))))))
 
+(defn remove-sec-function
+  "remove section from syntax-tree that can be found in the given title-set."
+  [title-set syntax-tree]
+  (let [match-removable? (partial match-any? title-set)
+        del-unwanted-sec (partial del-sec-with-title match-removable?)]
+    (del-unwanted-sec syntax-tree)))
 
-(def del-unwanted-sec (partial del-sec-with-title match-removable?)) 
 ; ~~~~~~~~~~~~~~~~~ functions related to del-empty-sections ~~~~~~~~~~~~~~~~~~~
 (def container? #{:sections :subs1 :subs2 :subs3 :subs4 :subs5})
 (def section? #{:section :sub1 :sub2 :sub3 :sub4 :sub5})
@@ -180,5 +156,4 @@
   [text]
   (string/replace text #"\s?Portail .*?(\.|\n|$)" ""))
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 

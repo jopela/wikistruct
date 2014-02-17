@@ -15,17 +15,27 @@
 
 (timbre/refer-timbre)
 
+(defn load-config
+  "loads config data from a file."
+  [filename]
+  (load-string (slurp filename)))
+
+(defn default-post-filters
+  "Returns a list of filters that we use by default. ORDER IS IMPORTANT since
+  filter application is ASSOCIATIVE but not COMMUTATIVE. Input is the set
+  of removable section for the deletion of unwanted section from the wiki."
+  [removable-set]
+  (let [del-unwanted-section (partial filters-func/remove-sec-function removable-set)]
+    [filters-func/del-pronounciation 
+     filters-func/del-empty-sections 
+     del-unwanted-section]))
+
 (defn error-report
   "generates a human readable error report of the result of the editorial
   content generation."
   [error-sources]
   (doseq [e error-sources]
     (error (str (e :error) "\n"))))
-
-(def default-post-filters
-  [filters-func/del-pronounciation 
-   filters-func/del-empty-sections 
-   filters-func/del-unwanted-sec])
 
 (def default-text-filters
   [filters-func/remove-brackets
@@ -55,26 +65,14 @@
           {:error (str "wiki-creole parsing error for " url)}
           (apply merge [simple-properties lang thumb text]))))))
 
-  ([post-filters eval-func user-agent url]
-   (article default-text-filters
-            post-filters
-            eval-func
-            user-agent
-            url))
-
-  ([eval-func user-agent url]
-   (article default-text-filters
-            default-post-filters
-            eval-func
-            user-agent 
-            url))
-
+  ;other module uses a function call of this signature. In that case, assume default filters built from config file found at /etc/wikison.d/filter.conf.
   ([user-agent url]
-   (article default-text-filters
-            default-post-filters
-            default-eval-function
-            user-agent 
-            url)))
+   (let [filter-conf (load-config "/etc/wikison.d/filter.conf")]
+     (article default-text-filters
+              (default-post-filters filter-conf)
+              default-eval-function
+              user-agent
+              url))))
 
 (defn error?
   "returns logical true if the result returned by article is an error
@@ -89,6 +87,10 @@
 
 (def not-error? (complement error?))
 
+; default values for command line arguments.
+(def log-file-default "/var/log/wikison.log")
+(def filter-conf-default "/etc/wikison.d/filter.conf")
+
 (defn -main
   "json article from (media)wiki urls"
   [& args]
@@ -101,7 +103,10 @@
               :flag true]
              ["-m" "--markup-html" "return a (totally) rendered html version of 
                                    the article part" :flag true]
-             ["-d" "--depiction" "extract the depiction of given resources" :flag true])]
+             ["-l" "--log PATH" "patht to the log file." :default log-file-default]
+             ["-d" "--depiction" "extract the depiction of given resources" :flag true]
+             ["-c" "--config PATH" "the path to the configuration file containing the removable section map" :default filter-conf-default])]
+
     (when (options :help)
       (println banner)
       (System/exit 0))
@@ -110,20 +115,30 @@
       (println "User agent is required! See --help for details")
       (System/exit 1))
 
-    (let [user-agent (:user options)]
-      ; logger configuration
+    (let [user-agent (:user options)
+          filter-config (load-config filter-conf-default) 
+          log-file-path (:log options)
+          default-filters-post (default-post-filters filter-config)]
+
       (timbre/set-config! [:appenders :spit :enabled?] true)
       (timbre/set-config! [:shared-appender-config :spit-filename] 
-                          "/var/log/wikison.log")
+                          log-file-path)
       (timbre/set-config! [:appenders :standard-out :enabled?] false)
       (cond 
        (options :article) (let [articles (map 
-                                           (partial article user-agent) args)]
+                                           (partial article 
+                                                    default-text-filters 
+                                                    default-filters-post 
+                                                    default-eval-function 
+                                                    user-agent) 
+                                           args)]
         (doseq [art articles]
          (println (art :article))))
        (options :markup-html) (let [articles (map 
                                           (fn [x] (article 
-                                                    weval/tree-eval-html
+                                                    default-text-filters
+                                                    default-filters-post
+                                                    default-eval-function
                                                     user-agent
                                                     x))
                                           args)
@@ -138,12 +153,5 @@
                                 (p/pprint (:depiction (extract/thumbnail-extract d)))))
                                 (System/exit 0))
 
-       :else (do (p/pprint (map (partial article user-agent) args)) 
+       :else (do (p/pprint (map (partial article default-text-filters default-filters-post default-eval-function user-agent) args)) 
                  (System/exit 0))))))
-
-
-(def super-url "http://en.wikipedia.org/wiki/index.php?curid=18958249")
-
-(:extract (request/raw-article "jopela" super-url))
-
-

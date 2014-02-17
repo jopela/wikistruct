@@ -248,14 +248,6 @@
           ou (del-empty-sections in)]
       (is (= ex ou)))))
 
-(deftest match-removable-1
-  (testing "text that is similar to something in the removable set should 
-           return logical true"
-    (let [in " Articles connexes "
-          ex "articles connexes"
-          ou (match-removable? in)]
-      (is (= ex ou)))))
-
 (deftest remove-bracket-1
   (testing "text containing bracket that contains 'Citation needed' or 
            number should be removed."
