@@ -138,7 +138,7 @@
                                           (fn [x] (article 
                                                     default-text-filters
                                                     default-filters-post
-                                                    default-eval-function
+                                                    weval/tree-eval-html
                                                     user-agent
                                                     x))
                                           args)
@@ -154,4 +154,8 @@
                                 (System/exit 0))
 
        :else (do (p/pprint (map (partial article default-text-filters default-filters-post default-eval-function user-agent) args)) 
-                 (System/exit 0))))))
+                 (System/exit 0)))
+      
+      
+      
+      )))
