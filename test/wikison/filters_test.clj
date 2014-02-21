@@ -397,3 +397,9 @@
          "Замок Святого Георгия — крепость в." "38.713889, -9.133611 Замок Святого Георгия — крепость в."
          "Then there is sentence." "-1.011111, 245.124323 Then there is sentence." )))
 
+(deftest remove-plan-text-1
+  (testing "should remove text containing Plan at the start of a line."
+    (are [ex in] (= ex (remove-plan-text in))
+         "" "Plan officiel de la ville de Berlin. La ville de."
+         "" "Plan officiel de POI")))
+

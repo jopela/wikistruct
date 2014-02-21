@@ -160,5 +160,10 @@
   "remove the coordinates that appear at the beginning of a sentence."
   [text]
   (string/replace text #"^-?[0-9]{1,3}\.[0-9]+, ?-?[0-9]{1,3}\.[0-9]+ " ""))
+
+(defn remove-plan-text
+  "remove sentences that begins by Plan officiel."
+  [text]
+  (string/replace text #"Plan officiel .*" ""))
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

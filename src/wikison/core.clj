@@ -10,6 +10,7 @@
             [clojure.zip :as z]
             [clojure.data.json :as json]
             [clojure.pprint :as pprint]
+            [clojure.string :as string]
             [taoensso.timbre :as timbre])
   (:import (java.net MalformedURLException)))
 
@@ -18,7 +19,7 @@
 (defn load-config
   "loads config data from a file."
   [filename]
-  (set (load-string (slurp filename))))
+  (set (map string/lower-case (load-string (slurp filename)))))
 
 (defn default-post-filters
   "Returns a list of filters that we use by default. ORDER IS IMPORTANT since
@@ -38,9 +39,12 @@
     (error (str (e :error) "\n"))))
 
 (def default-text-filters
-  [filters-func/remove-brackets
+  [
+   filters-func/remove-brackets
    filters-func/remove-portail
-   filters-func/remove-coordinates-text])
+   filters-func/remove-coordinates-text
+   filters-func/remove-plan-text
+   ])
 
 (def default-eval-function
   weval/tree-eval-html-partial)
