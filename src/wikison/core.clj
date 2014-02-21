@@ -18,7 +18,7 @@
 (defn load-config
   "loads config data from a file."
   [filename]
-  (load-string (slurp filename)))
+  (set (load-string (slurp filename))))
 
 (defn default-post-filters
   "Returns a list of filters that we use by default. ORDER IS IMPORTANT since
@@ -39,7 +39,8 @@
 
 (def default-text-filters
   [filters-func/remove-brackets
-   filters-func/remove-portail])
+   filters-func/remove-portail
+   filters-func/remove-coordinates-text])
 
 (def default-eval-function
   weval/tree-eval-html-partial)
@@ -103,7 +104,7 @@
               :flag true]
              ["-m" "--markup-html" "return a (totally) rendered html version of 
                                    the article part" :flag true]
-             ["-l" "--log PATH" "patht to the log file." :default log-file-default]
+             ["-l" "--log PATH" "path to the log file." :default "/var/log/wikison.log" ]
              ["-d" "--depiction" "extract the depiction of given resources" :flag true]
              ["-c" "--config PATH" "the path to the configuration file containing the removable section map" :default filter-conf-default])]
 
@@ -121,8 +122,7 @@
           default-filters-post (default-post-filters filter-config)]
 
       (timbre/set-config! [:appenders :spit :enabled?] true)
-      (timbre/set-config! [:shared-appender-config :spit-filename] 
-                          log-file-path)
+      (timbre/set-config! [:shared-appender-config :spit-filename] "/var/log/wikison.log")
       (timbre/set-config! [:appenders :standard-out :enabled?] false)
       (cond 
        (options :article) (let [articles (map 
@@ -154,8 +154,4 @@
                                 (System/exit 0))
 
        :else (do (p/pprint (map (partial article default-text-filters default-filters-post default-eval-function user-agent) args)) 
-                 (System/exit 0)))
-      
-      
-      
-      )))
+                 (System/exit 0))))))

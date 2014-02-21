@@ -391,3 +391,9 @@
           ou (remove-portail in)]
       (is (= ex ou)))))
 
+(deftest remove-coordinates-text-1
+  (testing "coordinates pair at the start of an article text shall be removed."
+    (are [ex in] (= ex (remove-coordinates-text in))
+         "Замок Святого Георгия — крепость в." "38.713889, -9.133611 Замок Святого Георгия — крепость в."
+         "Then there is sentence." "-1.011111, 245.124323 Then there is sentence." )))
+

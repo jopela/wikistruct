@@ -155,5 +155,10 @@
   "remove sentences that have the words Portail in them."
   [text]
   (string/replace text #"\s?Portail .*?(\.|\n|$)" ""))
+
+(defn remove-coordinates-text
+  "remove the coordinates that appear at the beginning of a sentence."
+  [text]
+  (string/replace text #"^-?[0-9]{1,3}\.[0-9]+, ?-?[0-9]{1,3}\.[0-9]+ " ""))
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
