@@ -140,7 +140,26 @@
 (defn remove-about-text
   "remove 'this article is about' kind of sentences."
   [text]
-  (string/replace text #"(?i)this article is about.*for other uses.*\n+" ""))
+  (string/replace text #"(?i)this article is about.*for other.*\n+" ""))
+
+(defn remove-contains-voir
+  "if the text contains 'voir', return the empty string"
+  [text]
+  (string/replace text #"(i?).*voir.*" "")) 
+
+(defn abstract-voir-fn
+  [text]
+  (let [lines (string/split-lines text)
+        x (first lines)
+        xs (rest lines)]
+    nil))
+
+(defn del-voir
+  "remove first sentence of abstract that contain voir."
+  [syntax-tree]
+  (insta/transform
+    {:abstract abstract-voir-fn}
+    syntax-tree))
 
 (defn del-pronounciation
   "remove pronounciation text from the first sentence of the abstract section."
@@ -164,6 +183,11 @@
   [text]
   (string/replace text #"(?i)\[Citation needed\]|\[[0-9]+\]" ""))
 
+(defn remove-brackets-all
+  "remove all square brackets from the text."
+  [text]
+  (string/replace text #"(?s)\s?\[.*\]\s?" " "))
+
 (defn remove-portail
   "remove sentences that have the words Portail in them."
   [text]
@@ -172,11 +196,22 @@
 (defn remove-coordinates-text
   "remove the coordinates that appear at the beginning of a sentence."
   [text]
-  (string/replace text #"^-?[0-9]{1,3}\.[0-9]+, ?-?[0-9]{1,3}\.[0-9]+ " ""))
+  (string/replace text #"-?[0-9]{1,3}\.[0-9]+,?\s?-?[0-9]{1,3}\.[0-9]+\s?" ""))
+
+(defn remove-short-lines
+  "remove lines that contain less then 4 characters."
+  [text]
+  (string/replace (string/replace text #"(?m)^.{1,4}$" "") #"^\n" ""))
 
 (defn remove-plan-text
   "remove sentences that begins by Plan officiel."
   [text]
   (string/replace text #"Plan officiel .*" ""))
+
+(defn remove-single-word-line
+  "remove lines that only contain a single word"
+  [text]
+  (string/replace text #"^[^\s]+\n" "" ))
+
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -417,7 +417,8 @@
   (testing "coordinates pair at the start of an article text shall be removed."
     (are [ex in] (= ex (remove-coordinates-text in))
          "Замок Святого Георгия — крепость в." "38.713889, -9.133611 Замок Святого Георгия — крепость в."
-         "Then there is sentence." "-1.011111, 245.124323 Then there is sentence." )))
+         "Then there is sentence." "-1.011111, 245.124323 Then there is sentence."
+         "German coordinates" "45.504055-73.543911 German coordinates" )))
 
 (deftest remove-plan-text-1
   (testing "should remove text containing Plan at the start of a line."
@@ -430,4 +431,21 @@
     (are [ex in] (= ex (remove-about-text in))
          "" "This article is about something. For other uses, see else.\n\n"
          "Santa Maria del Mar" "This article is about something else. For other uses, see (disam).\n\nSanta Maria del Mar")))
+
+(deftest remove-brackets-all-test-1
+  (testing "all closed bracket should be removed from the text."
+    (are [ex in] (= ex (remove-brackets-all in))
+         "Der parc im Stad" "Der parc [park del lol] im Stad"
+         "Le parc cossin " "Le parc cossin [que lon doit aussi prononcer\npar cossin]")))
+
+(deftest remove-short-lines-test
+  (testing "all short lines should be removed"
+    (are [ex in] (= ex (remove-short-lines in))
+         "this is a long line" "f1\nthis is a long line"
+         "" "f1")))
+(deftest remove-single-word-line-test
+  (testing "lines containing only a single word should be removed"
+    (are [ex in] (= ex (remove-single-word-line in))
+         "Der Gare Windsor" "i7i12i13i15i16i16i18i20\nDer Gare Windsor"
+         "ok" "[word?]\nok" )))
 

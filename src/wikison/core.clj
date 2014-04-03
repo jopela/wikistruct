@@ -41,7 +41,10 @@
 
 (def default-text-filters
   [
+   filters-func/remove-single-word-line
+   filters-func/remove-short-lines
    filters-func/remove-brackets
+   filters-func/remove-brackets-all
    filters-func/remove-portail
    filters-func/remove-coordinates-text
    filters-func/remove-plan-text
