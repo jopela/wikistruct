@@ -28,6 +28,7 @@
   [removable-set]
   (let [del-unwanted-section (partial filters-func/remove-sec-function removable-set)]
     [filters-func/del-pronounciation 
+     filters-func/del-about
      filters-func/del-empty-sections 
      del-unwanted-section]))
 
