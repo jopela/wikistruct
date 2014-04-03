@@ -140,7 +140,7 @@
 (defn remove-about-text
   "remove 'this article is about' kind of sentences."
   [text]
-  text)
+  (string/replace text #"(?i)this article is about.*for other uses.*\n+" ""))
 
 (defn del-pronounciation
   "remove pronounciation text from the first sentence of the abstract section."
