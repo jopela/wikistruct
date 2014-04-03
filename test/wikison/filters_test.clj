@@ -334,6 +334,27 @@
           ou (remove-pronounciation-text in)]
       (is (= ex ou)))))
 
+; ~~~~~~~~~~~~ del-about test ~~~~~~~~~~~~~~~~~~~~~~~~~~
+(def del-about-in-1
+  [:article
+   [:abstract "This article is about the church in Barcelona. For other uses, See.\n\nSanta Maria del Maria is ..."]
+   [:sections
+    [:section
+     [:title "sec"]
+     [:text "text"]]]])
+
+(def del-about-ex-1
+  [:article
+   [:abstract "Santa Maria del Maria is ..."]
+   [:sections
+    [:section
+     [:title "sec"]
+     [:text "text"]]]])
+
+(deftest del-about-text-1
+  (testing "Content like 'This article is about' should be removed from article abstract"
+    (is (= del-about-ex-1 (del-about del-about-in-1)))))
+
 ; ~~~~~~~~~~~~ del-pronounciation test ~~~~~~~~~~~~~~~~~~
 (def del-pronounciation-in-1 
   [:article
@@ -358,6 +379,7 @@
           ex del-pronounciation-ex-1
           ou (del-pronounciation in)]
       (is (= ex ou)))))
+
 
 (def remove-portail-in-1 "Ceci est l'article de Toronto. Portail de toronto. Bien.")
 (def remove-portail-ex-1 "Ceci est l'article de Toronto. Bien.")
@@ -402,4 +424,10 @@
     (are [ex in] (= ex (remove-plan-text in))
          "" "Plan officiel de la ville de Berlin. La ville de."
          "" "Plan officiel de POI")))
+
+(deftest remove-about-text-test-1
+  (testing "sentences like 'This article is about' should be removed from text"
+    (are [ex in] (= ex (remove-about-text in))
+         "" "This article is about something. For other uses, see else.\n\n"
+         "Santa Maria del Mar" "This article is about something else. For other uses, see (disam).\n\nSanta Maria del Mar")))
 

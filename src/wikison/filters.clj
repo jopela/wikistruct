@@ -137,11 +137,24 @@
       remove-2-spaces
       remove-space-comma))
 
+(defn remove-about-text
+  "remove 'this article is about' kind of sentences."
+  [text]
+  text)
+
 (defn del-pronounciation
   "remove pronounciation text from the first sentence of the abstract section."
   [syntax-tree]
   (insta/transform 
     {:abstract (fn [x] [:abstract (remove-pronounciation-text x)])} 
+    syntax-tree))
+
+(defn del-about
+  "remove 'This article is about' kind of phrases from article abstract
+  sections."
+  [syntax-tree]
+  (insta/transform
+    {:abstract (fn [x] [:abstract (remove-about-text x)])}
     syntax-tree))
 
 ; ~~~~~~~~~~ text filters.
