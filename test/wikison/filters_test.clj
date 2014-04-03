@@ -334,6 +334,26 @@
           ou (remove-pronounciation-text in)]
       (is (= ex ou)))))
 
+(def del-voir-in-1
+  [:article
+   [:abstract "Ca parle du Parc Jarry. Voir autre chose.\nIci au parc piscine"]
+   [:sections
+    [:section
+     [:title "sec"]
+     [:text "super text"]]]])
+
+(def del-voir-ex-1
+  [:article
+     [:abstract "Ici au parc piscine"]
+     [:sections
+      [:section
+       [:title "sec"]
+       [:text "super text"]]]])
+
+(deftest del-voir-test
+  (testing "first sentences of abstract containing voir should be removed"
+    (is (= del-voir-ex-1 (del-voir del-voir-in-1))))) 
+
 ; ~~~~~~~~~~~~ del-about test ~~~~~~~~~~~~~~~~~~~~~~~~~~
 (def del-about-in-1
   [:article
@@ -448,4 +468,11 @@
     (are [ex in] (= ex (remove-single-word-line in))
          "Der Gare Windsor" "i7i12i13i15i16i16i18i20\nDer Gare Windsor"
          "ok" "[word?]\nok" )))
+
+(deftest remove-contains-word-test
+  (testing "sentences containing word should be replaced by the empty string"
+    (are [ex word text] (= ex (remove-contains-word word text))
+         "" "voir" "Jarry c'est un beau parc! Voir aussi le parc x"
+         "" "gustavo" "Walter White will be removed by gustavo?"
+         "this is awesome" "good" "this is awesome")))
 

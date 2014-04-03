@@ -142,24 +142,32 @@
   [text]
   (string/replace text #"(?i)this article is about.*for other.*\n+" ""))
 
-(defn remove-contains-voir
+(defn remove-contains-word
   "if the text contains 'voir', return the empty string"
-  [text]
-  (string/replace text #"(i?).*voir.*" "")) 
+  [word text]
+  (let [pattern (format "(?i).*%s.*\n?" word)
+        regex (re-pattern pattern)]
+    (string/replace text regex ""))) 
 
-(defn abstract-voir-fn
-  [text]
+(defn abstract-word-fn
+  [word text]
   (let [lines (string/split-lines text)
         x (first lines)
-        xs (rest lines)]
-    nil))
+        xs (rest lines)
+        clean-fn (partial remove-contains-word word)]
+    [:abstract (string/replace 
+                 (string/join "\n" (cons (clean-fn x) xs))
+                 #"^\n" 
+                 "")]))
 
-(defn del-voir
+(defn del-abstract-word
   "remove first sentence of abstract that contain voir."
-  [syntax-tree]
+  [word syntax-tree]
   (insta/transform
-    {:abstract abstract-voir-fn}
+    {:abstract (partial abstract-word-fn word)}
     syntax-tree))
+
+(def del-voir (partial del-abstract-word "voir"))
 
 (defn del-pronounciation
   "remove pronounciation text from the first sentence of the abstract section."
