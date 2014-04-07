@@ -27,7 +27,8 @@
   of removable section for the deletion of unwanted section from the wiki."
   [removable-set]
   (let [del-unwanted-section (partial filters-func/remove-sec-function removable-set)]
-    [filters-func/del-pronounciation 
+    [filters-func/del-voir
+     filters-func/del-pronounciation 
      filters-func/del-about
      filters-func/del-empty-sections 
      del-unwanted-section]))

@@ -456,7 +456,9 @@
   (testing "all closed bracket should be removed from the text."
     (are [ex in] (= ex (remove-brackets-all in))
          "Der parc im Stad" "Der parc [park del lol] im Stad"
-         "Le parc cossin " "Le parc cossin [que lon doit aussi prononcer\npar cossin]")))
+         "Le parc cossin " "Le parc cossin [que lon doit aussi prononcer\npar cossin]"
+         "Le parc jarry should be here " "Le parc jarry [OK] should be here [OK!]"
+         "Le Par Jarry Aussi cool que LOL." "Le Par Jarry [est un \n super parc] Aussi cool que [asd\nlol] LOL." )))
 
 (deftest remove-short-lines-test
   (testing "all short lines should be removed"

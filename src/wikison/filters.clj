@@ -194,7 +194,7 @@
 (defn remove-brackets-all
   "remove all square brackets from the text."
   [text]
-  (string/replace text #"(?s)\s?\[.*\]\s?" " "))
+  (string/replace text #"\s?\[[^\]]*\]\s?" " "))
 
 (defn remove-portail
   "remove sentences that have the words Portail in them."
