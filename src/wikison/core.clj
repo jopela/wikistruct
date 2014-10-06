@@ -7,6 +7,7 @@
             [wikison.eval :as weval]
             [wikison.extract :as extract]
             [wikison.parse :as parse]
+            [clojure.java.io :as io]
             [clojure.zip :as z]
             [clojure.data.json :as json]
             [clojure.pprint :as pprint]
@@ -15,6 +16,10 @@
   (:import (java.net MalformedURLException)))
 
 (timbre/refer-timbre)
+
+; default values for command line arguments.
+(def log-file-default "/var/log/wikison.log")
+(def filter-conf-default (-> "filter.conf" io/resource .getPath))
 
 (defn load-config
   "loads config data from a file."
@@ -77,7 +82,7 @@
 
   ;other module uses a function call of this signature. In that case, assume default filters built from config file found at /etc/wikison.d/filter.conf.
   ([user-agent url]
-   (let [filter-conf (load-config "/etc/wikison.d/filter.conf")]
+   (let [filter-conf (load-config filter-conf-default)]
      (article default-text-filters
               (default-post-filters filter-conf)
               default-eval-function
@@ -97,28 +102,21 @@
 
 (def not-error? (complement error?))
 
-; default values for command line arguments.
-(def log-file-default "/var/log/wikison.log")
-(def filter-conf-default "/etc/wikison.d/filter.conf")
-
 (defn -main
   "json article from (media)wiki urls"
   [& args]
-  (let [ [options args banner]
-         (c/cli args
-             ["-h" "--help" "print this help banner and exit" :flag true]
-             ["-u" "--user" "user-agent header. Should include your mail"]
-             ["-a" "--article" "extract only the article part and print it to
-                               stdout. Uses the partial evaluator by default" 
-              :flag true]
-             ["-m" "--markup-html" "return a (totally) rendered html version of 
-                                   the article part" :flag true]
+  (let [ {:keys [errors options arguments summary]}
+         (c/parse-opts args
+             [["-h" "--help" "print this help banner and exit"]
+             ["-u" "--user USER" "user-agent header. Should include your mail"]
+             ["-a" "--article" "extract only the article part and print it to stdout. Uses the partial evaluator by default"]
+             ["-m" "--markup-html" "return a (totally) rendered html version of the article part"]
              ["-l" "--log PATH" "path to the log file." :default "/var/log/wikison.log" ]
-             ["-d" "--depiction" "extract the depiction of given resources" :flag true]
-             ["-c" "--config PATH" "the path to the configuration file containing the removable section map" :default filter-conf-default])]
+             ["-d" "--depiction" "extract the depiction of given resources"]
+             ["-c" "--config PATH" "the path to the configuration file containing the removable section map" :default filter-conf-default]])]
 
     (when (options :help)
-      (println banner)
+      (println summary)
       (System/exit 0))
     
     (when-not (options :user)
